@@ -4,7 +4,7 @@
 
 echo "updating nvim configuration..."
 
-curl https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
+curl https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o ./init.vim
 
 # 2. install nvim and vim-plug if not already installed
 
@@ -28,7 +28,7 @@ fi
 
 # 4. move nvim-config configuration to configuration directory
 
-mv /tmp/init.vim ~/.config/nvim/
+mv ./init.vim ~/.config/nvim/
 
 # install vim-plug plugins
 
