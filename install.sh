@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 1. get latest version of nvim configuration
+# 1. get latest version of the nvim configuration
 
 # 2. install nvim and vim-plug if not already installed
 
