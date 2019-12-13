@@ -32,11 +32,12 @@ fi
 
 # 4. move nvim-config configuration to configuration directory
 
-mv /tmp/init.vim ~/.config/nvim/
+mkdir -p ~/.config/nvim
+mv /tmp/init.vim ~/.config/nvim/init.vim
 
 # install vim-plug plugins
 
 nvim +PlugInstall +qa
 
-
 echo -e "${GRN}done.${BLE} You can now type 'nvim' to start nvim.${NC}"
+
