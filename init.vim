@@ -99,7 +99,9 @@ let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', 
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 " always show gutter
-set signcolumn=yes
+" set signcolumn=yes does not work in all use cases
+autocmd BufEnter * sign define dummy
+autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 " git gutter symbols
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'

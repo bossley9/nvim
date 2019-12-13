@@ -32,4 +32,4 @@ mv /tmp/init.vim ~/.config/nvim/
 
 # install vim-plug plugins
 
-nvim +PlugInstall
+nvim +PlugInstall +qa
