@@ -9,10 +9,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
-"Plug 'zefei/vim-wintabs'
-"Plug 'rbgrouleff/bclose.vim'            " closing a buffer without closing the window
-" Plug 'moll/vim-bbye'
-"Plug 'tpope/vim-fugitive'               " git branch on airline
+Plug 'tpope/vim-fugitive'               " git branch on airline
 "Plug 'morhetz/gruvbox'                  " color scheme
 "Plug 'scrooloose/nerdtree'          " file explorer
 "Plug 'ctrlpvim/ctrlp.vim'           " fuzzy finding
@@ -34,7 +31,8 @@ let g:airline_symbols.linenr = ''
 let g:airline_symbols.branch = ''
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.whitespace = ''
-
+" if no version control is detected
+let g:airline#extensions#branch#empty_message = '<untracked>'
 " airline bar
 let g:airline#extensions#default#layout = [
       \ [ 'a', 'b', 'c' ],
@@ -46,7 +44,6 @@ let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
 
-" buffer tabs
 "* configure which mode colors should ctrlp window use (takes effect
 "  only if the active airline theme doesn't define ctrlp colors) >
 "    let g:airline#extensions#ctrlp#color_template = 'insert' (default)
@@ -65,13 +62,11 @@ let g:airline_extensions = ['branch', 'tabline']
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffers_label = ''
 
-" show buffer tab numbers
-"let g:airline#extensions#tabline#buffer_idx_mode = 1
-
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
-let g:wintabs_display = 'none'
+" disable fugitive mappings
+let g:fugitive_no_maps = 1
 
 " change color scheme
 "let g:gruvbox_bold = 1
@@ -223,16 +218,10 @@ for i in ['l', 'Right']
 endfor
 
 for i in ['h', 'Left']
-   execute 'inoremap <silent> <M-' . i . '> <Esc>:bp<CR>i'
-   execute 'nnoremap <silent> <M-' . i . '> :bp<CR>'
-   execute 'vnoremap <silent> <M-' . i . '> :bp<CR>'
+  execute 'inoremap <silent> <M-' . i . '> <Esc>:bp<CR>i'
+  execute 'nnoremap <silent> <M-' . i . '> :bp<CR>'
+  execute 'vnoremap <silent> <M-' . i . '> :bp<CR>'
 endfor
-
-"let i = 1
-"while i < 10
-"  execute 'nnoremap <silent> <M-' . i . '> :b' . i . '<CR>'
-"  let i += 1
-"endwhile
 
 " CTRL + q to close and save current session
 " inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
@@ -291,23 +280,6 @@ endfor
 " ------------------------------------------------------------------------
 " auto commands (events)
 " ------------------------------------------------------------------------
-
-" on file read/open
-"fu! DelBuff()
-"  if bufloaded(expand('#')) && expand('#:p') != expand('%:p')
-"    execute 'bd#'
-"  endif
-"endfunction
-
-"fu! NewBuff(b)
-"  if ! bufloaded(b)
-"    read b
-"  endif
-"endfunction
-
-"autocmd BufReadCmd -nargs=1 * call NewBuff(<f-args>)
-"autocmd BufReadCmd * call NewBuff()
-"autocmd BufRead * call NewBuff()
 
 " prevent bgcolor flash glitch
 " autocmd VimEnter * hi Normal ctermbg=none
