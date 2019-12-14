@@ -8,7 +8,7 @@ NC='\033[0m'
 
 echo -e "${BLE}updating nvim configuration...${NC}"
 
-curl https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
+curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
 
 # 2. install nvim and vim-plug if not already installed
 
@@ -20,8 +20,8 @@ if ! hash nvim 2>/dev/null; then
 fi
 
 
-echo -e "${BLE}installing vim-plug...${NC}"
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+echo -e "${BLE}installing vim-plug...${NC} (you may need to press enter to continue)"
+curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # 3. if any nvim configuration already exists, save it
@@ -37,7 +37,7 @@ mv /tmp/init.vim ~/.config/nvim/init.vim
 
 # install vim-plug plugins
 
-nvim +PlugInstall +qa
+nvim +PlugInstall +qa 2>/dev/null
 
 echo -e "${GRN}done.${BLE} You can now type 'nvim' to start nvim.${NC}"
 
