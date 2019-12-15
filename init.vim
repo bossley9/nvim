@@ -2,7 +2,9 @@
 " place in ~/.config/nvim/
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " plugins
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
 call plug#begin('~/.vim/plugged')
@@ -10,7 +12,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
 Plug 'tpope/vim-fugitive'               " git branch on airline
-"Plug 'morhetz/gruvbox'                  " color scheme
+Plug 'joshdick/onedark.vim'             " color scheme
+"Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
+
+"Plug 'sainnhe/gruvbox-material'         " color scheme
 "Plug 'scrooloose/nerdtree'          " file explorer
 "Plug 'ctrlpvim/ctrlp.vim'           " fuzzy finding
 "Plug 'airblade/vim-gitgutter'       " git gutter
@@ -20,7 +25,9 @@ Plug 'tpope/vim-fugitive'               " git branch on airline
 call plug#end()
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " plugin settings
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
 " airline bar icons
@@ -43,7 +50,6 @@ let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
 let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
-
 "* configure which mode colors should ctrlp window use (takes effect
 "  only if the active airline theme doesn't define ctrlp colors) >
 "    let g:airline#extensions#ctrlp#color_template = 'insert' (default)
@@ -58,10 +64,8 @@ let g:airline_extensions = ['branch', 'tabline']
 "enable/disable nerdtree's statusline integration >
 "  let g:airline#extensions#nerdtree_status = 1
 "  <  default: 1
-
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffers_label = ''
-
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
@@ -69,16 +73,21 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:fugitive_no_maps = 1
 
 " change color scheme
-"let g:gruvbox_bold = 1
-"let g:gruvbox_italic = 1
-"let g:gruvbox_underline = 1
-"let g:gruvbox_undercurl = 1
-"let g:gruvbox_contrast_dark = 'hard'
-"set bg=dark
-"colorscheme gruvbox
-" prevent bgcolor glitch by disabling the bgcolor entirely
-" highlight Normal ctermbg=none
-" autocmd VimEnter * hi Normal ctermbg=none
+syntax on
+colorscheme onedark
+"
+"
+"g:gruvbox_sign_column
+"
+"
+" prevent background color glitch by disabling entirely
+hi Normal ctermbg=0
+
+
+
+
+
+
 
 " close editor if file explorer is the only window open
 " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -117,7 +126,9 @@ let g:fugitive_no_maps = 1
 " let g:NERDSpaceDelims = 1
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " session management
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
 " fu! SaveSession()
@@ -139,7 +150,9 @@ let g:fugitive_no_maps = 1
 " endfunction
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " basic settings
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
 " line numbering
@@ -185,7 +198,9 @@ set mouse=a
 " set confirm
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " keyboard shortcuts
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 " let mapleader = "-"
 
@@ -278,11 +293,10 @@ endfor
 "nnoremap <silent> <C-f> /
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " auto commands (events)
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
-
-" prevent bgcolor flash glitch
-" autocmd VimEnter * hi Normal ctermbg=none
 
 " autocmd VimLeave * call SaveSession()
 " autocmd VimEnter * nested call RestoreSession()
