@@ -71,13 +71,10 @@ colorscheme onedark
 "g:gruvbox_sign_column
 "
 "
-" prevent background color glitch by disabling entirely
-hi Normal ctermbg=0
-
-"let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
-let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
-
-
+" prevent WSL bgcolor glitch by disabling entirely
+if has("windows")
+  hi Normal ctermbg=0
+endif
 
 
 
@@ -212,7 +209,9 @@ vnoremap <silent> <M-t> :enew<CR>
 fu! DelBuff()
   " seems like buffwinnr is inverted
   if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
-    execute 'bd#'
+    if len(getbufinfo({'buflisted':1})) > 1
+      execute 'bd#'
+    endif
   endif
 endfunction
 
