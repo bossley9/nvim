@@ -217,7 +217,8 @@ nnoremap <silent> <M-t> :enew<CR>
 vnoremap <silent> <M-t> :enew<CR>
 
 fu! DelBuff()
-  if bufloaded(expand('#')) && expand('#:p') != expand('%:p')
+  " seems like buffwinnr is inverted
+  if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
     execute 'bd#'
   endif
 endfunction
