@@ -209,7 +209,7 @@ vnoremap <silent> <M-t> :enew<CR>
 fu! DelBuff()
   " seems like buffwinnr is inverted
   if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
-    if len(getbufinfo({'buflisted':1})) > 1
+    if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
       execute 'bd#'
     endif
   endif
