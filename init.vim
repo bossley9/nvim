@@ -13,11 +13,11 @@ Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
 Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'joshdick/onedark.vim'             " color scheme
+Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
+
 "Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
 
-"Plug 'sainnhe/gruvbox-material'         " color scheme
 "Plug 'scrooloose/nerdtree'          " file explorer
-"Plug 'ctrlpvim/ctrlp.vim'           " fuzzy finding
 "Plug 'airblade/vim-gitgutter'       " git gutter
 "Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
@@ -50,20 +50,11 @@ let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
 let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
-"* configure which mode colors should ctrlp window use (takes effect
-"  only if the active airline theme doesn't define ctrlp colors) >
-"    let g:airline#extensions#ctrlp#color_template = 'insert' (default)
-"      let g:airline#extensions#ctrlp#color_template = 'normal'
-"        let g:airline#extensions#ctrlp#color_template = 'visual'
-"          let g:airline#extensions#ctrlp#color_template = 'replace'
-"          <
-"          * configure whether to show the previous and next modes (mru, buffer, etc...)
-"          >
-"           let g:airline#extensions#ctrlp#show_adjacent_modes = 1
-
+"
 "enable/disable nerdtree's statusline integration >
 "  let g:airline#extensions#nerdtree_status = 1
 "  <  default: 1
+"
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffers_label = ''
 " only show path in tab name if it contains another file with the same name
@@ -83,6 +74,8 @@ colorscheme onedark
 " prevent background color glitch by disabling entirely
 hi Normal ctermbg=0
 
+"let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
+let g:ctrlp_match_window = 'top,order:ttb,min:1,max:10,results:10'
 
 
 
@@ -204,7 +197,7 @@ set mouse=a
 " ------------------------------------------------------------------------
 " let mapleader = "-"
 
-" 'tab' navigation using ALT and arrow keys
+" tab navigation
 " ALT + t opens a new tab
 " ALT + w closes the current tab
 " ALT + <Right> and
@@ -239,6 +232,30 @@ for i in ['h', 'Left']
   execute 'vnoremap <silent> <M-' . i . '> :bp<CR>'
 endfor
 
+" ALT + <Up> or
+" ALT + <Down> to scroll faster vertically
+
+let scAmt = 5
+for i in ['Up', 'Down']
+  let insertScroll = ''
+  let c = 0
+
+  while c <= scAmt
+    let insertScroll = insertScroll . '<' . i . '>'
+    let c += 1
+  endwhile
+
+  execute 'inoremap <silent> <M-' . i . '> ' . insertScroll
+  execute 'nnoremap <silent> <M-' . i . '> ' . scAmt . '<' . i . '>'
+  execute 'vnoremap <silent> <M-' . i . '> ' . scAmt . '<' . i . '>'
+endfor
+
+" ALT + p to activate fuzzy finder
+" CTRL + p is the default
+inoremap <silent> <M-p> <Esc>:CtrlP<CR>
+nnoremap <silent> <M-p> :CtrlP<CR>
+vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
+
 " CTRL + q to close and save current session
 " inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
 " nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
@@ -252,15 +269,7 @@ endfor
 " vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 
 " SHIFT + <Up> or
-" SHIFT + <Down> to scroll faster vertically
-
-" nnoremap <silent> <S-Up> 5<Up>
-" nnoremap <silent> <S-Down> 5<Down>
-" vnoremap <silent> <S-Up> 5<Up>
-" vnoremap <silent> <S-Down> 5<Down>
-
-" ALT + <Up> or
-" ALT + <Down> to line swap
+" SHIFT + <Down> to line swap
 
 " nnoremap <A-j> :m .+1<CR>==
 " nnoremap <A-Down> :m .+1<CR>==
