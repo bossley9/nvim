@@ -15,10 +15,11 @@ Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'airblade/vim-gitgutter'           " git gutter
 Plug 'joshdick/onedark.vim'             " color scheme
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
+"Plug 'scrooloose/nerdtree'          " file explorer
 
 "Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
 
-"Plug 'scrooloose/nerdtree'          " file explorer
+"Plug 'scrooloose/syntastic'
 "Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
 
@@ -184,15 +185,32 @@ set mouse=a
 " keyboard shortcuts
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
-" let mapleader = "-"
+
+" fast navigation
+" SHIFT + h
+" SHIFT + l
+" SHIFT + j
+" SHIFT + k
+
+nnoremap <S-h> b
+vnoremap <S-h> b
+
+nnoremap <S-l> w
+vnoremap <S-l> w
+
+nnoremap <S-j> <S-Down>
+vnoremap <S-j> <S-Down>
+
+nnoremap <S-k> <S-Up>
+vnoremap <S-k> <S-Up>
 
 " tab navigation
 " ALT + t opens a new tab
 " ALT + w closes the current tab
 " ALT + <Right> and
 " ALT + <Left> switch tabs
-" ALT + # switches to specific tab
-" ALT + s switch between windows
+" ALT + h or
+" ALT + l alternate mappings
 
 inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
@@ -248,9 +266,23 @@ endfor
 
 " ALT + p to activame fuzzy finder
 " CTRL + p is the default
+
 inoremap <silent> <M-p> <Esc>:CtrlP<CR>
 nnoremap <silent> <M-p> :CtrlP<CR>
 vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
+
+" CTRL + <Up> or
+" CTRL + <Down> to line swap
+" CTRL + k or
+" CTRL + j alternate mappings
+
+inoremap <silent> <C-j> <Esc>:m .+1<CR>==gi
+nnoremap <silent> <C-j> :silent !m .+1<CR>==
+vnoremap <silent> <C-j> :m '>+1<CR>gv=gv
+
+inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
+nnoremap <silent> <C-k> :m .-2<CR>==
+vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 
 " CTRL + q to close and save current session
 " inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
@@ -263,22 +295,6 @@ vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
 " inoremap <M-`> <Esc>:split<bar>resize 10<bar>terminal<CR>i
 " nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 " vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-
-" SHIFT + <Up> or
-" SHIFT + <Down> to line swap
-
-" nnoremap <A-j> :m .+1<CR>==
-" nnoremap <A-Down> :m .+1<CR>==
-" nnoremap <A-k> :m .-2<CR>==
-" nnoremap <A-Up> :m .-2<CR>==
-" inoremap <A-j> <Esc>:m .+1<CR>==gi
-" inoremap <A-Down> <Esc>:m .+1<CR>==gi
-" inoremap <A-k> <Esc>:m .-2<CR>==gi
-" inoremap <A-Up> <Esc>:m .-2<CR>==gi
-" vnoremap <A-j> :m '>+1<CR>gv=gv
-" vnoremap <A-Down> :m '>+1<CR>gv=gv
-" vnoremap <A-k> :m '<-2<CR>gv=gv
-" vnoremap <A-Up> :m '<-2<CR>gv=gv
 
 " CTRL + b toggles the file explorer
 
