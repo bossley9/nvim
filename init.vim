@@ -12,13 +12,13 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
 Plug 'tpope/vim-fugitive'               " git branch on airline
+Plug 'airblade/vim-gitgutter'           " git gutter
 Plug 'joshdick/onedark.vim'             " color scheme
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 
 "Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
 
 "Plug 'scrooloose/nerdtree'          " file explorer
-"Plug 'airblade/vim-gitgutter'       " git gutter
 "Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
 
@@ -63,19 +63,25 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " disable fugitive mappings
 let g:fugitive_no_maps = 1
 
+" git gutter symbols
+let g:gitgutter_sign_added = '++'
+let g:gitgutter_sign_modified = '~~'
+let g:gitgutter_sign_removed = '--'
+" disable gutter keymappings
+let g:gitgutter_map_keys = 0
+" update gutters every x milliseconds
+set updatetime=300
+
 " change color scheme
 syntax on
 colorscheme onedark
-"
-"
-"g:gruvbox_sign_column
-"
-"
 " prevent WSL bgcolor glitch by disabling entirely
 if has("windows")
   hi Normal ctermbg=0
 endif
 
+" fuzzy finder ignore files/folders
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 
 
@@ -96,22 +102,8 @@ endif
 " let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
 " let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
 
-" fuzzy finder ignore files/folders
-" let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
-" always show gutter
-" (set signcolumn=yes does not work in all use cases)
-" autocmd BufEnter * sign define dummy
-" autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
-" git gutter symbols
-" let g:gitgutter_sign_added = '++'
-" let g:gitgutter_sign_modified = '~~'
-" let g:gitgutter_sign_removed = '--'
-" disable gutter keymappings
-" let g:gitgutter_map_keys = 0
-" update gutters every x milliseconds
-" set updatetime=300
-
+"
 " add spaces after comment delimiters
 " let g:NERDSpaceDelims = 1
 
@@ -311,6 +303,11 @@ vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
 " auto commands (events)
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
+
+" always show gutter
+" (set signcolumn=yes does not work in all use cases)
+autocmd BufEnter * sign define dummy
+autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
 " autocmd VimLeave * call SaveSession()
 " autocmd VimEnter * nested call RestoreSession()
