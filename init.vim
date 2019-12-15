@@ -294,7 +294,7 @@ vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
 " CTRL + j alternate mappings
 
 inoremap <silent> <C-j> <Esc>:m .+1<CR>==gi
-nnoremap <silent> <C-j> :silent !m .+1<CR>==
+nnoremap <silent> <C-j> :m .+1<CR>==
 vnoremap <silent> <C-j> :m '>+1<CR>gv=gv
 
 inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
