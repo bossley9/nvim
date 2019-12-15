@@ -15,12 +15,13 @@ Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'airblade/vim-gitgutter'           " git gutter
 Plug 'joshdick/onedark.vim'             " color scheme
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
-"Plug 'scrooloose/nerdtree'          " file explorer
+Plug 'scrooloose/nerdtree'              " file explorer
+"Plug 'Xuyuanp/nerdtree-git-plugin'
+"Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 
 "Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
 
 "Plug 'scrooloose/syntastic'
-"Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
 
 call plug#end()
@@ -32,9 +33,7 @@ call plug#end()
 " ------------------------------------------------------------------------
 
 " airline bar icons
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
+if !exists('g:airline_symbols') | let g:airline_symbols = {} | endif
 let g:airline_symbols.linenr = ''
 let g:airline_symbols.branch = ''
 let g:airline_symbols.maxlinenr = ''
@@ -77,9 +76,7 @@ set updatetime=300
 syntax on
 colorscheme onedark
 " prevent WSL bgcolor glitch by disabling entirely
-if has("windows")
-  hi Normal ctermbg=0
-endif
+if has("windows") | hi Normal ctermbg=0 | endif
 
 " fuzzy finder ignore files/folders
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
@@ -211,6 +208,7 @@ vnoremap <S-k> <S-Up>
 " ALT + <Left> switch tabs
 " ALT + h or
 " ALT + l alternate mappings
+" ALT + s switch/split windows
 
 inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
@@ -240,6 +238,25 @@ for i in ['h', 'Left']
   execute 'nnoremap <silent> <M-' . i . '> :bp<CR>'
   execute 'vnoremap <silent> <M-' . i . '> :bp<CR>'
 endfor
+
+" always split windows vertically
+"set splitright
+"autocmd FileType help,* wincmd L
+"set diffopt+=vertical
+"silent! set splitvertical
+"if v:errmsg != ''
+"  cabbrev split vert split
+"  cabbrev hsplit split
+"  cabbrev help vert help
+"  "noremap <C-w>] :vert botright wincmd ]<CR>
+"  "noremap <C-w><C-]> :vert botright wincmd ]<CR>
+"  noremap <M-s>] :vert botright wincmd ]<CR>
+"  noremap <M-s><C-]> :vert botright wincmd ]<CR>
+"else
+"  cabbrev hsplit hor split
+"endif
+
+noremap <M-s> <C-w>
 
 " ALT + <Up> or
 " ALT + <Down> to scroll faster vertically
@@ -296,13 +313,11 @@ vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 " nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 " vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 
-" CTRL + b toggles the file explorer
+" ALT + b toggles the file explorer
+" ALT + h toggle displaying hidden files
 
-" map <C-b> :NERDTreeToggle<CR>
-
-" CTRL + h toggle hidden files in the file explorer
-
-" let NERDTreeMapToggleHidden='<C-h>'
+map <M-b> :NERDTreeToggle<CR>
+let NERDTreeMapToggleHidden='<M-h>'
 
 " commenter functions (for some reason vim sees <C-/> as <C-_>)
 " CTRL + / to comment/uncomment line(s)
@@ -324,6 +339,15 @@ vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 " (set signcolumn=yes does not work in all use cases)
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+
+" open file explorer on startup if no files were specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" don't open file explorer if session is being restored
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
+" close file explorer if it is the last window open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " autocmd VimLeave * call SaveSession()
 " autocmd VimEnter * nested call RestoreSession()
