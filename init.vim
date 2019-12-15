@@ -203,8 +203,8 @@ set mouse=a
 " ALT + s switch between windows
 
 inoremap <silent> <M-t> <Esc>:enew<CR>i
-nnoremap <silent> <M-t> :enew<CR>
-vnoremap <silent> <M-t> :enew<CR>
+nnoremap <silent> <M-t> :enew<CR> 
+vnoremap <silent> <M-t> :enew<CR> 
 
 fu! DelBuff()
   " seems like buffwinnr is inverted
@@ -235,21 +235,26 @@ endfor
 " ALT + <Down> to scroll faster vertically
 
 let scAmt = 5
-for i in ['Up', 'Down']
+for i in ['Up', 'k', 'Down', 'j']
+  let key = i
+  if i == 'Up' || i == 'Down'
+    let key = '<' . key . '>'
+  endif
+
   let insertScroll = ''
   let c = 0
 
   while c <= scAmt
-    let insertScroll = insertScroll . '<' . i . '>'
+    let insertScroll = insertScroll . key
     let c += 1
   endwhile
 
-  execute 'inoremap <silent> <M-' . i . '> ' . insertScroll
-  execute 'nnoremap <silent> <M-' . i . '> ' . scAmt . '<' . i . '>'
-  execute 'vnoremap <silent> <M-' . i . '> ' . scAmt . '<' . i . '>'
+  execute 'inoremap <silent> <M-' . i . '> <Esc>' . insertScroll . 'i'
+  execute 'nnoremap <silent> <M-' . i . '> ' . scAmt . key
+  execute 'vnoremap <silent> <M-' . i . '> ' . scAmt . key
 endfor
 
-" ALT + p to activate fuzzy finder
+" ALT + p to activame fuzzy finder
 " CTRL + p is the default
 inoremap <silent> <M-p> <Esc>:CtrlP<CR>
 nnoremap <silent> <M-p> :CtrlP<CR>
