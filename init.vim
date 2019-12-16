@@ -14,15 +14,18 @@ Plug 'vim-airline/vim-airline'          " airline bar customization
 Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'airblade/vim-gitgutter'           " git gutter
 Plug 'joshdick/onedark.vim'             " color scheme
+Plug 'sheerun/vim-polyglot'             " improved syntax highlighting
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
+
 "Plug 'Xuyuanp/nerdtree-git-plugin'
 "Plug 'scrooloose/nerdcommenter'     " commenting shortcut
 
-"Plug 'sheerun/vim-polyglot' " consider using this for improved syntax highlighting
 
 "Plug 'scrooloose/syntastic'
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
+"
+" tab indentation
 
 call plug#end()
 
@@ -50,12 +53,6 @@ let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
 let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
-"
-"enable/disable nerdtree's statusline integration >
-"  let g:airline#extensions#nerdtree_status = 1
-"  <  default: 1
-"
-let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffers_label = ''
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -81,25 +78,25 @@ if has("windows") | hi Normal ctermbg=0 | endif
 " fuzzy finder ignore files/folders
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
-
-
-" close editor if file explorer is the only window open
-" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-" open file explorer automatically if no files are specified
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | silent NERDTree | endif
-" show hidden files in file explorer by default
-" let NERDTreeShowHidden = 0
+" don't show hidden files in file explorer by default
+let NERDTreeShowHidden = 0
 " close explorer on file open
-" let NERDTreeQuitOnOpen = 1
+let NERDTreeQuitOnOpen = 1
+" override default network explorer
+let NERDTreeHijackNetrw = 1
+" set window size
+let NERDTreeWinSize = 25
+" minimal ui
+let NERDTreeMinimalUI = 1
+" collapse folders if applicable
+let NERDTreeCascadeSingleChildDir = 1
 " let file explorer open directory by default
-" let NERDTreeChDirMode = 1
+let NERDTreeChDirMode = 1
 " specify which files/folders to ignore
-" let NERDTreeIgnore =  ['^.git$', '^node_modules$']
-" let NERDTreeIgnore += ['\.vim$[[dir]]', '\~$']
-" let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
-" let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
-
+let NERDTreeIgnore =  ['^.git$', '^node_modules$']
+let NERDTreeIgnore += ['\.vimsess$[[dir]]', '\~$']
+let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
+let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
 
 "
 " add spaces after comment delimiters
