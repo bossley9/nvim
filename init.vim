@@ -2,106 +2,59 @@
 " place in ~/.config/nvim/
 
 " ------------------------------------------------------------------------
-" starting from a clean slate
-" ------------------------------------------------------------------------
-
-" The steps in this section assume that you do not have Neovim, Vim Plug,
-" or any other plugins installed.
-
-" First, install Neovim:
-" $ sudo apt-get install neovim
-
-" Next, install Vim Plug for plugin support:
-" $ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-" To install Vim Plug plugins, open Neovim using the following command:
-" $ nvim
-" Then install plugins:
-" $ :PlugInstall
-" You will likely have to restart Neovim for changes to take effect.
-
-" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " plugins
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" start of plugins
 call plug#begin('~/.vim/plugged')
 
-" basic Vim settings
-Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-sensible'               " basic Vim settings
+Plug 'vim-airline/vim-airline'          " airline bar customization
+Plug 'tpope/vim-fugitive'               " git branch on airline
+Plug 'airblade/vim-gitgutter'           " git gutter
+Plug 'joshdick/onedark.vim'             " color scheme
+Plug 'sheerun/vim-polyglot'             " improved syntax highlighting
+Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
+Plug 'scrooloose/nerdtree'              " file explorer
+Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
+Plug 'scrooloose/nerdcommenter'         " commenting shortcut
+Plug 'jiangmiao/auto-pairs'             " auto pair inserting
+Plug 'kassio/neoterm'                   " better terminal management
 
-" bar customization
-Plug 'vim-airline/vim-airline'
-
-" closing a buffer without closing the window
-Plug 'rbgrouleff/bclose.vim'
-
-" color scheme
-Plug 'morhetz/gruvbox'
-
-" file explorer
-Plug 'scrooloose/nerdtree'
-
-" fuzzy finding
-Plug 'ctrlpvim/ctrlp.vim'
-
-" git gutter
-Plug 'airblade/vim-gitgutter'
-
-" commenting shortcut
-Plug 'scrooloose/nerdcommenter'
-
-" auto pair inserting
-Plug 'jiangmiao/auto-pairs'
-
-" initialize all plugins
 call plug#end()
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " plugin settings
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" setup tabline
-let g:airline#extensions#tabline#enabled = 1
-" differentiate current tab from others
-let g:airline#extensions#tabline#alt_sep = 1
+" airline bar icons
+if !exists('g:airline_symbols') | let g:airline_symbols = {} | endif
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.whitespace = ''
+" if no version control is detected
+let g:airline#extensions#branch#empty_message = '<untracked>'
+" airline bar
+let g:airline#extensions#default#layout = [
+      \ [ 'a', 'b', 'c' ],
+      \ [ 'x', 'y', 'z' ]
+      \ ]
+let g:airline_section_c = airline#section#create(['file'])
+let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
+let g:airline_section_y = airline#section#create(['filetype'])
+let g:airline_section_z = airline#section#create(['ffenc'])
+let g:airline_extensions = ['branch', 'tabline']
+let g:airline#extensions#tabline#buffers_label = ''
+" only show path in tab name if it contains another file with the same name
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 
-" change color scheme
-let g:gruvbox_bold = 1
-let g:gruvbox_italic = 1
-let g:gruvbox_underline = 1
-let g:gruvbox_undercurl = 1
-let g:gruvbox_contrast_dark = 'hard'
-set bg=dark
-colorscheme gruvbox
-" prevent bgcolor glitch by disabling the bgcolor entirely
-highlight Normal ctermbg=none
-autocmd VimEnter * hi Normal ctermbg=none
+" disable fugitive mappings
+let g:fugitive_no_maps = 1
 
-" close editor if file explorer is the only window open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-" open file explorer automatically if no files are specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | silent NERDTree | endif
-" show hidden files in file explorer by default
-let NERDTreeShowHidden = 0
-" close explorer on file open
-let NERDTreeQuitOnOpen = 1
-" let file explorer open directory by default
-let NERDTreeChDirMode = 1
-" specify which files/folders to ignore
-let NERDTreeIgnore =  ['^.git$', '^node_modules$']
-let NERDTreeIgnore += ['\.vim$[[dir]]', '\~$']
-let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
-let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
-
-" fuzzy finder ignore files/folders
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-
-" always show gutter
-" set signcolumn=yes does not work in all use cases
-autocmd BufEnter * sign define dummy
-autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 " git gutter symbols
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
@@ -111,142 +64,104 @@ let g:gitgutter_map_keys = 0
 " update gutters every x milliseconds
 set updatetime=300
 
+" change color scheme
+syntax on
+colorscheme onedark
+" prevent WSL bgcolor glitch by disabling entirely
+if has("windows") | hi Normal ctermbg=0 | endif
+
+" include more search results in fuzzy finder
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:15'
+" show hidden file results
+let g:ctrlp_show_hidden = 1
+" fuzzy finder ignore files/folders
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+" don't show hidden files in file explorer by default
+let NERDTreeShowHidden = 0
+" close explorer on file open
+let NERDTreeQuitOnOpen = 1
+" override default network explorer
+let NERDTreeHijackNetrw = 1
+" set window size
+let NERDTreeWinSize = 25
+" minimal ui
+let NERDTreeMinimalUI = 1
+" collapse folders if applicable
+let NERDTreeCascadeSingleChildDir = 1
+" let file explorer open directory by default
+let NERDTreeChDirMode = 1
+" specify which files/folders to ignore
+let NERDTreeIgnore =  ['^.git$', '^node_modules$']
+let NERDTreeIgnore += ['\.vimsess$[[dir]]', '\~$']
+let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
+let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
+
+" file explorer git icons
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "~~",
+    \ "Staged"    : "?",
+    \ "Untracked" : "++",
+    \ "Renamed"   : "?",
+    \ "Unmerged"  : "?",
+    \ "Deleted"   : "--",
+    \ "Dirty"     : "?",
+    \ "Clean"     : "?",
+    \ "Ignored"   : "?",
+    \ "Unknown"   : "?"
+    \ }
+
 " add spaces after comment delimiters
 let g:NERDSpaceDelims = 1
 
-" ------------------------------------------------------------------------
-" keyboard shortcuts
-" ------------------------------------------------------------------------
-let mapleader = "-"
+" change autopairs hotkey to not conflict with commenter
+let g:AutoPairsShortcutToggle = '<Space>cfd' " this is just a random hotkey I'll never press
 
-" CTRL + q to close and save current session
-inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
-nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-
-" CTRL + ` to open terminal in a new tab
-
-tnoremap <silent> <Esc> <C-\><C-n>
-inoremap <M-`> <Esc>:split<bar>resize 10<bar>terminal<CR>i
-nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-
-" SHIFT + <Up> or
-" SHIFT + <Down> to scroll faster vertically
-
-nnoremap <silent> <S-Up> 5<Up>
-nnoremap <silent> <S-Down> 5<Down>
-vnoremap <silent> <S-Up> 5<Up>
-vnoremap <silent> <S-Down> 5<Down>
-
-" ALT + <Up> or
-" ALT + <Down> to line swap
-
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-Down> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-nnoremap <A-Up> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-Down> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-inoremap <A-Up> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-Down> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-vnoremap <A-Up> :m '<-2<CR>gv=gv
-
-" CTRL + b toggles the file explorer
-
-map <C-b> :NERDTreeToggle<CR>
-
-" CTRL + h toggle hidden files in the file explorer 
-
-let NERDTreeMapToggleHidden='<C-h>'
-
-" commenter functions (for some reason vim sees <C-/> as <C-_>)
-" CTRL + / to comment/uncomment line(s)
-
-imap <C-_> <Esc><leader>c<Space>i
-nmap <C-_> <leader>c<Space>
-vmap <C-_> <leader>c<Space>
-
-" 'tab' navigation using ALT and arrow keys
-" ALT + t opens a new tab
-" ALT + w closes the current tab
-" ALT + <Right> and
-" ALT + <Left> switch tabs 
-
-inoremap <M-t> <Esc>:enew<CR>i
-nnoremap <M-t> <Esc>:enew<CR>
-vnoremap <M-t> <Esc>:enew<CR>
-
-inoremap <M-w> <Esc>:bp<bar>sp<bar>bn<bar>bd<CR>i
-nnoremap <M-w> <Esc>:bp<bar>sp<bar>bn<bar>bd<CR>
-vnoremap <M-w> <Esc>:bp<bar>sp<bar>bn<bar>bd<CR>
-
-imap <M-l> <Esc>:bn<CR>i
-imap <M-Right> <Esc>:bn<CR>i
-nmap <M-l> :bn<CR>
-nmap <M-Right> :bn<CR>
-vmap <M-l> :bn<CR>
-vmap <M-Right> :bn<CR>
-
-imap <M-h> <Esc>:bp<CR>i
-imap <M-Left> <Esc>:bp<CR>i
-nmap <M-h> :bp<CR>
-nmap <M-Left> :bp<CR>
-vmap <M-h> :bp<CR>
-vmap <M-Left> :bp<CR>
+" set terminal size
+let g:neoterm_size = 10
+" auto open terminal in insert mode
+let g:neoterm_autoinsert = 1
+" how terminal should open
+let g:neoterm_default_mod = 'botright'
+" scroll to the end automatically
+let g:neoterm_autoscroll = 1
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " session management
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-fu! SaveSession()
-  call mkdir(getcwd() . '/.vim', 'p') 
-  execute 'mksession! ' . getcwd() . '/.vim/session'
-endfunction
+" fu! SaveSession()
+" call mkdir(getcwd() . '/.vim', 'p')
+" execute 'mksession! ' . getcwd() . '/.vim/session'
+" endfunction
 
-fu! RestoreSession()
-  if filereadable(getcwd() . '/.vim/session')
-    execute 'so ' . getcwd() . '/.vim/session'
-    " if bufexists(1)
-      " for l in range(1, bufnr('$'))
-        " if bufwinnr(l) == -1
-          " exec 'sbuffer ' . l
-        " endif
-      " endfor
-    " endif
-  endif
-endfunction
-
-"autocmd VimLeavePre * call SaveSession()
-autocmd VimEnter * nested call RestoreSession()
+" fu! RestoreSession()
+" if filereadable(getcwd() . '/.vim/session')
+" execute 'so ' . getcwd() . '/.vim/session'
+" if bufexists(1)
+" for l in range(1, bufnr('$'))
+" if bufwinnr(l) == -1
+" exec 'sbuffer ' . l
+" endif
+" endfor
+" endif
+" endif
+" endfunction
 
 " ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " basic settings
+" -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" scrollback history
-set history=1000
+" line numbering
+set number
 
-" enable filetype plugins
-filetype plugin on " needed for nerdcommenter to work
-filetype indent on
-
-" autoread when a file is changed from the outside
-set autoread
-
-" show current position
-set ruler
-
-" ignore case when searching and be smart about it
+" only search by case when using capital letters
 set ignorecase
 set smartcase
-
-" highlight search
-set hlsearch
-set incsearch
 
 " turn magic on for regex
 set magic
@@ -254,35 +169,237 @@ set magic
 " show matching brackets
 set showmatch
 
-" blink cursor this many tenths of a seconds
+" blink cursor x tenths of a seconds
 set mat=2
 
-" use spaces instead of tabs and be smart
+" use spaces instead of tabs
 set expandtab
-set smarttab
 
-" one tab is this many spaces
+" one tab is x many spaces
 set shiftwidth=2
 set tabstop=2
 
-" linebreak at 500 characters
-set lbr
-set tw=500
-
-" line numbering
-set number
-
-" number of lines to see above and below cursor at all times 
+" x number of lines to see above and below cursor at all times
 set scrolloff=5
 
-" key compatibility with remote shells and such
+" enable for various plugin compatibility
 set nocompatible
+
+" enable incremental search (search highlights while typing)
+set incsearch
+set hlsearch
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" gui display
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" window title
+set title
+auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
+
+" highlight line cursor rests on
+set cursorline
+highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a
 
+" on quit, prompt about unsaved buffers
+" set confirm
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" keyboard shortcuts
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" fast navigation
+" SHIFT + h
+" SHIFT + l
+" SHIFT + j
+" SHIFT + k
+
+nnoremap <S-h> b
+vnoremap <S-h> b
+
+nnoremap <S-l> w
+vnoremap <S-l> w
+
+nnoremap <S-j> <S-Down>
+vnoremap <S-j> <S-Down>
+
+nnoremap <S-k> <S-Up>
+vnoremap <S-k> <S-Up>
+
+" tab navigation
+" ALT + t opens a new tab
+" ALT + w closes the current tab
+" ALT + <Right> and
+" ALT + <Left> switch tabs
+" ALT + h or
+" ALT + l alternate mappings
+" ALT + e switch/split windows
+" :new opens tabs vertically
+
+inoremap <silent> <M-t> <Esc>:enew<CR>i
+nnoremap <silent> <M-t> :enew<CR> 
+vnoremap <silent> <M-t> :enew<CR> 
+
+fu! DelBuff()
+  " seems like buffwinnr is inverted
+  if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
+    if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
+      execute 'bd#'
+    endif
+  endif
+endfunction
+
+fu! SwBuff(dir) " switch buffer
+  if a:dir > 0 | bn | else | bp | endif
+
+  while &buftype ==# 'terminal'
+    if a:dir > 0 | bn | else | bp | endif
+  endwhile
+endfunction
+
+inoremap <silent> <M-w> <Esc>:bp<bar>call DelBuff()<CR>i
+nnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
+vnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
+
+for i in ['l', 'Right']
+  execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(1)<CR>i'
+  execute 'nnoremap <silent> <M-' . i . '> :call SwBuff(1)<CR>'
+  execute 'vnoremap <silent> <M-' . i . '> :call SwBuff(1)<CR>'
+endfor
+
+for i in ['h', 'Left']
+  execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(-1)<CR>i'
+  execute 'nnoremap <silent> <M-' . i . '> :call SwBuff(-1)<CR>'
+  execute 'vnoremap <silent> <M-' . i . '> :call SwBuff(-1)<CR>'
+endfor
+
+" always split windows vertically
+cabbrev new vsplit
+set splitright
+
+nnoremap <M-e> <C-w>
+vnoremap <M-e> <C-w>
+
+" ALT + <Up>
+" ALT + k
+" ALT + <Down> 
+" ALT + j to scroll faster vertically
+
+let scAmt = 5
+for i in ['Up', 'k', 'Down', 'j']
+  let key = i
+  if i ==# 'Up' || i ==# 'Down'
+    let key = '<' . key . '>'
+  endif
+
+  let insertScroll = ''
+  let c = 0
+
+  while c <= scAmt
+    let insertScroll = insertScroll . key
+    let c += 1
+  endwhile
+
+  execute 'inoremap <silent> <M-' . i . '> <Esc>' . insertScroll . 'i'
+  execute 'nnoremap <silent> <M-' . i . '> ' . scAmt . key
+  execute 'vnoremap <silent> <M-' . i . '> ' . scAmt . key
+endfor
+
+" ALT + p to activame fuzzy finder
+" CTRL + p is the default
+
+inoremap <silent> <M-p> <Esc>:CtrlP<CR>
+nnoremap <silent> <M-p> :CtrlP<CR>
+vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
+
+" CTRL + <Up> or
+" CTRL + <Down> to line swap
+" CTRL + k or
+" CTRL + j alternate mappings
+
+for i in ['Up', 'k']
+  execute "inoremap <silent> <C-" . i . "> <Esc>:m .-2<CR>==gi"
+  execute "nnoremap <silent> <C-" . i . "> :m .-2<CR>=="
+  execute "vnoremap <silent> <C-" . i . "> :m '<-2<CR>gv=gv"
+endfor
+
+for i in ['Down', 'j']
+  execute "inoremap <silent> <C-" . i . "> <Esc>:m .+1<CR>==gi"
+  execute "nnoremap <silent> <C-" . i . "> :m .+1<CR>=="
+  execute "vnoremap <silent> <C-" . i . "> :m '>+1<CR>gv=gv"
+endfor
+
+" ALT + b toggles the file explorer
+" ALT + h toggle displaying hidden files
+
+map <M-b> :NERDTreeToggle<CR>
+let NERDTreeMapToggleHidden='<M-h>'
+
+" ALT + / to comment/uncomment line(s) (will not work with non-recursive mappings)
+
+imap <M-/> <Esc><leader>c<Space>i
+nmap <M-/> <leader>c<Space>
+vmap <M-/> <leader>c<Space>
+
+" SHIFT + TAB to unindent
+inoremap <S-Tab> <C-d>
+nnoremap <S-Tab> <<
+vnoremap <S-Tab> <Esc><<
+
+" ALT + f to search
+" ESC + ESC to remove highlight
+
+inoremap <silent> <M-f> <Esc>/
+nnoremap <silent> <M-f> /
+vnoremap <silent> <M-f> /
+
+inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
+nnoremap <Esc><Esc> :silent! nohls<CR>
+vnoremap <Esc><Esc> :silent! nohls<CR>
+
+" ALT + ` to toggle terminal window
+
+inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+nnoremap <M-`> :Ttoggle<CR>
+vnoremap <M-`> :Ttoggle<CR>
+tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+
+tnoremap <silent> <Esc> <C-\><C-n>
+
+" CTRL + q to close and save current session
+" inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
+" nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
+" vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" auto commands (events)
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" always show gutter (set signcolumn=yes does not work in all use cases)
+autocmd BufEnter * sign define dummy
+autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+
+" open file explorer on startup if no files were specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" don't open file explorer if session is being restored
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
+" close file explorer if it is the last window open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-" on quit, prompt about unsaved buffers
-set confirm
+" autocmd VimLeave * call SaveSession()
+" autocmd VimEnter * nested call RestoreSession()
+
