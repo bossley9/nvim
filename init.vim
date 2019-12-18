@@ -200,8 +200,8 @@ set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 
 " highlight line cursor rests on
-set cursorline
-highlight CursorLine ctermbg=234
+" set cursorline
+" highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a

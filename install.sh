@@ -19,8 +19,7 @@ if ! hash nvim 2>/dev/null; then
   sudo apt-get install neovim
 fi
 
-
-echo -e "${BLE}installing vim-plug...${NC} (you may need to press enter to continue)"
+echo -e "${BLE}installing vim-plug...${NC}"
 curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 

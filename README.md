@@ -6,16 +6,13 @@ A modern Neovim configuration
 2. [About](#about)
 
 ## Installation/Setup <a name="setup"></a>
-1. Clone this repository.
-
-2. Run the `install.sh` script file.
+1. Run the `install.sh` script file.
     This will install the latest version of [`Neovim`](https://neovim.io/) and [`Vim-Plug`](https://github.com/junegunn/vim-plug).
     This will also install all plugins and update any existing nvim settings to this configuration.
     ```bash
-    ./install.sh
+    curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/install.sh | bash 
     ```
-    If future updates are made to this nvim configuration, this script is designed to pull the latest updates and install them automatically.
-    To get the latest updates, run this script again.
+    If future updates are made to this nvim configuration, rerun this script to pull the latest updates and install them automatically.
 
 3. Run `nvim` to open any file. Enjoy!
 
