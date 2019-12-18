@@ -20,8 +20,7 @@ Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
 Plug 'jiangmiao/auto-pairs'             " auto pair inserting
-
-" tab indentation
+Plug 'kassio/neoterm'                   " better terminal management
 
 call plug#end()
 
@@ -115,6 +114,18 @@ let g:NERDTreeIndicatorMapCustom = {
 " add spaces after comment delimiters
 let g:NERDSpaceDelims = 1
 
+" change autopairs hotkey to not conflict with commenter
+let g:AutoPairsShortcutToggle = '<Space>cfd' " this is just a random hotkey I'll never press
+
+" set terminal size
+let g:neoterm_size = 10
+" auto open terminal in insert mode
+let g:neoterm_autoinsert = 1
+" how terminal should open
+let g:neoterm_default_mod = 'botright'
+" scroll to the end automatically
+let g:neoterm_autoscroll = 1
+
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
 " session management
@@ -178,9 +189,19 @@ set nocompatible
 set incsearch
 set hlsearch
 
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" gui display
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
 " window title
 set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
+
+" highlight line cursor rests on
+set cursorline
+highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a
@@ -235,20 +256,28 @@ fu! DelBuff()
   endif
 endfunction
 
+fu! SwBuff(dir) " switch buffer
+  if a:dir > 0 | bn | else | bp | endif
+
+  while &buftype ==# 'terminal'
+    if a:dir > 0 | bn | else | bp | endif
+  endwhile
+endfunction
+
 inoremap <silent> <M-w> <Esc>:bp<bar>call DelBuff()<CR>i
 nnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
 vnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
 
 for i in ['l', 'Right']
-  execute 'inoremap <silent> <M-' . i . '> <Esc>:bn<CR>i'
-  execute 'nnoremap <silent> <M-' . i . '> :bn<CR>'
-  execute 'vnoremap <silent> <M-' . i . '> :bn<CR>'
+  execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(1)<CR>i'
+  execute 'nnoremap <silent> <M-' . i . '> :call SwBuff(1)<CR>'
+  execute 'vnoremap <silent> <M-' . i . '> :call SwBuff(1)<CR>'
 endfor
 
 for i in ['h', 'Left']
-  execute 'inoremap <silent> <M-' . i . '> <Esc>:bp<CR>i'
-  execute 'nnoremap <silent> <M-' . i . '> :bp<CR>'
-  execute 'vnoremap <silent> <M-' . i . '> :bp<CR>'
+  execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(-1)<CR>i'
+  execute 'nnoremap <silent> <M-' . i . '> :call SwBuff(-1)<CR>'
+  execute 'vnoremap <silent> <M-' . i . '> :call SwBuff(-1)<CR>'
 endfor
 
 " always split windows vertically
@@ -295,13 +324,17 @@ vnoremap <silent> <M-p> <Esc>:CtrlP<CR>
 " CTRL + k or
 " CTRL + j alternate mappings
 
-inoremap <silent> <C-j> <Esc>:m .+1<CR>==gi
-nnoremap <silent> <C-j> :m .+1<CR>==
-vnoremap <silent> <C-j> :m '>+1<CR>gv=gv
+for i in ['Up', 'k']
+  execute "inoremap <silent> <C-" . i . "> <Esc>:m .-2<CR>==gi"
+  execute "nnoremap <silent> <C-" . i . "> :m .-2<CR>=="
+  execute "vnoremap <silent> <C-" . i . "> :m '<-2<CR>gv=gv"
+endfor
 
-inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
-nnoremap <silent> <C-k> :m .-2<CR>==
-vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
+for i in ['Down', 'j']
+  execute "inoremap <silent> <C-" . i . "> <Esc>:m .+1<CR>==gi"
+  execute "nnoremap <silent> <C-" . i . "> :m .+1<CR>=="
+  execute "vnoremap <silent> <C-" . i . "> :m '>+1<CR>gv=gv"
+endfor
 
 " ALT + b toggles the file explorer
 " ALT + h toggle displaying hidden files
@@ -309,11 +342,16 @@ vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 map <M-b> :NERDTreeToggle<CR>
 let NERDTreeMapToggleHidden='<M-h>'
 
-" CTRL + / to comment/uncomment line(s) (cannot do non-recursive mappings)
+" ALT + / to comment/uncomment line(s) (will not work with non-recursive mappings)
 
-imap <C-_> <Esc><leader>c<Space>i
-nmap <C-_> <leader>c<Space>
-vmap <C-_> <leader>c<Space>
+imap <M-/> <Esc><leader>c<Space>i
+nmap <M-/> <leader>c<Space>
+vmap <M-/> <leader>c<Space>
+
+" SHIFT + TAB to unindent
+inoremap <S-Tab> <C-d>
+nnoremap <S-Tab> <<
+vnoremap <S-Tab> <Esc><<
 
 " ALT + f to search
 " ESC + ESC to remove highlight
@@ -326,17 +364,19 @@ inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
 nnoremap <Esc><Esc> :silent! nohls<CR>
 vnoremap <Esc><Esc> :silent! nohls<CR>
 
+" ALT + ` to toggle terminal window
+
+inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+nnoremap <M-`> :Ttoggle<CR>
+vnoremap <M-`> :Ttoggle<CR>
+tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+
+tnoremap <silent> <Esc> <C-\><C-n>
+
 " CTRL + q to close and save current session
 " inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
 " nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
 " vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-
-" CTRL + ` to open terminal in a new tab
-
-" tnoremap <silent> <Esc> <C-\><C-n>
-" inoremap <M-`> <Esc>:split<bar>resize 10<bar>terminal<CR>i
-" nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-" vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
