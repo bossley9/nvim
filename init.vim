@@ -19,6 +19,7 @@ Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
+Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 Plug 'kassio/neoterm'                   " better terminal management
 
 call plug#end()
@@ -112,6 +113,9 @@ let g:NERDTreeIndicatorMapCustom = {
 
 " add spaces after comment delimiters
 let g:NERDSpaceDelims = 1
+
+" change autopairs hotkey to not conflict with commenter
+let g:AutoPairsShortcutToggle = '<Space>cfd' " this is just a random hotkey I'll never press
 
 " set terminal size
 let g:neoterm_size = 10
@@ -353,15 +357,6 @@ endfor
 
 map <M-b> :NERDTreeToggle<CR>
 let NERDTreeMapToggleHidden='<M-h>'
-
-" auto pair inserting
-inoremap ( ()<Left>
-inoremap { {}<Left>
-inoremap " ""<Left>
-inoremap ' ''<Left>
-inoremap [ []<Left>
-inoremap < <><Left>
-inoremap ` ``<Left>
 
 " ALT + / to comment/uncomment line(s) (will not work with non-recursive mappings)
 
