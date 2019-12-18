@@ -56,9 +56,7 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:fugitive_no_maps = 1
 
 " signcolumn should always display
-if has('signcolumn')
-  set signcolumn='yes'
-endif
+if has('signcolumn') | set signcolumn='yes' | endif
 " git gutter symbols
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
@@ -220,14 +218,14 @@ set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 
 " highlight line cursor rests on
-" set cursorline
-" highlight CursorLine ctermbg=None
+set cursorline
+highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a
 
 " on quit, prompt about unsaved buffers
-" set confirm
+set confirm
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
