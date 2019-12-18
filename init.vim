@@ -19,7 +19,6 @@ Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
-Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 Plug 'kassio/neoterm'                   " better terminal management
 
 call plug#end()
@@ -93,7 +92,7 @@ let NERDTreeCascadeSingleChildDir = 1
 let NERDTreeChDirMode = 1
 " specify which files/folders to ignore
 let NERDTreeIgnore =  ['^.git$', '^node_modules$']
-let NERDTreeIgnore += ['\.vimsess$[[dir]]', '\~$']
+let NERDTreeIgnore += ['\.vim$[[dir]]', '\~$']
 let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
 let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
 
@@ -114,9 +113,6 @@ let g:NERDTreeIndicatorMapCustom = {
 " add spaces after comment delimiters
 let g:NERDSpaceDelims = 1
 
-" change autopairs hotkey to not conflict with commenter
-let g:AutoPairsShortcutToggle = '<Space>cfd' " this is just a random hotkey I'll never press
-
 " set terminal size
 let g:neoterm_size = 10
 " auto open terminal in insert mode
@@ -132,29 +128,42 @@ let g:neoterm_autoscroll = 1
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" fu! SaveSession()
-" call mkdir(getcwd() . '/.vim', 'p')
-" execute 'mksession! ' . getcwd() . '/.vim/session'
-" endfunction
+fu! SaveSession()
+  call mkdir(getcwd() . '/.vim', 'p')
+  execute 'mksession! ' . getcwd() . '/.vim/session'
+  execute 'mksession! ~/.vim/session_latest'
+endfunction
 
-" fu! RestoreSession()
-" if filereadable(getcwd() . '/.vim/session')
-" execute 'so ' . getcwd() . '/.vim/session'
-" if bufexists(1)
-" for l in range(1, bufnr('$'))
-" if bufwinnr(l) == -1
-" exec 'sbuffer ' . l
-" endif
-" endfor
-" endif
-" endif
-" endfunction
+fu! RestoreBuff()
+  if bufexists(1)
+    for l in range(1, bufnr('$'))
+      if bufwinnr(l) == -1
+        exec 'sbuffer ' . l
+      endif
+    endfor
+  endif
+endfunction
+
+fu! RestoreSession()
+  " if current directory session exists
+  if filereadable(getcwd() . '/.vim/session')
+    execute 'so ' . getcwd() . '/.vim/session'
+      call RestoreBuff()
+  " if latest session exists
+  elseif filereadable('~/.vim/session_latest')
+    execute 'so ~/.vim/session_latest'
+      call RestoreBuff()
+  endif
+endfunction
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
 " basic settings
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
+
+" disable swap file creation due to manual session saving
+set noswapfile
 
 " line numbering
 set number
@@ -201,7 +210,7 @@ auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 
 " highlight line cursor rests on
 " set cursorline
-" highlight CursorLine ctermbg=234
+" highlight CursorLine ctermbg=None
 
 " mouse support
 set mouse=a
@@ -342,6 +351,15 @@ endfor
 map <M-b> :NERDTreeToggle<CR>
 let NERDTreeMapToggleHidden='<M-h>'
 
+" auto pair inserting
+inoremap ( ()<Left>
+inoremap { {}<Left>
+inoremap " ""<Left>
+inoremap ' ''<Left>
+inoremap [ []<Left>
+inoremap < <><Left>
+inoremap ` ``<Left>
+
 " ALT + / to comment/uncomment line(s) (will not work with non-recursive mappings)
 
 imap <M-/> <Esc><leader>c<Space>i
@@ -373,10 +391,10 @@ tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 
 tnoremap <silent> <Esc> <C-\><C-n>
 
-" CTRL + q to close and save current session
-" inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
-" nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-" vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
+" ALT + q to quit
+inoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
+nnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
+vnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
@@ -400,6 +418,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-" autocmd VimLeave * call SaveSession()
-" autocmd VimEnter * nested call RestoreSession()
+autocmd VimLeavePre * call SaveSession()
+autocmd VimEnter * nested call RestoreSession()
 
