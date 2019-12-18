@@ -19,9 +19,8 @@ Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
+Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 
-"Plug 'jiangmiao/auto-pairs'         " auto pair inserting
-"
 " tab indentation
 
 call plug#end()
@@ -175,6 +174,10 @@ set scrolloff=5
 " enable for various plugin compatibility
 set nocompatible
 
+" enable incremental search (search highlights while typing)
+set incsearch
+set hlsearch
+
 " window title
 set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
@@ -300,18 +303,6 @@ inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
 nnoremap <silent> <C-k> :m .-2<CR>==
 vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 
-" CTRL + q to close and save current session
-" inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
-" nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-" vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
-
-" CTRL + ` to open terminal in a new tab
-
-" tnoremap <silent> <Esc> <C-\><C-n>
-" inoremap <M-`> <Esc>:split<bar>resize 10<bar>terminal<CR>i
-" nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-" vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
-
 " ALT + b toggles the file explorer
 " ALT + h toggle displaying hidden files
 
@@ -324,8 +315,28 @@ imap <C-_> <Esc><leader>c<Space>i
 nmap <C-_> <leader>c<Space>
 vmap <C-_> <leader>c<Space>
 
-" CTRL + f to search
-"nnoremap <silent> <C-f> /
+" ALT + f to search
+" ESC + ESC to remove highlight
+
+inoremap <silent> <M-f> <Esc>/
+nnoremap <silent> <M-f> /
+vnoremap <silent> <M-f> /
+
+inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
+nnoremap <Esc><Esc> :silent! nohls<CR>
+vnoremap <Esc><Esc> :silent! nohls<CR>
+
+" CTRL + q to close and save current session
+" inoremap <C-q> <Esc>:call SaveSession()<CR>:qa<CR>
+" nnoremap <C-q> :call SaveSession()<CR>:qa<CR>
+" vnoremap <C-q> :call SaveSession()<CR>:qa<CR>
+
+" CTRL + ` to open terminal in a new tab
+
+" tnoremap <silent> <Esc> <C-\><C-n>
+" inoremap <M-`> <Esc>:split<bar>resize 10<bar>terminal<CR>i
+" nnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
+" vnoremap <M-`> :split<bar>resize 10<bar>terminal<CR>i
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
