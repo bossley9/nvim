@@ -115,7 +115,7 @@ let g:NERDTreeIndicatorMapCustom = {
 let g:NERDSpaceDelims = 1
 
 " change autopairs hotkey to not conflict with commenter
-let g:AutoPairsShortcutToggle = '<Space>cfd' " this is just a random hotkey I'll never press
+let g:AutoPairsShortcutToggle = '<leader>cfd' " this is just a random hotkey I'll never press
 
 " set terminal size
 let g:neoterm_size = 10
