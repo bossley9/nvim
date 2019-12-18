@@ -134,9 +134,9 @@ fu! SaveSession()
   execute 'mksession! ~/.vim/session_latest'
 endfunction
 
-fu! RestoreBuff()
+fu! RestoreBuff(lastBuf)
   if bufexists(1)
-    for l in range(1, bufnr('$'))
+    for l in range(1, a:lastBuf)
       if bufwinnr(l) == -1
         exec 'sbuffer ' . l
       endif
@@ -145,14 +145,17 @@ fu! RestoreBuff()
 endfunction
 
 fu! RestoreSession()
-  " if current directory session exists
-  if filereadable(getcwd() . '/.vim/session')
-    execute 'so ' . getcwd() . '/.vim/session'
-      call RestoreBuff()
-  " if latest session exists
-  elseif filereadable('~/.vim/session_latest')
-    execute 'so ~/.vim/session_latest'
-      call RestoreBuff()
+  " only restore if called with no arguments
+  if eval('@%') == ''
+    " if current directory session exists
+    if filereadable(getcwd() . '/.vim/session')
+      execute 'so ' . getcwd() . '/.vim/session'
+        call RestoreBuff(bufnr('$'))
+    " if latest session exists
+    elseif filereadable('~/.vim/session_latest')
+      execute 'so ~/.vim/session_latest'
+        call RestoreBuff(bufnr('$'))
+    endif
   endif
 endfunction
 
@@ -269,7 +272,7 @@ fu! SwBuff(dir) " switch buffer
   if a:dir > 0 | bn | else | bp | endif
 
   while &buftype ==# 'terminal'
-    if a:dir > 0 | bn | else | bp | endif
+   if a:dir > 0 | bn | else | bp | endif
   endwhile
 endfunction
 
