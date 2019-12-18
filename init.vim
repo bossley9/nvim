@@ -55,6 +55,10 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " disable fugitive mappings
 let g:fugitive_no_maps = 1
 
+" signcolumn should always display
+if has('signcolumn')
+  set signcolumn='yes'
+endif
 " git gutter symbols
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
