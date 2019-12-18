@@ -17,12 +17,9 @@ Plug 'joshdick/onedark.vim'             " color scheme
 Plug 'sheerun/vim-polyglot'             " improved syntax highlighting
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
+Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
+Plug 'scrooloose/nerdcommenter'         " commenting shortcut
 
-"Plug 'Xuyuanp/nerdtree-git-plugin'
-"Plug 'scrooloose/nerdcommenter'     " commenting shortcut
-
-
-"Plug 'scrooloose/syntastic'
 "Plug 'jiangmiao/auto-pairs'         " auto pair inserting
 "
 " tab indentation
@@ -75,6 +72,10 @@ colorscheme onedark
 " prevent WSL bgcolor glitch by disabling entirely
 if has("windows") | hi Normal ctermbg=0 | endif
 
+" include more search results in fuzzy finder
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:15'
+" show hidden file results
+let g:ctrlp_show_hidden = 1
 " fuzzy finder ignore files/folders
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
@@ -98,9 +99,22 @@ let NERDTreeIgnore += ['\.vimsess$[[dir]]', '\~$']
 let NERDTreeIgnore += ['\.d$[[dir]]', '\.o$[[file]]', '\.dat$[[file]]', '\.ini$[[file]]']
 let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
 
-"
+" file explorer git icons
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "~~",
+    \ "Staged"    : "?",
+    \ "Untracked" : "++",
+    \ "Renamed"   : "?",
+    \ "Unmerged"  : "?",
+    \ "Deleted"   : "--",
+    \ "Dirty"     : "?",
+    \ "Clean"     : "?",
+    \ "Ignored"   : "?",
+    \ "Unknown"   : "?"
+    \ }
+
 " add spaces after comment delimiters
-" let g:NERDSpaceDelims = 1
+let g:NERDSpaceDelims = 1
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
@@ -168,9 +182,6 @@ auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 " mouse support
 set mouse=a
 
-" prevent comments from continuing to new lines
-" autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-
 " on quit, prompt about unsaved buffers
 " set confirm
 
@@ -205,7 +216,8 @@ vnoremap <S-k> <S-Up>
 " ALT + <Left> switch tabs
 " ALT + h or
 " ALT + l alternate mappings
-" ALT + s switch/split windows
+" ALT + e switch/split windows
+" :new opens tabs vertically
 
 inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
@@ -237,31 +249,21 @@ for i in ['h', 'Left']
 endfor
 
 " always split windows vertically
-"set splitright
-"autocmd FileType help,* wincmd L
-"set diffopt+=vertical
-"silent! set splitvertical
-"if v:errmsg != ''
-"  cabbrev split vert split
-"  cabbrev hsplit split
-"  cabbrev help vert help
-"  "noremap <C-w>] :vert botright wincmd ]<CR>
-"  "noremap <C-w><C-]> :vert botright wincmd ]<CR>
-"  noremap <M-s>] :vert botright wincmd ]<CR>
-"  noremap <M-s><C-]> :vert botright wincmd ]<CR>
-"else
-"  cabbrev hsplit hor split
-"endif
+cabbrev new vsplit
+set splitright
 
-noremap <M-s> <C-w>
+nnoremap <M-e> <C-w>
+vnoremap <M-e> <C-w>
 
-" ALT + <Up> or
-" ALT + <Down> to scroll faster vertically
+" ALT + <Up>
+" ALT + k
+" ALT + <Down> 
+" ALT + j to scroll faster vertically
 
 let scAmt = 5
 for i in ['Up', 'k', 'Down', 'j']
   let key = i
-  if i == 'Up' || i == 'Down'
+  if i ==# 'Up' || i ==# 'Down'
     let key = '<' . key . '>'
   endif
 
@@ -316,12 +318,11 @@ vnoremap <silent> <C-k> :m '<-2<CR>gv=gv
 map <M-b> :NERDTreeToggle<CR>
 let NERDTreeMapToggleHidden='<M-h>'
 
-" commenter functions (for some reason vim sees <C-/> as <C-_>)
-" CTRL + / to comment/uncomment line(s)
+" CTRL + / to comment/uncomment line(s) (cannot do non-recursive mappings)
 
-" imap <C-_> <Esc><leader>c<Space>i
-" nmap <C-_> <leader>c<Space>
-" vmap <C-_> <leader>c<Space>
+imap <C-_> <Esc><leader>c<Space>i
+nmap <C-_> <leader>c<Space>
+vmap <C-_> <leader>c<Space>
 
 " CTRL + f to search
 "nnoremap <silent> <C-f> /
@@ -332,8 +333,7 @@ let NERDTreeMapToggleHidden='<M-h>'
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" always show gutter
-" (set signcolumn=yes does not work in all use cases)
+" always show gutter (set signcolumn=yes does not work in all use cases)
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
@@ -346,8 +346,9 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == ""
 " close file explorer if it is the last window open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
+" prevent comments from continuing to new lines
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
 " autocmd VimLeave * call SaveSession()
 " autocmd VimEnter * nested call RestoreSession()
-
-" AirlineModeChanged " when mode is changed
 
