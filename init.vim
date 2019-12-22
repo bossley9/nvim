@@ -20,7 +20,6 @@ Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
 Plug 'jiangmiao/auto-pairs'             " auto pair inserting
-Plug 'kassio/neoterm'                   " better terminal management
 
 call plug#end()
 
@@ -165,6 +164,55 @@ endfunction
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
+" terminal management
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+let g:termState = 0
+
+fu! Ttoggle()
+  if g:termState == 0   " terminal is not open
+
+    " if terminal buffer already exists
+    let l:termBuffNr = -1
+    for b in range(1, bufnr('$'))
+      if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
+        let l:termBuffNr = b
+        break
+      endif
+    endfor
+
+    belowright split
+    resize 10
+    enew
+
+    if l:termBuffNr >= 0
+      execute 'b' . l:termBuffNr
+    else
+      call termopen('bash', {'on_exit': 'TExit'})
+    endif
+
+    startinsert
+
+  else                  " terminal is open
+
+    normal <C-v><C-\><C-n>
+    hide
+
+  endif
+  let g:termState = ! g:termState
+endfunction
+
+
+fu! TExit(job_id, code, event) dict
+  " if a:code == 0
+  let g:termState = 0
+  close
+  " endif
+endfun
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " basic settings
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
@@ -216,8 +264,8 @@ set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 
 " highlight line cursor rests on
-" set cursorline
-" highlight CursorLine ctermbg=None
+set cursorline
+highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a
@@ -382,6 +430,8 @@ vnoremap <Esc><Esc> :silent! nohls<CR>
 
 " ALT + ` to toggle terminal window
 
+command Ttoggle call Ttoggle()
+
 inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 nnoremap <M-`> :Ttoggle<CR>
 vnoremap <M-`> :Ttoggle<CR>
@@ -416,6 +466,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
+" saving session
 autocmd VimLeavePre * call SaveSession()
 autocmd VimEnter * nested call RestoreSession()
 
