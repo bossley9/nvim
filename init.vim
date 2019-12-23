@@ -171,9 +171,7 @@ endfunction
 let s:termState = 0
 
 fu! Ttoggle()
-  if s:termState == 0   " terminal is not open
-
-    " if terminal buffer already exists
+  if s:termState == 0     " terminal is not open
     let s:termBuffNr = -1
     for b in range(1, bufnr('$'))
       if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
@@ -184,30 +182,26 @@ fu! Ttoggle()
 
     belowright split
     resize 10
-    enew
 
-    if s:termBuffNr >= 0
+    if s:termBuffNr >= 0  " if terminal buffer already exists
       execute 'b' . s:termBuffNr
     else
+      enew
       call termopen('bash', {'on_exit': 'TExit'})
     endif
 
     startinsert
-
-  else                  " terminal is open
-
+  else                    " terminal is open
     normal <C-v><C-\><C-n>
     hide
-
   endif
   let s:termState = ! s:termState
 endfunction
 
-
 fu! TExit(job_id, code, event) dict
   if a:code == 0
     let s:termState = 0
-    close
+    if winnr('$') ==# 1 | qa! | else | close | endif
   endif
 endfun
 
@@ -312,42 +306,39 @@ nnoremap <silent> <M-t> :enew<CR>
 vnoremap <silent> <M-t> :enew<CR> 
 
 fu! DelBuff() " deleting buffers
+  call SwBuff(-1)
   " seems like buffwinnr is inverted
   if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
     if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
-      execute 'bd#'
+      execute 'bw#'
     endif
   endif
 endfunction
 
 fu! SwBuff(dir) " switching buffers
-  if a:dir > 0 | bn | else | bp | endif
+  let l:max = bufnr('$')
+  let l:n = bufnr('%')
 
-  while &buftype ==# 'terminal'
-   if a:dir > 0 | bn | else | bp | endif
+  if a:dir > 0 | let l:n = l:n + 1 | else | let l:n = l:n - 1 | endif
+
+  if l:n > l:max | let l:n = 1 | endif
+  if l:n < 1 | let l:n = l:max | endif
+
+  while getbufvar(l:n, '&buftype', 'ERROR') ==# 'nofile' 
+        \ || getbufvar(l:n, '&buftype', 'ERROR') ==# 'terminal' 
+        \ || !bufexists(l:n)
+
+    if a:dir > 0 | let l:n = l:n + 1 | else | let l:n = l:n - 1 | endif
+    if l:n > l:max | let l:n = 1 | endif
+    if l:n < 1 | let l:n = l:max | endif
   endwhile
-  " let l:maxBuffNr = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-  " let l:currBuffNr = bufnr('%') + a:dir
-  
-  " if l:currBuffNr > l:maxBuffNr | let l:currBuffNr = 1 | endif
-  " if l:currBuffNr < 1 | let l:currBuffNr = l:maxBuffNr | endif
 
-  " while !buflisted('v:val') && getbufvar(l:currBuffNr, '&buftype', 'ERROR') ==# 'terminal'
-    " let l:currBuffNr = l:currBuffNr + a:dir 
-    
-    " if l:currBuffNr > l:maxBuffNr | let l:currBuffNr = 1 | endif
-    " if l:currBuffNr < 1 | let l:currBuffNr = l:maxBuffNr | endif
-  " endwhile
-
-  " " echo getbufvar(l:currBuffNr, '&buftype', 'ERROR')
-
-  " echo l:currBuffNr
-  " " execute 'b' . l:currBuffNr
+  execute 'b' . l:n
 endfunction
 
-inoremap <silent> <M-w> <Esc>:bp<bar>call DelBuff()<CR>i
-nnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
-vnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
+inoremap <silent> <M-w> <Esc>:call DelBuff()<CR>i
+nnoremap <silent> <M-w> :call DelBuff()<CR>
+vnoremap <silent> <M-w> :call DelBuff()<CR>
 
 for i in ['l', 'Right']
   execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(1)<CR>i'
