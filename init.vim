@@ -427,14 +427,27 @@ vnoremap <S-Tab> <Esc><<
 
 " ALT + f to search
 " ESC + ESC to remove highlight
+" F3 to skip to next search
+" SHIFT + F3 to skip to the previous search
 
-inoremap <silent> <M-f> <Esc>/
-nnoremap <silent> <M-f> /
-vnoremap <silent> <M-f> /
+" pressing Esc will not remove search position
+set cpoptions+=x
+
+inoremap <M-f> <Esc>/
+nnoremap <M-f> /
+vnoremap <M-f> /
 
 inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
 nnoremap <Esc><Esc> :silent! nohls<CR>
 vnoremap <Esc><Esc> :silent! nohls<CR>
+
+inoremap <F3> <Esc>ni
+nnoremap <F3> n
+vnoremap <F3> n
+
+inoremap <F15> <Esc><S-n>i
+nnoremap <F15> <S-n>
+vnoremap <F15> <S-n>
 
 " ALT + ` to toggle terminal window
 
