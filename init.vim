@@ -264,9 +264,6 @@ highlight CursorLine ctermbg=234
 " mouse support
 set mouse=a
 
-" on quit, prompt about unsaved buffers
-" set confirm
-
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
 " keyboard shortcuts
@@ -460,6 +457,13 @@ tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 
 tnoremap <silent> <Esc> <C-\><C-n>
 
+" CTRL + C or
+" CTRL + SHIFT + C to copy
+
+" copy entire line
+nnoremap <C-c> <Esc>v<S-v>"+y 
+vnoremap <C-c> "+y
+
 " ALT + q to quit
 inoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
 nnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
@@ -490,4 +494,3 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " saving session
 autocmd VimLeavePre * call SaveSession()
 autocmd VimEnter * nested call RestoreSession()
-
