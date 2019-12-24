@@ -20,7 +20,6 @@ Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
 Plug 'jiangmiao/auto-pairs'             " auto pair inserting
-Plug 'kassio/neoterm'                   " better terminal management
 
 call plug#end()
 
@@ -167,6 +166,49 @@ endfunction
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
+" terminal management
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+let s:termState = 0
+
+fu! Ttoggle()
+  if s:termState == 0     " terminal is not open
+    let s:termBuffNr = -1
+    for b in range(1, bufnr('$'))
+      if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
+        let s:termBuffNr = b
+        break
+      endif
+    endfor
+
+    belowright split
+    resize 10
+
+    if s:termBuffNr >= 0  " if terminal buffer already exists
+      execute 'b' . s:termBuffNr
+    else
+      enew
+      call termopen('bash', {'on_exit': 'TExit'})
+    endif
+
+    startinsert
+  else                    " terminal is open
+    normal <C-v><C-\><C-n>
+    hide
+  endif
+  let s:termState = ! s:termState
+endfunction
+
+fu! TExit(job_id, code, event) dict
+  if a:code == 0
+    let s:termState = 0
+    if winnr('$') ==# 1 | qa! | else | close | endif
+  endif
+endfun
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " basic settings
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
@@ -224,9 +266,6 @@ highlight CursorLine ctermbg=234
 " mouse support
 set mouse=a
 
-" on quit, prompt about unsaved buffers
-set confirm
-
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
 " keyboard shortcuts
@@ -265,26 +304,40 @@ inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
 vnoremap <silent> <M-t> :enew<CR> 
 
-fu! DelBuff()
+fu! DelBuff() " deleting buffers
+  call SwBuff(-1)
   " seems like buffwinnr is inverted
   if bufwinnr(expand('#:p')) <= 0 && expand('#:p') != expand('%:p')
     if len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
-      execute 'bd#'
+      execute 'bw#'
     endif
   endif
 endfunction
 
-fu! SwBuff(dir) " switch buffer
-  if a:dir > 0 | bn | else | bp | endif
+fu! SwBuff(dir) " switching buffers
+  let l:max = bufnr('$')
+  let l:n = bufnr('%')
 
-  while &buftype ==# 'terminal'
-   if a:dir > 0 | bn | else | bp | endif
+  if a:dir > 0 | let l:n = l:n + 1 | else | let l:n = l:n - 1 | endif
+
+  if l:n > l:max | let l:n = 1 | endif
+  if l:n < 1 | let l:n = l:max | endif
+
+  while getbufvar(l:n, '&buftype', 'ERROR') ==# 'nofile' 
+        \ || getbufvar(l:n, '&buftype', 'ERROR') ==# 'terminal' 
+        \ || !bufexists(l:n)
+
+    if a:dir > 0 | let l:n = l:n + 1 | else | let l:n = l:n - 1 | endif
+    if l:n > l:max | let l:n = 1 | endif
+    if l:n < 1 | let l:n = l:max | endif
   endwhile
+
+  execute 'b' . l:n
 endfunction
 
-inoremap <silent> <M-w> <Esc>:bp<bar>call DelBuff()<CR>i
-nnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
-vnoremap <silent> <M-w> :bp<bar>call DelBuff()<CR>
+inoremap <silent> <M-w> <Esc>:call DelBuff()<CR>i
+nnoremap <silent> <M-w> :call DelBuff()<CR>
+vnoremap <silent> <M-w> :call DelBuff()<CR>
 
 for i in ['l', 'Right']
   execute 'inoremap <silent> <M-' . i . '> <Esc>:call SwBuff(1)<CR>i'
@@ -373,16 +426,31 @@ vnoremap <S-Tab> <Esc><<
 
 " ALT + f to search
 " ESC + ESC to remove highlight
+" F3 to skip to next search
+" SHIFT + F3 to skip to the previous search
 
-inoremap <silent> <M-f> <Esc>/
-nnoremap <silent> <M-f> /
-vnoremap <silent> <M-f> /
+" pressing Esc will not remove search position
+set cpoptions+=x
+
+inoremap <M-f> <Esc>/
+nnoremap <M-f> /
+vnoremap <M-f> /
 
 inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
 nnoremap <Esc><Esc> :silent! nohls<CR>
 vnoremap <Esc><Esc> :silent! nohls<CR>
 
+inoremap <F3> <Esc>ni
+nnoremap <F3> n
+vnoremap <F3> n
+
+inoremap <F15> <Esc><S-n>i
+nnoremap <F15> <S-n>
+vnoremap <F15> <S-n>
+
 " ALT + ` to toggle terminal window
+
+command Ttoggle call Ttoggle()
 
 inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 nnoremap <M-`> :Ttoggle<CR>
@@ -390,6 +458,13 @@ vnoremap <M-`> :Ttoggle<CR>
 tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 
 tnoremap <silent> <Esc> <C-\><C-n>
+
+" CTRL + C or
+" CTRL + SHIFT + C to copy
+
+" copy entire line
+nnoremap <C-c> <Esc>v<S-v>"+y 
+vnoremap <C-c> "+y
 
 " ALT + q to quit
 inoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
@@ -418,6 +493,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
+" saving session
 autocmd VimLeavePre * call SaveSession()
 autocmd VimEnter * nested call RestoreSession()
-
