@@ -114,6 +114,8 @@ let g:NERDTreeIndicatorMapCustom = {
 
 " add spaces after comment delimiters
 let g:NERDSpaceDelims = 1
+" comment empty lines
+let g:NERDCommentEmptyLines = 1
 
 " change autopairs hotkey to not conflict with commenter
 let g:AutoPairsShortcutToggle = '<leader>cfd' " this is just a random hotkey I'll never press
@@ -134,6 +136,11 @@ let g:neoterm_autoscroll = 1
 " ------------------------------------------------------------------------
 
 fu! SaveSession()
+  " close all terminal buffers  
+  for b in range(1, bufnr('$'))
+    if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal' | execute 'bd!' . b | endif
+  endfor
+
   call mkdir(getcwd() . '/.vim', 'p')
   execute 'mksession! ' . getcwd() . '/.vim/session'
   execute 'mksession! ~/.vim/session_latest'
@@ -419,10 +426,15 @@ imap <M-/> <Esc><leader>c<Space>i
 nmap <M-/> <leader>c<Space>
 vmap <M-/> <leader>c<Space>
 
+" TAB to indent
 " SHIFT + TAB to unindent
+
+nnoremap <Tab> >>
+vnoremap <Tab> >gv
+
 inoremap <S-Tab> <C-d>
 nnoremap <S-Tab> <<
-vnoremap <S-Tab> <Esc><<
+vnoremap <S-Tab> <gv
 
 " ALT + f to search
 " ESC + ESC to remove highlight
@@ -476,6 +488,10 @@ vnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
 " auto commands (events)
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
+
+" refresh fuzzy finder cache every time a file is saved
+autocmd FocusGained  * CtrlPClearCache
+autocmd BufWritePost * CtrlPClearCache
 
 " always show gutter (set signcolumn=yes does not work in all use cases)
 autocmd BufEnter * sign define dummy
