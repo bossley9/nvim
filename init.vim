@@ -82,8 +82,8 @@ let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclu
 let NERDTreeShowHidden = 0
 " close explorer on file open
 let NERDTreeQuitOnOpen = 1
-" override default network explorer
-let NERDTreeHijackNetrw = 1
+" keep file explorer closed on open
+let g:NERDTreeHijackNetrw=0
 " set window size
 let NERDTreeWinSize = 25
 " minimal ui
@@ -481,12 +481,6 @@ vnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
 autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
-" open file explorer on startup if no files were specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-" don't open file explorer if session is being restored
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
 " close file explorer if it is the last window open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
