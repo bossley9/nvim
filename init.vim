@@ -21,6 +21,10 @@ Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
 Plug 'scrooloose/nerdcommenter'         " commenting shortcut
 Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 
+" language syntax
+
+Plug 'alvan/vim-closetag'               " html auto-closing tags
+
 call plug#end()
 
 " ------------------------------------------------------------------------
@@ -131,6 +135,15 @@ let g:neoterm_autoscroll = 1
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
+" language syntax settings
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" enable auto closing on these file types
+let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
 " session management
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
@@ -208,10 +221,10 @@ fu! Ttoggle()
 endfunction
 
 fu! TExit(job_id, code, event) dict
-  if a:code == 0
-    let s:termState = 0
-    if winnr('$') ==# 1 | qa! | else | close | endif
-  endif
+  " if a:code == 0
+  let s:termState = 0
+  if winnr('$') ==# 1 | qa! | else | close | endif
+  " endif
 endfun
 
 " ------------------------------------------------------------------------
