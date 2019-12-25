@@ -24,6 +24,7 @@ Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 " language syntax
 
 Plug 'alvan/vim-closetag'               " html auto-closing tags
+Plug 'mattn/emmet-vim'                  " emmet (shorthand html generation)
 
 call plug#end()
 
@@ -492,9 +493,14 @@ nnoremap <C-c> <Esc>v<S-v>"+y
 vnoremap <C-c> "+y
 
 " ALT + q to quit
-inoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
-nnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
-vnoremap <M-q> <Esc>:call SaveSession()<CR>:quit<CR>
+inoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
+nnoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
+vnoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
+
+" TAB to use emmet on html shorthands when applicable
+
+let g:user_emmet_expandabbr_key='<Tab>'
+imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
