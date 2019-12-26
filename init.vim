@@ -140,8 +140,14 @@ let g:neoterm_autoscroll = 1
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
-" enable auto closing on these file types
+" html auto closing on these file types
 let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
+" enter between html tags produces newline and tab
+let g:user_emmet_settings = {
+\ 'html' : {
+\     'block_all_childless' : 1,
+\   }
+\ }
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
