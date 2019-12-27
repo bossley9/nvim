@@ -46,7 +46,7 @@ sudo ln -sfn $ROOT/nvim.appimage /usr/bin/nvim
 
 # install vim-plug plugins
 
-nvim +PlugInstall +qa 2>/dev/null
+nvim +'PlugInstall --sync' +bd +qa 2>/dev/null
 
 echo -e "${LG}done.${LB} You can now type 'nvim' to start Neovim.${NC}"
 
