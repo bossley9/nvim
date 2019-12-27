@@ -164,10 +164,13 @@ fu! SaveSession()
   for b in range(1, bufnr('$'))
     if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal' | execute 'bd!' . b | endif
   endfor
+  
+  " make directories
+  execute 'silent !mkdir -p ~/.nvim'
+  execute 'silent !mkdir -p ' . getcwd() . '/.nvim'
 
-  call mkdir(getcwd() . '/.vim', 'p')
-  execute 'mksession! ' . getcwd() . '/.vim/session'
-  execute 'mksession! ~/.vim/session_latest'
+  execute 'mksession! ' . getcwd() . '/.nvim/session'
+  execute 'mksession! ~/.nvim/session'
 endfunction
 
 fu! RestoreBuff(lastBuf)
@@ -184,12 +187,12 @@ fu! RestoreSession()
   " only restore if called with no arguments
   if eval('@%') == ''
     " if current directory session exists
-    if filereadable(getcwd() . '/.vim/session')
-      execute 'so ' . getcwd() . '/.vim/session'
+    if filereadable(getcwd() . '/.nvim/session')
+      execute 'so ' . getcwd() . '/.nvim/session'
         call RestoreBuff(bufnr('$'))
     " if latest session exists
-    elseif filereadable('~/.vim/session_latest')
-      execute 'so ~/.vim/session_latest'
+    elseif filereadable('~/.nvim/session')
+      execute 'so ~/.nvim/session'
         call RestoreBuff(bufnr('$'))
     endif
   endif
@@ -232,10 +235,8 @@ fu! Ttoggle()
 endfunction
 
 fu! TExit(job_id, code, event) dict
-  " if a:code == 0
   let s:termState = 0
   if winnr('$') ==# 1 | qa! | else | close | endif
-  " endif
 endfun
 
 " ------------------------------------------------------------------------

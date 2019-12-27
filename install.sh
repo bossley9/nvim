@@ -1,42 +1,52 @@
 #!/bin/bash
 
-BLE='\033[1;34m'
-GRN='\033[1;32m'
+RD='\033[1;31m'
+LG='\033[1;32m'
+YW='\033[1;33m'
+LB='\033[1;34m'
 NC='\033[0m'
 
-# 1. get latest version of the nvim configuration
+ROOT=~/.config/nvim
 
-echo -e "${BLE}updating nvim configuration...${NC}"
+# get latest nvim configuration
 
+echo -e "${LB}updating nvim configuration...${NC}"
 curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
 
-# 2. install nvim and vim-plug if not already installed
+# install nvim and vim-plug if not already installed
 
-if ! hash nvim 2>/dev/null; then
-  echo -e "${BLE}installing neovim...${NC}"
-  sudo add-apt-repository ppa:neovim-ppa/stable
-  sudo apt-get update
-  sudo apt-get install neovim
-fi
+echo -e "${YW}This script will replace any existing version of Neovim. Continue? [Y/N]${NC}"
 
-echo -e "${BLE}installing vim-plug...${NC}"
-curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+read bConfirmInstall
+case $bConfirmInstall in
+  [Nn]*) echo -e "${RD}Unable to install. Aborting.${NC}"; exit;
+esac
 
-# 3. if any nvim configuration already exists, save it
+echo -e "${LB}installing neovim from source...${NC}"
 
-if test -f ~/.config/nvim/init.vim ; then
-  mv ~/.config/nvim/init.vim ~/.config/nvim/init.vim.bak$(date +%M%H%S)
-fi
+mkdir -p $ROOT
+  
+curl -Ls https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -o $ROOT/nvim.appimage 
+chmod u+x $ROOT/nvim.appimage
 
-# 4. move nvim-config configuration to configuration directory
+echo -e "${LB}installing vim-plug...${NC}"
+curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-mkdir -p ~/.config/nvim
-mv /tmp/init.vim ~/.config/nvim/init.vim
+# save any existing nvim configuration
+
+if test -f ~/.config/nvim/init.vim; then mv ~/.config/nvim/init.vim ~/.config/nvim/init.vim.bak$(date +%M%H%S); fi
+
+# move nvim configuration to configuration directory
+
+mv /tmp/init.vim $ROOT/init.vim
+
+# replace current nvim executable path
+
+sudo ln -sfn $ROOT/nvim.appimage /usr/bin/nvim
 
 # install vim-plug plugins
 
 nvim +PlugInstall +qa 2>/dev/null
 
-echo -e "${GRN}done.${BLE} You can now type 'nvim' to start nvim.${NC}"
+echo -e "${LG}done.${LB} You can now type 'nvim' to start Neovim.${NC}"
 
