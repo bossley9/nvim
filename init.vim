@@ -18,13 +18,15 @@ Plug 'sheerun/vim-polyglot'             " improved syntax highlighting
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'      " git in file explorer
-Plug 'scrooloose/nerdcommenter'         " commenting shortcut
+Plug 'tpope/vim-commentary'             " commentng shortcut
 Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 
 " language syntax
 
 Plug 'alvan/vim-closetag'               " html auto-closing tags
 Plug 'mattn/emmet-vim'                  " emmet (shorthand html generation)
+Plug 'maxmellon/vim-jsx-pretty'         " better jsx syntax highlighting
+Plug 'suy/vim-context-commentstring'    " commenting for React and jsx
 
 call plug#end()
 
@@ -117,11 +119,6 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
-" add spaces after comment delimiters
-let g:NERDSpaceDelims = 1
-" comment empty lines
-let g:NERDCommentEmptyLines = 1
-
 " change autopairs hotkey to not conflict with commenter
 let g:AutoPairsShortcutToggle = '<leader>cfd' " this is just a random hotkey I'll never press
 
@@ -143,11 +140,18 @@ let g:neoterm_autoscroll = 1
 " html auto closing on these file types
 let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 " enter between html tags produces newline and tab
-let g:user_emmet_settings = {
-\ 'html' : {
-\     'block_all_childless' : 1,
-\   }
-\ }
+let g:user_emmet_settings = { 'html' : { 'quote_char': "'" } }
+
+" TAB to use emmet on html snippets when applicable
+
+fu! SetupEmmet()
+  let g:user_emmet_expandabbr_key='<Tab>'
+  imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+endfunction
+autocmd BufRead,BufNewFile *.html,*.js,*.jsx,*.ts,*.tsx call SetupEmmet()
+
+" lorem TAB and
+" lorem# TAB produces lorem ipsum filler content
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
@@ -442,9 +446,9 @@ let NERDTreeMapToggleHidden='<M-h>'
 
 " ALT + / to comment/uncomment line(s) (will not work with non-recursive mappings)
 
-imap <M-/> <Esc><leader>c<Space>i
-nmap <M-/> <leader>c<Space>
-vmap <M-/> <leader>c<Space>
+imap <M-/> <Esc>gc<Right><Right>i
+nmap <M-/> gc<Right>
+vmap <M-/> gc<Right>
 
 " TAB to indent
 " SHIFT + TAB to unindent
@@ -502,11 +506,6 @@ vnoremap <C-c> "+y
 inoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
 nnoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
 vnoremap <M-q> <Esc>:call SaveSession()<CR>:q!<CR>
-
-" TAB to use emmet on html shorthands when applicable
-
-let g:user_emmet_expandabbr_key='<Tab>'
-imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
