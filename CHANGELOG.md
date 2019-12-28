@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## [1.1.0](https://github.com/bossley9/nvim-config/releases/tag/v1.1.0) - 2019-12-28
+
+### Added
+- Neoclide/coc autocompletion for web development languages
+- Coc settings
+
+### Changed
+- `<Tab>` keymap to trigger autocompletion first, then emmet
+
 ## [1.0.0](https://github.com/bossley9/nvim-config/releases/tag/v1.0.0) - 2019-12-27
 
 ### Added

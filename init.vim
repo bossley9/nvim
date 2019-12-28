@@ -1,5 +1,4 @@
 " Neovim configuration file created by Sam Bossley
-" place in ~/.config/nvim/
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
@@ -27,6 +26,14 @@ Plug 'alvan/vim-closetag'               " html auto-closing tags
 Plug 'mattn/emmet-vim'                  " emmet (shorthand html generation)
 Plug 'maxmellon/vim-jsx-pretty'         " better jsx syntax highlighting
 Plug 'suy/vim-context-commentstring'    " commenting for React and jsx
+
+" autocompletion
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-tsserver'
+Plug 'neoclide/coc-json'
+Plug 'neoclide/coc-html'
+Plug 'neoclide/coc-css'
 
 call plug#end()
 
@@ -140,18 +147,58 @@ let g:neoterm_autoscroll = 1
 " html auto closing on these file types
 let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 " enter between html tags produces newline and tab
-let g:user_emmet_settings = { 'html' : { 'quote_char': "'" } }
+let g:user_emmet_settings = {
+\   'html': {
+\     'quote_char': '"' 
+\   },
+\   'javascript': {
+\     'quote_char': "'"
+\   }
+\ }
 
 " TAB to use emmet on html snippets when applicable
 
-fu! SetupEmmet()
-  let g:user_emmet_expandabbr_key='<Tab>'
-  imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-endfunction
-autocmd BufRead,BufNewFile *.html,*.js,*.jsx,*.ts,*.tsx call SetupEmmet()
+let s:emmetActivator = "\<Tab>"
+autocmd BufRead,BufNewFile *.html,*.js,*.jsx,*.ts,*.tsx let s:emmetActivator = "\<C-x>\<C-e>"
 
 " lorem TAB and
 " lorem# TAB produces lorem ipsum filler content
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" autocomplete
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" if hidden is not set, TextEdit might fail.
+set hidden
+
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+
+" Better display for messages
+set cmdheight=2
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" TAB autocompletion with emmet
+
+let g:user_emmet_leader_key = '<C-e>'
+let g:user_emmet_expandabbr_key = '<C-x><C-e>'
+imap <silent><expr> <Tab> <SID>expand()
+
+function! s:expand()
+  if pumvisible()
+    return "\<C-y>"
+  endif
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1]  =~# '\s'
+    return "\<Tab>"
+  endif
+  return s:emmetActivator
+endfunction
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------

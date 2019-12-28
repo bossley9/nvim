@@ -12,6 +12,7 @@ ROOT=~/.config/nvim
 
 echo -e "${LB}updating nvim configuration...${NC}"
 curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
+curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/coc-settings.json -o /tmp/coc-settings.json
 
 # install nvim and vim-plug if not already installed
 
@@ -34,11 +35,13 @@ curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.
 
 # save any existing nvim configuration
 
-if test -f ~/.config/nvim/init.vim; then mv ~/.config/nvim/init.vim ~/.config/nvim/init.vim.bak$(date +%M%H%S); fi
+if test -f $ROOT/init.vim; then mv $ROOT/init.vim $ROOT/init.vim.bak$(date +%M%H%S); fi
+if test -f $ROOT/coc-settings.json; then mv $ROOT/coc-settings.json $ROOT/coc-settings.json.bak$(date +%M%H%S); fi
 
 # move nvim configuration to configuration directory
 
 mv /tmp/init.vim $ROOT/init.vim
+mv /tmp/coc-settings.json $ROOT/coc-settings.json
 
 # replace current nvim executable path
 
