@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+- project directory name in the tabline
+
+### Changed
+- 4 space tabs to 2 space tabs
+
 ## [1.1.0](https://github.com/bossley9/nvim-config/releases/tag/v1.1.0) - 2019-12-28
 
 ### Added

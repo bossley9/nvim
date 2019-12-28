@@ -24,7 +24,6 @@ Plug 'jiangmiao/auto-pairs'             " auto pair inserting
 
 Plug 'alvan/vim-closetag'               " html auto-closing tags
 Plug 'mattn/emmet-vim'                  " emmet (shorthand html generation)
-Plug 'maxmellon/vim-jsx-pretty'         " better jsx syntax highlighting
 Plug 'suy/vim-context-commentstring'    " commenting for React and jsx
 
 " autocompletion
@@ -53,15 +52,16 @@ let g:airline_symbols.whitespace = ''
 let g:airline#extensions#branch#empty_message = '<untracked>'
 " airline bar
 let g:airline#extensions#default#layout = [
-      \ [ 'a', 'b', 'c' ],
-      \ [ 'x', 'y', 'z' ]
-      \ ]
+\   [ 'a', 'b', 'c' ],
+\   [ 'x', 'y', 'z' ]
+\ ]
 let g:airline_section_c = airline#section#create(['file'])
 let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
 let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
-let g:airline#extensions#tabline#buffers_label = ''
+" show project directory in the tabline
+let g:airline#extensions#tabline#buffers_label = expand('%:p:h:t')
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
