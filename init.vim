@@ -397,6 +397,8 @@ fu! SwBuff(dir) " switching buffers
   let l:max = bufnr('$')
   let l:n = bufnr('%')
 
+  if &buftype ==# 'terminal' | return | endif
+
   if a:dir > 0 | let l:n = l:n + 1 | else | let l:n = l:n - 1 | endif
 
   if l:n > l:max | let l:n = 1 | endif

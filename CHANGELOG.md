@@ -8,6 +8,9 @@
 ### Changed
 - 4 space tabs to 2 space tabs
 
+### Removed
+- changing buffer tabs from terminal window
+
 ## [1.1.0](https://github.com/bossley9/nvim-config/releases/tag/v1.1.0) - 2019-12-28
 
 ### Added
