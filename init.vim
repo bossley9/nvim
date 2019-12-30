@@ -251,7 +251,6 @@ endfunction
 " ------------------------------------------------------------------------
 
 let s:termState = 0
-
 fu! Ttoggle()
   if s:termState == 0     " terminal is not open
     let s:termBuffNr = -1
@@ -282,8 +281,8 @@ endfunction
 
 fu! TExit(job_id, code, event) dict
   let s:termState = 0
-  if winnr('$') ==# 1 | qa! | else | close | endif
-endfun
+  if winnr('$') ==# 1 | qa! | else | bw! | endif
+endfunction
 
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
@@ -368,6 +367,15 @@ set mouse=a
 " keyboard shortcuts
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
+
+" BACKSPACE deletes highlighted characters
+vnoremap <BS> d
+
+" CTRL + s to save
+
+inoremap <silent><expr> <C-s> (&buftype ==# 'terminal' ? '<C-s>' : '<Esc>:w<CR>')
+nnoremap <silent><expr> <C-s> (&buftype ==# 'terminal' ? '<C-s>' : '<Esc>:w<CR>')
+vnoremap <silent><expr> <C-s> (&buftype ==# 'terminal' ? '<C-s>' : '<Esc>:w<CR>')
 
 " fast navigation
 " SHIFT + h
@@ -594,7 +602,7 @@ autocmd BufEnter * sign define dummy
 autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
 " close file explorer if it is the last window open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o

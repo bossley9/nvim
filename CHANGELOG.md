@@ -5,12 +5,15 @@
 ### Added
 - project directory name in the tabline
 - warning for low Neovim versions < 0.3
+- `<C-s>` keymap to write files
+- `<BS>` keymap to delete characters in visual mode
 
 ### Changed
 - 4 space tabs to 2 space tabs
 - Install script to install from source on linux/unix and to install from package manager on WSL
 - Theme from onedark to edge 
 - ctermbg to redraw more accurately in WSL
+- terminal toggle to delete terminal buffer on exit instead of closing
 
 ### Removed
 - changing buffer tabs from terminal window
