@@ -11,8 +11,8 @@ ROOT=~/.config/nvim
 # get latest nvim configuration
 
 echo -e "${LB}updating nvim configuration...${NC}"
-curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
-curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/coc-settings.json -o /tmp/coc-settings.json
+curl https://raw.githubusercontent.com/bossley9/nvim-config/master/init.vim -o /tmp/init.vim
+curl https://raw.githubusercontent.com/bossley9/nvim-config/master/coc-settings.json -o /tmp/coc-settings.json
 
 # install nvim and vim-plug if not already installed
 
@@ -23,15 +23,22 @@ case $bConfirmInstall in
   [Nn]*) echo -e "${RD}Unable to install. Aborting.${NC}"; exit;
 esac
 
-echo -e "${LB}installing neovim from source...${NC}"
-
 mkdir -p $ROOT
-  
-curl -Ls https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -o $ROOT/nvim.appimage 
-chmod u+x $ROOT/nvim.appimage
+
+if grep -q Microsoft /proc/version; then    # WSL
+  echo -e "${LB}installing neovim from package manager...${NC}"
+  sudo apt-get install --reinstall neovim
+else                                        # native linux/unix
+  echo -e "${LB}installing neovim from source...${NC}"
+  curl -L https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -o $ROOT/nvim.appimage 
+  chmod u+x $ROOT/nvim.appimage
+
+  # replace current nvim executable path
+  sudo ln -sfn $ROOT/nvim.appimage /usr/bin/nvim
+fi
 
 echo -e "${LB}installing vim-plug...${NC}"
-curl -sfLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # save any existing nvim configuration
 
@@ -43,13 +50,17 @@ if test -f $ROOT/coc-settings.json; then mv $ROOT/coc-settings.json $ROOT/coc-se
 mv /tmp/init.vim $ROOT/init.vim
 mv /tmp/coc-settings.json $ROOT/coc-settings.json
 
-# replace current nvim executable path
-
-sudo ln -sfn $ROOT/nvim.appimage /usr/bin/nvim
-
 # install vim-plug plugins
 
 nvim +'PlugInstall --sync' +bd +qa 2>/dev/null
+
+# check version for autocomplete
+
+ver=$(nvim -v | head -1 | cut -d ' ' -f 2 | grep -o '[0-9]\.[0-9]')
+autoVer=0.3
+if [ $ver \< $autoVer ]; then
+  echo -e "${RD}Your version of Neovim < v$autoVer for Conquer of Completion. Autocomplete may not work as expected.${NC}"
+fi
 
 echo -e "${LG}done.${LB} You can now type 'nvim' to start Neovim.${NC}"
 

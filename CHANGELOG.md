@@ -4,9 +4,11 @@
 
 ### Added
 - project directory name in the tabline
+- warning for low Neovim versions < 0.3
 
 ### Changed
 - 4 space tabs to 2 space tabs
+- Install script to install from source on linux/unix and to instal from package manager on WSL
 
 ### Removed
 - changing buffer tabs from terminal window
