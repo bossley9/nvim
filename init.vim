@@ -12,7 +12,7 @@ Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
 Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'airblade/vim-gitgutter'           " git gutter
-Plug 'joshdick/onedark.vim'             " color scheme
+Plug 'sainnhe/edge'                     " color scheme
 Plug 'sheerun/vim-polyglot'             " improved syntax highlighting
 Plug 'ctrlpvim/ctrlp.vim'               " fuzzy finder
 Plug 'scrooloose/nerdtree'              " file explorer
@@ -64,6 +64,11 @@ let g:airline_extensions = ['branch', 'tabline']
 let g:airline#extensions#tabline#buffers_label = expand('%:p:h:t')
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
+" tabline separators
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = ' '
+let g:airline#extensions#tabline#right_sep = ' '
+let g:airline#extensions#tabline#right_alt_sep = ' '
 
 " disable fugitive mappings
 let g:fugitive_no_maps = 1
@@ -78,12 +83,6 @@ let g:gitgutter_sign_removed = '--'
 let g:gitgutter_map_keys = 0
 " update gutters every x milliseconds
 set updatetime=300
-
-" change color scheme
-syntax on
-colorscheme onedark
-" prevent WSL bgcolor glitch by disabling entirely
-if has("windows") | hi Normal ctermbg=0 | endif
 
 " include more search results in fuzzy finder
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:15'
@@ -334,13 +333,31 @@ set hlsearch
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
+" color scheme
+set termguicolors
+set background=dark
+let g:edge_style = 'neon'
+colorscheme edge
+
+let s:screenLine = line("w0")
+fu! RedrawScreen()
+  if s:screenLine != line("w0") | let s:screenLine = line("w0") | redraw! | endif
+endfunction
+
+" redraw screen when vertical position has changed 
+if has ("windows")
+  au CursorMoved,CursorMovedI,VimResized,FocusGained * call RedrawScreen()
+  set mousetime=30
+  noremap <ScrollWheelUp> <ScrollWheelUp>:call RedrawScreen()<CR>
+  noremap <ScrollWheelDown> <ScrollWheelDown>:call RedrawScreen()<CR>
+endif
+
 " window title
 set title
 auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
 
 " highlight line cursor rests on
 set cursorline
-highlight CursorLine ctermbg=234
 
 " mouse support
 set mouse=a
@@ -383,6 +400,9 @@ inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
 vnoremap <silent> <M-t> :enew<CR> 
 
+" TODO fix session restoring deleted buffers
+" TODO call closes extra window if applicable
+" command -nargs=? -bang BW :silent! argd % | bw<bang><args>
 fu! DelBuff() " deleting buffers
   call SwBuff(-1)
   " seems like buffwinnr is inverted
@@ -518,9 +538,10 @@ vnoremap <S-Tab> <gv
 " pressing Esc will not remove search position
 set cpoptions+=x
 
-inoremap <M-f> <Esc>/
-nnoremap <M-f> /
-vnoremap <M-f> /
+inoremap <M-f> <Esc>:/
+nnoremap <M-f> :/
+noremap / :/
+vnoremap <M-f> :/
 
 inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
 nnoremap <Esc><Esc> :silent! nohls<CR>

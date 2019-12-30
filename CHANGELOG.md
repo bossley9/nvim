@@ -8,7 +8,9 @@
 
 ### Changed
 - 4 space tabs to 2 space tabs
-- Install script to install from source on linux/unix and to instal from package manager on WSL
+- Install script to install from source on linux/unix and to install from package manager on WSL
+- Theme from onedark to edge 
+- ctermbg to redraw more accurately in WSL
 
 ### Removed
 - changing buffer tabs from terminal window
