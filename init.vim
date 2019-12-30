@@ -344,8 +344,9 @@ fu! RedrawScreen()
   if s:screenLine != line("w0") | let s:screenLine = line("w0") | redraw! | endif
 endfunction
 
-" redraw screen when vertical position has changed 
-if has ("windows")
+" redraw screen when vertical position has changed in WSL 
+let uname = substitute(system('uname'), '\n', '', '')
+if uname != 'Linux' && uname != 'Darwin'
   au CursorMoved,CursorMovedI,VimResized,FocusGained * call RedrawScreen()
   set mousetime=30
   noremap <ScrollWheelUp> <ScrollWheelUp>:call RedrawScreen()<CR>
