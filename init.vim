@@ -10,6 +10,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'               " basic Vim settings
 Plug 'vim-airline/vim-airline'          " airline bar customization
+Plug 'vim-airline/vim-airline-themes'   " airline bar theming
 Plug 'tpope/vim-fugitive'               " git branch on airline
 Plug 'airblade/vim-gitgutter'           " git gutter
 Plug 'sainnhe/edge'                     " color scheme
@@ -61,7 +62,7 @@ let g:airline_section_y = airline#section#create(['filetype'])
 let g:airline_section_z = airline#section#create(['ffenc'])
 let g:airline_extensions = ['branch', 'tabline']
 " show project directory in the tabline
-let g:airline#extensions#tabline#buffers_label = expand('%:p:h:t')
+let g:airline#extensions#tabline#buffers_label = ''
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 " tabline separators
@@ -175,9 +176,6 @@ set hidden
 " Some servers have issues with backup files, see #649
 set nobackup
 set nowritebackup
-
-" Better display for messages
-set cmdheight=2
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
@@ -333,28 +331,42 @@ set hlsearch
 " ------------------------------------------------------------------------
 
 " color scheme
-set termguicolors
 set background=dark
-let g:edge_style = 'neon'
 colorscheme edge
 
+" airline theme
+let g:airline_theme='deus'
+
+" gutter color
+let g:gitgutter_override_sign_column_highlight = 0
+highlight SignColumn      ctermbg=235
+highlight GitGutterAdd    ctermbg=235
+highlight GitGutterChange ctermbg=235
+highlight GitGutterDelete ctermbg=235
+
+" redraw screen when vertical position has changed in WSL 
 let s:screenLine = line("w0")
 fu! RedrawScreen()
   if s:screenLine != line("w0") | let s:screenLine = line("w0") | redraw! | endif
 endfunction
 
-" redraw screen when vertical position has changed in WSL 
 let uname = substitute(system('uname'), '\n', '', '')
-if uname != 'Linux' && uname != 'Darwin'
-  au CursorMoved,CursorMovedI,VimResized,FocusGained * call RedrawScreen()
-  set mousetime=30
-  noremap <ScrollWheelUp> <ScrollWheelUp>:call RedrawScreen()<CR>
-  noremap <ScrollWheelDown> <ScrollWheelDown>:call RedrawScreen()<CR>
+if uname == 'Linux'
+  let lines = readfile("/proc/version")
+  if lines[0] =~ "Microsoft"
+    au CursorMoved,CursorMovedI,VimResized,FocusGained * call RedrawScreen()
+    set mousetime=30
+    noremap <silent> <ScrollWheelUp> <ScrollWheelUp>:call RedrawScreen()<CR>
+    noremap <silent> <ScrollWheelDown> <ScrollWheelDown>:call RedrawScreen()<CR>
+  endif
 endif
 
 " window title
 set title
-auto BufEnter * let &titlestring = expand('%:t') . " - " . getcwd()
+au! BufEnter * let &titlestring = '[' . expand('%:p:h:t') . '] ' . expand('%:t') 
+
+" remove extra lines below statusline
+set cmdheight=1
 
 " highlight line cursor rests on
 set cursorline
@@ -610,3 +622,17 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " saving session
 autocmd VimLeavePre * call SaveSession()
 autocmd VimEnter * nested call RestoreSession()
+
+" ------------------------------------------------------------------------
+" -----------------------------------------------------------------------------------------------------------------
+" post settings
+" -----------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
+
+" remove mode display
+set noshowmode
+" remove last command from display
+set noshowcmd
+" remove file name displayed in the command line bar
+set shortmess+=F 
+

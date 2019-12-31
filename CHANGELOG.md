@@ -3,20 +3,25 @@
 ## Unreleased
 
 ### Added
-- project directory name in the tabline
 - warning for low Neovim versions < 0.3
 - `<C-s>` keymap to write files
 - `<BS>` keymap to delete characters in visual mode
+- airline tab theme
 
 ### Changed
 - 4 space tabs to 2 space tabs
-- Install script to install from source on linux/unix and to install from package manager on WSL
-- Theme from onedark to edge 
+- install script to install from source on linux/unix and to install from package manager on WSL
+- theme from onedark to edge 
 - ctermbg to redraw more accurately in WSL
 - terminal toggle to delete terminal buffer on exit instead of closing
+- spelling and captialization
+- window title to include folder name, then file name
+- gutter highlight to match background
 
 ### Removed
 - changing buffer tabs from terminal window
+- mode line below statusline
+- project directory name from the tabline
 
 ## [1.1.0](https://github.com/bossley9/nvim-config/releases/tag/v1.1.0) - 2019-12-28
 
