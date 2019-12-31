@@ -11,7 +11,9 @@ A modern [Neovim](https://neovim.io/) configuration
     This will install the latest version of Neovim and [`Vim-Plug`](https://github.com/junegunn/vim-plug).
     This will also install all plugins and update any existing nvim configuration settings.
     ```bash
-    curl -s https://raw.githubusercontent.com/bossley9/nvim-config/master/install.sh | bash 
+    curl https://raw.githubusercontent.com/bossley9/nvim-config/master/install.sh -o install.sh
+    chmod u+x install.sh
+    ./install.sh
     ```
     If future updates are made to this nvim configuration, rerun this script to pull the latest updates and install them automatically.
 
