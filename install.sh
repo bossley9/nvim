@@ -20,7 +20,10 @@ echo -e "${YW}This script will replace any existing version of Neovim. Continue?
 
 read bConfirmInstall
 case $bConfirmInstall in
-  [Nn]*) echo -e "${RD}Unable to install. Aborting.${NC}"; exit;
+  [Nn]*)
+    echo -e "${RD}Unable to install. Aborting.${NC}"
+    exit
+    ;;
 esac
 
 mkdir -p $ROOT
@@ -42,8 +45,14 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.g
 
 # save any existing nvim configuration
 
-if test -f $ROOT/init.vim; then mv $ROOT/init.vim $ROOT/init.vim.bak$(date +%M%H%S); fi
-if test -f $ROOT/coc-settings.json; then mv $ROOT/coc-settings.json $ROOT/coc-settings.json.bak$(date +%M%H%S); fi
+echo -e "${YW}This script will replace any existing init.vim configuration. Save the original? It will be saved as init.vim.bak [Y/N]${NC}"
+
+read bConfirmSave
+case $bConfirmSave in
+  [Yy]*)
+    if test -f $ROOT/init.vim; then mv $ROOT/init.vim $ROOT/init.vim.bak$(date +%M%H%S); fi
+  ;;
+esac
 
 # move nvim configuration to configuration directory
 

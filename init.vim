@@ -129,15 +129,6 @@ let g:NERDTreeIndicatorMapCustom = {
 " change autopairs hotkey to not conflict with commenter
 let g:AutoPairsShortcutToggle = '<leader>cfd' " this is just a random hotkey I'll never press
 
-" set terminal size
-let g:neoterm_size = 10
-" auto open terminal in insert mode
-let g:neoterm_autoinsert = 1
-" how terminal should open
-let g:neoterm_default_mod = 'botright'
-" scroll to the end automatically
-let g:neoterm_autoscroll = 1
-
 " ------------------------------------------------------------------------
 " -----------------------------------------------------------------------------------------------------------------
 " language syntax settings
@@ -203,7 +194,13 @@ endfunction
 " -----------------------------------------------------------------------------------------------------------------
 " ------------------------------------------------------------------------
 
+let s:shouldSaveSession = 0
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | let s:shouldSaveSession = 1 | endif
+
 fu! SaveSession()
+  if s:shouldSaveSession == 0 | qa! | endif
+    
   " close all terminal buffers  
   for b in range(1, bufnr('$'))
     if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal' | execute 'bd!' . b | endif
@@ -268,6 +265,11 @@ fu! Ttoggle()
       enew
       call termopen('bash', {'on_exit': 'TExit'})
     endif
+
+    set nonumber
+    set norelativenumber
+    set signcolumn=no
+    set nocursorline
 
     startinsert
   else                    " terminal is open
@@ -421,9 +423,6 @@ inoremap <silent> <M-t> <Esc>:enew<CR>i
 nnoremap <silent> <M-t> :enew<CR> 
 vnoremap <silent> <M-t> :enew<CR> 
 
-" TODO fix session restoring deleted buffers
-" TODO call closes extra window if applicable
-" command -nargs=? -bang BW :silent! argd % | bw<bang><args>
 fu! DelBuff() " deleting buffers
   call SwBuff(-1)
   " seems like buffwinnr is inverted
@@ -564,9 +563,9 @@ nnoremap <M-f> :/
 noremap / :/
 vnoremap <M-f> :/
 
-inoremap <Esc><Esc> <Esc>:silent! nohls<CR>i
-nnoremap <Esc><Esc> :silent! nohls<CR>
-vnoremap <Esc><Esc> :silent! nohls<CR>
+inoremap <silent> <Esc><Esc> <Esc>:nohls<CR>i
+nnoremap <silent> <Esc><Esc> :nohls<CR>
+vnoremap <silent> <Esc><Esc> :nohls<CR>
 
 inoremap <F3> <Esc>ni
 nnoremap <F3> n
