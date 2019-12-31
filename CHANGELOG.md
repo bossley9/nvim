@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+- install script to properly read variable prompts
+- install text prompts
+
 ## [1.2.0](https://github.com/bossley9/nvim-config/releases/tag/v1.2.0) - 2019-12-30
 
 ### Added

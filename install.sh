@@ -19,12 +19,10 @@ curl https://raw.githubusercontent.com/bossley9/nvim-config/master/coc-settings.
 echo -e "${YW}This script will replace any existing version of Neovim. Continue? [Y/N]${NC}"
 
 read bConfirmInstall
-case $bConfirmInstall in
-  [Nn]*)
-    echo -e "${RD}Unable to install. Aborting.${NC}"
-    exit
-    ;;
-esac
+if [ $bConfirmInstall == "N"  ] || [ $bConfirmInstall == "n" ]; then
+  echo -e "${RD}Unable to install. Aborting.${NC}"
+  exit
+fi
 
 mkdir -p $ROOT
 
@@ -48,11 +46,9 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.g
 echo -e "${YW}This script will replace any existing init.vim configuration. Save the original? It will be saved as init.vim.bak [Y/N]${NC}"
 
 read bConfirmSave
-case $bConfirmSave in
-  [Yy]*)
-    if test -f $ROOT/init.vim; then mv $ROOT/init.vim $ROOT/init.vim.bak$(date +%M%H%S); fi
-  ;;
-esac
+if [ $bConfirmSave == "N"  ] || [ $bConfirmSave == "n" ]; then
+  if test -f $ROOT/init.vim; then mv $ROOT/init.vim $ROOT/init.vim.bak$(date +%M%H%S); fi
+fi
 
 # move nvim configuration to configuration directory
 
@@ -68,7 +64,7 @@ nvim +'PlugInstall --sync' +bd +qa 2>/dev/null
 ver=$(nvim -v | head -1 | cut -d ' ' -f 2 | grep -o '[0-9]\.[0-9]')
 autoVer=0.3
 if [ $ver \< $autoVer ]; then
-  echo -e "${RD}Your version of Neovim < v$autoVer for Conquer of Completion. Autocomplete may not work as expected.${NC}"
+  echo -e "${RD}Your version of Neovim is less than the recommended version v$autoVer for Conquer of Completion. Autocomplete may not work as expected.${NC}"
 fi
 
 echo -e "${LG}done.${LB} You can now type 'nvim' to start Neovim.${NC}"
