@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [1.1.0](https://github.com/bossley9/nvim-config/releases/tag/v1.1.0) - 2019-12-30
+
 ### Added
 - warning for low Neovim versions < 0.3
 - `<C-s>` keymap to write files
