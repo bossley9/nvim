@@ -48,7 +48,7 @@ fu s:session_restore()
   en
 endf
 
-let s:openedDir = eval('@%') == ''
+let s:openedDir = eval('@%') == '' && argc() == 0
 let s:dir = trim(execute('pwd'))
 let s:sessDir = g:dataDir . 'sessions' . s:dir
 let s:sessFile = s:sessDir . '/se'
@@ -64,6 +64,26 @@ augroup end
 
 " disable swap files
 set noswapfile
+
+" disable viminfo creation
+set viminfo=""
+
+" ------------------------------------------------------------------------------
+"  core mappings/bindings
+" ------------------------------------------------------------------------------
+
+" C-h 	=> 	Backspace
+" jj 	=> 	Escape
+" C-j	=> 	Enter/Return/CR
+inoremap jj <Esc>
+
+" ------------------------------------------------------------------------------
+"  mouse event support
+" ------------------------------------------------------------------------------
+
+set mouse=a
+
+"inoremap <C-LeftMouse> <Esc>:echo "ctrl_click!"<CR>i
 
 " ------------------------------------------------------------------------------
 "  fuzzy file finding

@@ -7,7 +7,7 @@ A modern [Neovim](https://neovim.io/) configuration
 3. [Todo](#todo)
 
 ## Installation <a name="installation"></a>
-1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 
+1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4.3+
     is installed.
 2. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
     ```
@@ -41,7 +41,6 @@ Vim commands can be executed.
 I wanted an editing solution with high performance and small memory footprint 
 that includes all the features of Visual Studio Code that I regularly utilize.
 
-
 ### Solution
 
 Vim and its Neovim counterpart are low-level text editors that focus soley on 
@@ -55,4 +54,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 ## Todo <a nane="todo"></a>
 
 - terminal buffer system
-- `set viminfo=""` to prevent viminfo creation
+- hover tooltips
