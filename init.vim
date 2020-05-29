@@ -72,10 +72,14 @@ set viminfo=""
 "  core mappings/bindings
 " ------------------------------------------------------------------------------
 
-" C-h 	=> 	Backspace
-" jj 	=> 	Escape
-" C-j	=> 	Enter/Return/CR
-inoremap jj <Esc>
+" insert:
+" C-h 	=> 	BS
+" jj 	  => 	Esc
+" C-j	  => 	CR
+" visual:
+" C-k   =>  Esc
+inoremap jj     <Esc>
+vnoremap <C-k>  <Esc>
 
 " ------------------------------------------------------------------------------
 "  mouse event support
