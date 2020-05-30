@@ -70,3 +70,7 @@ has consistency across platforms, making it easy to setup on any operating syste
 - optimized status bar?
 - code commenting
 - scrollable editor minimap
+- folding (manually or gutter)
+- file explorer show hidden files keybinding
+- breadcrumbs
+- buffer list with `:ls` (similar to VS Code tabs)

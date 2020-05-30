@@ -45,6 +45,8 @@ filetype plugin on
 " ------------------------------------------------------------------------------
 
 fu! s:session_save()
+  " file explorer
+  NERDTreeClose
   " touch session directory
   execute 'silent !mkdir -p ' . s:sessDir
   execute 'mksession! ' . s:sessFile
@@ -91,17 +93,8 @@ set smartcase
 set incsearch
 set hlsearch
 
-" number of lines above and below cursor at all times
-set scrolloff=5
-
 " turn magic on for regex
 set magic
-
-" show matching brackets
-set showmatch
-
-" blink cursor x tenths of a seconds
-set mat=2
 
 " indent tab width
 filetype plugin indent on
@@ -111,6 +104,16 @@ let &softtabstop=s:indent
 let &shiftwidth=s:indent
 " use spaces instead of tabs
 set expandtab
+
+" code folding
+set foldmethod=syntax
+set foldenable
+set foldnestmax=10
+set foldlevelstart=1
+
+let javaScript_fold=1
+let ruby_fold=1
+let sh_fold_enabled=1
 
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
@@ -124,6 +127,12 @@ set expandtab
 " C-k   =>  Esc
 inoremap jj     <Esc>
 vnoremap <C-k>  <Esc>
+
+" basic buffer navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 " ------------------------------------------------------------------------------
 "  mouse event support
@@ -202,10 +211,10 @@ let g:gitgutter_sign_removed = '--'
 
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
-" ...set signcolumn=yes does not work in all use cases
 
 augroup vcs_integration
   au!
+  " set signcolumn=yes does not work in all use cases
   " place dummy sign to keep gutter open
   au BufEnter * sign define dummy
   au BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
@@ -268,4 +277,11 @@ endfunction
 "  appearance
 " ------------------------------------------------------------------------------
 
+" line numbers
 set number
+
+" show matching brackets
+set showmatch
+
+" number of lines above and below cursor at all times
+set scrolloff=5
