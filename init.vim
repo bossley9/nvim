@@ -133,10 +133,16 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " ------------------------------------------------------------------------------
-"  mouse event support
+"  mouse events
 " ------------------------------------------------------------------------------
 
 set mouse=a
+
+"augroup mouse_events
+"  au!
+"  au CursorHold * echo expand("<cword>")
+"  au CursorHoldI * echo expand("<cword>")
+"augroup end
 
 " ------------------------------------------------------------------------------
 "  fuzzy file finding

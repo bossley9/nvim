@@ -55,12 +55,11 @@ has consistency across platforms, making it easy to setup on any operating syste
 
 ## Todo <a nane="todo"></a>
 
-- select tooltips
+- select tooltips (or hover with CursorHold)
 - file search
 - project-wide search
-- error leaving nerdtree open on close
 - multiple terminals
-- terminal placement
+- terminal placement/positioning
 - confirmation on terminal buffer close or nvim quit
 - copying file paths
 - visual overhaul
@@ -71,6 +70,6 @@ has consistency across platforms, making it easy to setup on any operating syste
 - code commenting
 - scrollable editor minimap
 - folding (manually or gutter)
-- file explorer show hidden files keybinding
 - breadcrumbs
-- buffer list with `:ls` (similar to VS Code tabs)
+- buffer list with `:ls` (similar to VS Code tabs) (see vim-airline)
+- session management kill all out of project and inactive buffers (and terminals)
