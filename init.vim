@@ -30,8 +30,6 @@ Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'Lenovsky/nuake'
-" Plug 'skywind3000/vim-terminal-help'
 
 call plug#end()
 
@@ -182,12 +180,15 @@ let NERDTreeCascadeSingleChildDir = 1
 let NERDTreeChDirMode = 1
 " specify which files/folders to ignore
 let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
-"let NERDTreeIgnore += ['\.d$[[dir]]','\.o$[[file]]','\.dat$[[file]]','\.ini$[[file]]']
+"let NERDTreeIgnore += ['\.d$[[dir]]']
+"let NERDTreeIgnore += ['\.o$[[file]]','\.dat$[[file]]','\.ini$[[file]]']
 "let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$']
 "let NERDTreeIgnore += ['\.mp3$','\.flac$','\.ogg$']
 "let NERDTreeIgnore += ['\.mp4$','\.avi$','.webm$','.mkv$']
 "let NERDTreeIgnore += ['\.pdf$']
 "let NERDTreeIgnore += ['\.zip$','\.tar.gz$','\.rar$']
+" show hidden files
+let NERDTreeShowHidden = 1
 
 augroup file_explorer
   au!
@@ -195,6 +196,8 @@ augroup file_explorer
   au BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") 
     \ && b:NERDTree.isTabTree()) | q | en
 augroup end
+
+" TODO https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
 
 " ------------------------------------------------------------------------------
 "  vcs integration
