@@ -34,11 +34,11 @@ I've also grown accustomed to [Vim](https://www.vim.org/) keybindings. They are
 short, efficient, and prevent the user from leaving the keyboard, saving 
 precious seconds of time. I've tried to use Visual Studio Code's `vim` and 
 `neovim` extensions and am dissatisfied with both. They both display the mode 
-on the status bar which is hidden in `fullscreen` and `zen mode` (both of which 
+on the status bar which is hidden in ~~`fullscreen` and~~ `zen mode` (both of which 
 I use frequently). ~~They also seem to have occassional glitches, and not all 
-Vim commands can be executed.~~ **I was experiencing glitches and issues due to
+Vim commands can be executed.~~ _I was experiencing glitches and issues due to
 Vim plugin incompatiblity with Visual Studio Code (my own ignorance). However, my
-argument still stands.**
+argument still stands._
 
 I wanted an editing solution with high performance and small memory footprint 
 that includes all the features of Visual Studio Code that I regularly utilize.
@@ -55,7 +55,18 @@ has consistency across platforms, making it easy to setup on any operating syste
 
 ## Todo <a nane="todo"></a>
 
-- terminal buffer system
 - select tooltips
 - file search
 - project-wide search
+- error leaving nerdtree open on close
+- multiple terminals
+- terminal placement
+- confirmation on terminal buffer close or nvim quit
+- copying file paths
+- visual overhaul
+- eslint/prettier integration
+- markdown preview
+- floating fzf menu
+- optimized status bar?
+- code commenting
+- scrollable editor minimap

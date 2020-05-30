@@ -30,6 +30,8 @@ Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'Lenovsky/nuake'
+" Plug 'skywind3000/vim-terminal-help'
 
 call plug#end()
 
@@ -80,6 +82,35 @@ set noswapfile
 
 " disable viminfo creation
 set viminfo=""
+
+" only search by case when using capital letters
+set ignorecase
+set smartcase
+
+" search highlight while typing
+set incsearch
+set hlsearch
+
+" number of lines above and below cursor at all times
+set scrolloff=5
+
+" turn magic on for regex
+set magic
+
+" show matching brackets
+set showmatch
+
+" blink cursor x tenths of a seconds
+set mat=2
+
+" indent tab width
+filetype plugin indent on
+let s:indent = 2
+let &tabstop=s:indent
+let &softtabstop=s:indent
+let &shiftwidth=s:indent
+" use spaces instead of tabs
+set expandtab
 
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
@@ -179,6 +210,59 @@ augroup vcs_integration
   au BufEnter * sign define dummy
   au BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
+
+" ------------------------------------------------------------------------------
+"  terminal management
+" ------------------------------------------------------------------------------
+
+command Ttoggle call Ttoggle()
+
+inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+nnoremap <M-`> :Ttoggle<CR>
+vnoremap <M-`> :Ttoggle<CR>
+tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+
+tnoremap <silent> <Esc> <C-\><C-n>
+
+let s:termState = 0
+fu! Ttoggle()
+  if s:termState == 0     " terminal is not open
+    let s:termBuffNr = -1
+    for b in range(1, bufnr('$'))
+      if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
+        let s:termBuffNr = b
+        break
+      endif
+    endfor
+
+    belowright split
+    resize 10
+
+    if s:termBuffNr >= 0  " if terminal buffer already exists
+      execute 'b' . s:termBuffNr
+    else
+      enew
+      call termopen('zsh', {'on_exit': 'TExit'})
+    endif
+
+    set nonumber
+    set norelativenumber
+    set signcolumn=no
+    set nocursorline
+
+    startinsert
+  else                    
+  " terminal is open
+    normal <C-v><C-\><C-n>
+    hide
+  endif
+  let s:termState = ! s:termState
+endfunction
+
+fu! TExit(job_id, code, event) dict
+  let s:termState = 0
+  if winnr('$') ==# 1 | qa! | else | bw! | endif
+endfunction
 
 " ------------------------------------------------------------------------------
 "  appearance
