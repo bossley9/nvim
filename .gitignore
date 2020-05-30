@@ -1,2 +1,4 @@
-# plugins
 plugged/
+.netrwhist
+.nvim/
+.vim/
