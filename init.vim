@@ -2,6 +2,8 @@
 
 " directory where all cacheable data is stored
 let g:dataDir = expand('$XDG_DATA_HOME/nvim/')
+" current project directory
+let s:dir = trim(execute('pwd'))
 
 " ------------------------------------------------------------------------------
 "  plugin declaration
@@ -30,6 +32,7 @@ Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-airline/vim-airline'
 
 call plug#end()
 
@@ -78,7 +81,6 @@ fu! s:session_restore()
 endf
 
 let s:openedDir = eval('@%') == '' && argc() == 0
-let s:dir = trim(execute('pwd'))
 let s:sessDir = g:dataDir . 'sessions' . s:dir
 let s:sessFile = s:sessDir . '/se'
 
@@ -129,6 +131,12 @@ set foldlevelstart=1
 let javaScript_fold=1
 let ruby_fold=1
 let sh_fold_enabled=1
+
+" prevent comments from continuing to new lines
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" remove file name from the command line bar
+set shortmess+=F
 
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
@@ -294,6 +302,23 @@ fu! TExit(job_id, code, event) dict
   let s:termState = 0
   if winnr('$') ==# 1 | qa! | else | bw! | endif
 endfunction
+
+" ------------------------------------------------------------------------------
+"  status bar / tabline
+" ------------------------------------------------------------------------------
+
+let g:airline#extensions#default#layout = [
+  \   [ 'a', 'c' ],
+  \   [ 'x', 'y']
+  \ ]
+let g:airline_section_c = airline#section#create(['file'])
+let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
+let g:airline_section_y = airline#section#create(['filetype'])
+let g:airline_extensions = ['tabline']
+" show project directory in the tabline
+let g:airline#extensions#tabline#buffers_label = s:dir
+" only show path in tab name if it contains another file with the same name
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " ------------------------------------------------------------------------------
 "  appearance

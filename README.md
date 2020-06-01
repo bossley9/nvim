@@ -66,9 +66,8 @@ has consistency across platforms, making it easy to setup on any operating syste
 - eslint/prettier integration
 - markdown preview
 - floating fzf menu
-- optimized status bar?
 - code commenting
 - scrollable editor minimap
 - folding (manually or gutter)
 - breadcrumbs
-- buffer list with `:ls` (similar to VS Code tabs) (see vim-airline)
+- add keybindings for `cmd` key
