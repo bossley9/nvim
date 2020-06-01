@@ -122,16 +122,6 @@ let &shiftwidth=s:indent
 " use spaces instead of tabs
 set expandtab
 
-" code folding
-set foldmethod=syntax
-set foldenable
-set foldnestmax=10
-set foldlevelstart=1
-
-let javaScript_fold=1
-let ruby_fold=1
-let sh_fold_enabled=1
-
 " prevent comments from continuing to new lines
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
@@ -156,6 +146,19 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+" nohl
+nnoremap <Space><Space> :noh<CR>
+
+" ------------------------------------------------------------------------------
+"  core functions
+" ------------------------------------------------------------------------------
+
+" reload config and window
+nnoremap <C-R> :let winv = winsaveview()<Bar>
+  \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
+  \call winrestview(winv)<Bar>
+  \unlet winv<CR>
 
 " ------------------------------------------------------------------------------
 "  mouse events
@@ -254,7 +257,7 @@ augroup end
 "  terminal management
 " ------------------------------------------------------------------------------
 
-command Ttoggle call Ttoggle()
+command! Ttoggle call Ttoggle()
 
 inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
 nnoremap <M-`> :Ttoggle<CR>
@@ -319,6 +322,33 @@ let g:airline_extensions = ['tabline']
 let g:airline#extensions#tabline#buffers_label = s:dir
 " only show path in tab name if it contains another file with the same name
 let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+" ------------------------------------------------------------------------------
+"  code folding
+" ------------------------------------------------------------------------------
+
+set foldmethod=syntax
+set foldenable
+set foldnestmax=10
+set foldlevelstart=1
+
+let javaScript_fold = 1
+let ruby_fold = 1
+let sh_fold_enabled = 1
+
+" nnoremap zz :call g:Code_folding_toggle()<CR>
+" vnoremap zz <Esc>:call g:Code_folding_toggle()<CR>
+" 
+" fu! g:Code_folding_toggle()
+"   try
+"     " create new fold
+"     fold
+"     echo 'fold created!'
+"   catch
+"     echo 'fold exists i guess'
+" 
+"   endtry
+" endfunction
 
 " ------------------------------------------------------------------------------
 "  appearance
