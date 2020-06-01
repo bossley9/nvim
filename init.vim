@@ -43,9 +43,26 @@ filetype plugin on
 " ------------------------------------------------------------------------------
 
 fu! s:session_save()
+
   " file explorer
   NERDTreeClose
-  " touch session directory
+
+  let tpbl=[]
+  call map(range(1, tabpagenr('$')), 
+    \ 'extend(tpbl, tabpagebuflist(v:val))')
+  
+  for b in range(1, bufnr('$'))
+    if bufexists(b)
+      " if 1. buffer is hidden
+      " 2. buffer is terminal
+      if index(tpbl, b) == -1 ||
+        \ getbufvar(b, '&buftype', '') ==# 'terminal'
+        silent execute 'bd!' . b
+      en
+    en
+  endfor
+
+  " touch directory and save session
   execute 'silent !mkdir -p ' . s:sessDir
   execute 'mksession! ' . s:sessFile
 endf
@@ -156,13 +173,9 @@ nnoremap <silent> <C-p> :FZF<CR>
 
 " toggle explorer pane
 nnoremap <C-b> :NERDTreeToggle<CR>
-nnoremap <C-E> :NERDTreeToggle<CR>
 inoremap <C-b> <Esc>:NERDTreeToggle<CR>
-inoremap <C-E> <Esc>:NERDTreeToggle<CR>
 vnoremap <C-b> <Esc>:NERDTreeToggle<CR>
-vnoremap <C-E> <Esc>:NERDTreeToggle<CR>
 tnoremap <C-b> <Esc>:NERDTreeToggle<CR>
-tnoremap <C-E> <Esc>:NERDTreeToggle<CR>
 
 " don't show hidden files in file explorer by default
 let NERDTreeShowHidden = 0

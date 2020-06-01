@@ -72,4 +72,3 @@ has consistency across platforms, making it easy to setup on any operating syste
 - folding (manually or gutter)
 - breadcrumbs
 - buffer list with `:ls` (similar to VS Code tabs) (see vim-airline)
-- session management kill all out of project and inactive buffers (and terminals)
