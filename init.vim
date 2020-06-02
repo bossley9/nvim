@@ -165,26 +165,28 @@ nnoremap tt :call g:CrWin()<CR>
 let s:tb = -1
 let s:topen = 0
 fu! g:CrWin()
-  " if window does not exist
-  if s:tb < 0
-    let s:tb = s:core_functions_create_window(0, 0, 1, 1)
-    let s:topen = 1
-  en
 
   if s:topen
-    normal <Esc>q
+    normal :q
     let s:topen = 0
   else
-    let s:tb = s:core_functions_create_window(0, 0, 1, 1)
+    " if window does not exist
+    if s:tb < 0
+      let s:tb = s:core_functions_create_window(0, 0, 1, 1)
+    else
+      " let s:tb = s:core_functions_create_window(0, 0, 1, 1, s:tb)
+    en
     let s:topen = 1
   en
 endfunction
 
 " floating window creator
+" arguments are (x, y, w, h, bufnr?)
 " x, y, w, and h are all [0..1] values
-fu! s:core_functions_create_window(x, y, w, h)
+" bufnr? is an optional buffer number of an existing buffer
+fu! s:core_functions_create_window(x, y, w, h, ...)
   " create unlisted, scratch buffer
-  let b = nvim_create_buf(v:false, v:true)
+  let b = a:0 > 4 ? a:4 : nvim_create_buf(v:false, v:true)
 
   let opts = {
     \ 'relative': 'editor',
