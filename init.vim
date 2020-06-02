@@ -150,15 +150,55 @@ nnoremap <C-l> <C-w>l
 " nohl
 nnoremap <Space><Space> :noh<CR>
 
-" ------------------------------------------------------------------------------
-"  core functions
-" ------------------------------------------------------------------------------
-
 " reload config and window
 nnoremap <C-R> :let winv = winsaveview()<Bar>
   \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
+
+" ------------------------------------------------------------------------------
+"  core functions
+" ------------------------------------------------------------------------------
+
+" TODO remove
+nnoremap tt :call g:CrWin()<CR>
+let s:tb = -1
+let s:topen = 0
+fu! g:CrWin()
+  " if window does not exist
+  if s:tb < 0
+    let s:tb = s:core_functions_create_window(0, 0, 1, 1)
+    let s:topen = 1
+  en
+
+  if s:topen
+    normal <Esc>q
+    let s:topen = 0
+  else
+    let s:tb = s:core_functions_create_window(0, 0, 1, 1)
+    let s:topen = 1
+  en
+endfunction
+
+" floating window creator
+" x, y, w, and h are all [0..1] values
+fu! s:core_functions_create_window(x, y, w, h)
+  " create unlisted, scratch buffer
+  let b = nvim_create_buf(v:false, v:true)
+
+  let opts = {
+    \ 'relative': 'editor',
+    \ 'style': 'minimal',
+    \ 'col': float2nr(&columns * a:x),
+    \ 'row': float2nr(&lines * a:y),
+    \ 'width': float2nr(&columns * a:w),
+    \ 'height': float2nr(&lines * a:h)
+    \ }
+
+  " center param is true if window should be autofocused
+  call nvim_open_win(b, v:true, opts)
+  return b
+endfunction
 
 " ------------------------------------------------------------------------------
 "  mouse events
@@ -210,13 +250,6 @@ let NERDTreeCascadeSingleChildDir = 1
 let NERDTreeChDirMode = 1
 " specify which files/folders to ignore
 let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
-"let NERDTreeIgnore += ['\.d$[[dir]]']
-"let NERDTreeIgnore += ['\.o$[[file]]','\.dat$[[file]]','\.ini$[[file]]']
-"let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$']
-"let NERDTreeIgnore += ['\.mp3$','\.flac$','\.ogg$']
-"let NERDTreeIgnore += ['\.mp4$','\.avi$','.webm$','.mkv$']
-"let NERDTreeIgnore += ['\.pdf$']
-"let NERDTreeIgnore += ['\.zip$','\.tar.gz$','\.rar$']
 " show hidden files
 let NERDTreeShowHidden = 1
 
@@ -335,20 +368,6 @@ set foldlevelstart=1
 let javaScript_fold = 1
 let ruby_fold = 1
 let sh_fold_enabled = 1
-
-" nnoremap zz :call g:Code_folding_toggle()<CR>
-" vnoremap zz <Esc>:call g:Code_folding_toggle()<CR>
-" 
-" fu! g:Code_folding_toggle()
-"   try
-"     " create new fold
-"     fold
-"     echo 'fold created!'
-"   catch
-"     echo 'fold exists i guess'
-" 
-"   endtry
-" endfunction
 
 " ------------------------------------------------------------------------------
 "  appearance

@@ -7,8 +7,9 @@ A modern [Neovim](https://neovim.io/) configuration
 3. [Todo](#todo)
 
 ## Installation <a name="installation"></a>
-1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4.3+
-    is installed.
+1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4+
+    is installed. Certain functions available will not function properly on lower
+    versions.
 2. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
     ```
     git clone https://github.com/bossley9/nvim.git $XDG_CONFIG_HOME/nvim
@@ -60,7 +61,7 @@ has consistency across platforms, making it easy to setup on any operating syste
 - project-wide search
 - multiple terminals
 - terminal placement/positioning
-- confirmation on terminal buffer close or nvim quit
+- confirmation on terminal buffer close or nvim quit (`:h confirm`)
 - copying file paths
 - visual overhaul
 - eslint/prettier integration
@@ -71,3 +72,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 - folding (manually or gutter)
 - breadcrumbs
 - add keybindings for `cmd` key
+- `:h drag-n-drop`
