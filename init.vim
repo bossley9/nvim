@@ -12,7 +12,7 @@ let s:dir = trim(execute('pwd'))
 " autoinstall vim-plug
 let s:vimPlugDir = g:dataDir . 'site/autoload/plug.vim'
 if empty(glob(s:vimPlugDir))
-  execute '!curl -fLo ' . s:vimPlugDir . ' --create-dirs '
+  exe '!curl -fLo ' . s:vimPlugDir . ' --create-dirs '
     \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 en
 
@@ -60,20 +60,20 @@ fu! s:session_save()
       " 2. buffer is terminal
       if index(tpbl, b) == -1 ||
         \ getbufvar(b, '&buftype', '') ==# 'terminal'
-        silent execute 'bd!' . b
+        silent exe 'bd!' . b
       en
     en
   endfor
 
   " touch directory and save session
-  execute 'silent !mkdir -p ' . s:sessDir
-  execute 'mksession! ' . s:sessFile
+  exe 'silent !mkdir -p ' . s:sessDir
+  exe 'mksession! ' . s:sessFile
 endf
 
 fu! s:session_restore()
   " if session exists
   if filereadable(s:sessFile)
-    execute 'so ' . s:sessFile
+    exe 'so ' . s:sessFile
   else
     " file explorer
     NERDTree
@@ -160,33 +160,13 @@ nnoremap <C-R> :let winv = winsaveview()<Bar>
 "  core functions
 " ------------------------------------------------------------------------------
 
-" TODO remove
-nnoremap tt :call g:CrWin()<CR>
-let s:tb = -1
-let s:topen = 0
-fu! g:CrWin()
-
-  if s:topen
-    normal :q
-    let s:topen = 0
-  else
-    " if window does not exist
-    if s:tb < 0
-      let s:tb = s:core_functions_create_window(0, 0, 1, 1)
-    else
-      " let s:tb = s:core_functions_create_window(0, 0, 1, 1, s:tb)
-    en
-    let s:topen = 1
-  en
-endfunction
-
 " floating window creator
 " arguments are (x, y, w, h, bufnr?)
 " x, y, w, and h are all [0..1] values
 " bufnr? is an optional buffer number of an existing buffer
 fu! s:core_functions_create_window(x, y, w, h, ...)
   " create unlisted, scratch buffer
-  let b = a:0 > 4 ? a:4 : nvim_create_buf(v:false, v:true)
+  let b = a:0 > 0 ? a:1 : nvim_create_buf(v:false, v:true)
 
   let opts = {
     \ 'relative': 'editor',
@@ -285,60 +265,56 @@ augroup vcs_integration
   " set signcolumn=yes does not work in all use cases
   " place dummy sign to keep gutter open
   au BufEnter * sign define dummy
-  au BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+  au BufEnter * exe 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
 
 " ------------------------------------------------------------------------------
 "  terminal management
 " ------------------------------------------------------------------------------
 
-command! Ttoggle call Ttoggle()
+nnoremap <M-`> :TermMgmtTog<CR>
+inoremap <M-`> <C-\><C-n>:TermMgmtTog<CR>
+vnoremap <M-`> :TermMgmtTog<CR>
+tnoremap <M-`> <C-\><C-n>:TermMgmtTog<CR>
 
-inoremap <M-`> <C-\><C-n>:Ttoggle<CR>
-nnoremap <M-`> :Ttoggle<CR>
-vnoremap <M-`> :Ttoggle<CR>
-tnoremap <M-`> <C-\><C-n>:Ttoggle<CR>
+com! TermMgmtTog call s:terminal_toggle()
+let s:termbufnr = -1
+let s:termopen = 0
+fu! s:terminal_toggle()
+  let l:y = 0.6
+  let l:h = 1 - l:y
 
-tnoremap <silent> <Esc> <C-\><C-n>
+  " if terminal is open
+  if s:termopen
 
-let s:termState = 0
-fu! Ttoggle()
-  if s:termState == 0     " terminal is not open
-    let s:termBuffNr = -1
-    for b in range(1, bufnr('$'))
-      if getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
-        let s:termBuffNr = b
-        break
-      endif
-    endfor
-
-    belowright split
-    resize 10
-
-    if s:termBuffNr >= 0  " if terminal buffer already exists
-      execute 'b' . s:termBuffNr
-    else
-      enew
-      call termopen('zsh', {'on_exit': 'TExit'})
-    endif
-
-    set nonumber
-    set norelativenumber
-    set signcolumn=no
-    set nocursorline
-
-    startinsert
-  else                    
-  " terminal is open
-    normal <C-v><C-\><C-n>
+    norm <C-v><C-\><C-n>
     hide
-  endif
-  let s:termState = ! s:termState
+  else
+
+    " if window does not exist
+    if s:termbufnr < 0
+      "echo "new win"
+      let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h)
+      call termopen('zsh', {'on_exit': 'Terminal_exit'})
+
+    " if terminal is closed
+    else
+      "echo "old win"
+      let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h, s:termbufnr)
+    en
+
+    "exe 'echo ' . s:termbufnr
+    exe 'b' . s:termbufnr
+    startinsert
+  en
+
+  let s:termopen = ! s:termopen
 endfunction
 
-fu! TExit(job_id, code, event) dict
-  let s:termState = 0
+fu! Terminal_exit(job_id, code, event) dict
   if winnr('$') ==# 1 | qa! | else | bw! | endif
+  let s:termopen = 0
+  let s:termbufnr = -1
 endfunction
 
 " ------------------------------------------------------------------------------

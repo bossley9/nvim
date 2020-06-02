@@ -73,3 +73,5 @@ has consistency across platforms, making it easy to setup on any operating syste
 - breadcrumbs
 - add keybindings for `cmd` key
 - `:h drag-n-drop`
+- terminal click insertion
+- multiple terminal buffers
