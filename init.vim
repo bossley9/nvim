@@ -33,6 +33,9 @@ Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'vim-airline/vim-airline'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'dense-analysis/ale'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 call plug#end()
 
@@ -198,7 +201,8 @@ set mouse=a
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
 
-nnoremap <silent> <C-p> :FZF<CR>
+nnoremap <silent> <M-p> <Esc>:FZF<CR>
+vnoremap <silent> <M-p> <Esc>:FZF<CR>
 
 " ------------------------------------------------------------------------------
 "  file explorer
@@ -339,13 +343,28 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " ------------------------------------------------------------------------------
 
 set foldmethod=syntax
-set foldenable
+" TEMP
+" set foldenable
 set foldnestmax=10
 set foldlevelstart=1
 
 let javaScript_fold = 1
 let ruby_fold = 1
 let sh_fold_enabled = 1
+
+" ------------------------------------------------------------------------------
+"  linting/prettier
+" ------------------------------------------------------------------------------
+
+let g:ale_fix_on_save = 1
+let g:ale_sign_column_always = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '!!'
+let g:ale_fixers = {
+\   'javascript': ['prettier'],
+\   'typescript': ['prettier'],
+\   'typescriptreact': ['prettier'],
+\}
 
 " ------------------------------------------------------------------------------
 "  appearance
