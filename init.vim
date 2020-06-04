@@ -150,6 +150,10 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" basic vertical navigation
+nnoremap <M-j> 5j
+nnoremap <M-k> 5k
+
 " nohl
 nnoremap <Space><Space> :noh<CR>
 
@@ -209,10 +213,10 @@ vnoremap <silent> <M-p> <Esc>:FZF<CR>
 " ------------------------------------------------------------------------------
 
 " toggle explorer pane
-nnoremap <C-b> :NERDTreeToggle<CR>
-inoremap <C-b> <Esc>:NERDTreeToggle<CR>
-vnoremap <C-b> <Esc>:NERDTreeToggle<CR>
-tnoremap <C-b> <Esc>:NERDTreeToggle<CR>
+nnoremap <M-b> :NERDTreeToggle<CR>
+inoremap <M-b> <Esc>:NERDTreeToggle<CR>
+vnoremap <M-b> <Esc>:NERDTreeToggle<CR>
+tnoremap <M-b> <Esc>:NERDTreeToggle<CR>
 
 " don't show hidden files in file explorer by default
 let NERDTreeShowHidden = 0
@@ -276,12 +280,12 @@ augroup end
 "  terminal management
 " ------------------------------------------------------------------------------
 
-nnoremap <M-`> :TermMgmtTog<CR>
-inoremap <M-`> <C-\><C-n>:TermMgmtTog<CR>
-vnoremap <M-`> :TermMgmtTog<CR>
-tnoremap <M-`> <C-\><C-n>:TermMgmtTog<CR>
+nnoremap <M-`> :TerminalToggle<CR>
+inoremap <M-`> <C-\><C-n>:TerminalToggle<CR>
+vnoremap <M-`> :TerminalToggle<CR>
+tnoremap <M-`> <C-\><C-n>:TerminalToggle<CR>
 
-com! TermMgmtTog call s:terminal_toggle()
+com! TerminalToggle call s:terminal_toggle()
 let s:termbufnr = -1
 let s:termopen = 0
 fu! s:terminal_toggle()
@@ -344,6 +348,7 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 set foldmethod=syntax
 " TEMP
+set nofoldenable
 " set foldenable
 set foldnestmax=10
 set foldlevelstart=1
