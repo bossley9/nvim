@@ -73,3 +73,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 - `:h drag-n-drop`
 - terminal click insertion
 - multiple terminal buffers
+- fix session not saving buffers properly

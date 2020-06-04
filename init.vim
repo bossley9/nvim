@@ -259,9 +259,9 @@ let g:gitgutter_map_keys = 0
 " update gutters every x milliseconds
 set updatetime=300
 " git gutter symbols
-let g:gitgutter_sign_added = '++'
-let g:gitgutter_sign_modified = '~~'
-let g:gitgutter_sign_removed = '--'
+let g:gitgutter_sign_added = '▌'
+let g:gitgutter_sign_modified = '▌'
+let g:gitgutter_sign_removed = '▌'
 
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
