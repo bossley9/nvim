@@ -230,8 +230,6 @@ let NERDTreeNaturalSort = 1
 let NERDTreeHighlightCursorLine = 1
 " set window size
 " let NERDTreeWinSize = 25
-" single click opens folder, double click opens node
-let NERDTreeMouseMode = 2
 " minimal ui
 let NERDTreeMinimalUI = 1
 " collapse folders if applicable
@@ -365,7 +363,7 @@ let g:ale_sign_warning = '!!'
 let g:ale_fixers = {
 \   'javascript': ['prettier'],
 \   'typescript': ['prettier'],
-\   'typescriptreact': ['prettier'],
+\   'typescriptreact': ['prettier']
 \}
 
 " ------------------------------------------------------------------------------
@@ -381,5 +379,5 @@ set showmatch
 " number of lines above and below cursor at all times
 set scrolloff=5
 
-so colors.vim
+so $XDG_CONFIG_HOME/nvim/colors.vim
 
