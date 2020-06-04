@@ -64,8 +64,6 @@ has consistency across platforms, making it easy to setup on any operating syste
 - confirmation on terminal buffer close or nvim quit (`:h confirm`)
 - copying file paths
 - visual overhaul
-- eslint/prettier integration
-- markdown preview
 - floating fzf menu
 - code commenting
 - scrollable editor minimap

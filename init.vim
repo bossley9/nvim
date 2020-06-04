@@ -289,7 +289,7 @@ com! TerminalToggle call s:terminal_toggle()
 let s:termbufnr = -1
 let s:termopen = 0
 fu! s:terminal_toggle()
-  let l:y = 0.6
+  let l:y = 0
   let l:h = 1 - l:y
 
   " if terminal is open
@@ -301,17 +301,14 @@ fu! s:terminal_toggle()
 
     " if window does not exist
     if s:termbufnr < 0
-      "echo "new win"
       let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h)
       call termopen('zsh', {'on_exit': 'Terminal_exit'})
 
     " if terminal is closed
     else
-      "echo "old win"
       let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h, s:termbufnr)
     en
 
-    "exe 'echo ' . s:termbufnr
     exe 'b' . s:termbufnr
     startinsert
   en
@@ -383,3 +380,6 @@ set showmatch
 
 " number of lines above and below cursor at all times
 set scrolloff=5
+
+so colors.vim
+
