@@ -36,6 +36,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'tpope/vim-commentary'
+Plug 'sheerun/vim-polyglot'
 
 call plug#end()
 
@@ -58,13 +60,11 @@ fu! s:session_save()
     \ 'extend(tpbl, tabpagebuflist(v:val))')
   
   for b in range(1, bufnr('$'))
-    if bufexists(b)
-      " if 1. buffer is hidden
-      " 2. buffer is terminal
-      if index(tpbl, b) == -1 ||
-        \ getbufvar(b, '&buftype', '') ==# 'terminal'
-        silent exe 'bd!' . b
-      en
+    " 1. buffer is hidden
+    " 2. buffer is terminal
+    if (bufexists(b) && index(tpbl, b) == -1) ||
+      \ getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
+      silent exe 'bd!' . b
     en
   endfor
 
@@ -140,9 +140,10 @@ set shortmess+=F
 " jj 	  => 	Esc
 " C-j	  => 	CR
 " visual:
-" C-k   =>  Esc
+" M-k   =>  Esc
 inoremap jj     <Esc>
-vnoremap <C-k>  <Esc>
+vnoremap <M-k>  <Esc>
+vnoremap <M-j>  <Esc>
 
 " basic buffer navigation
 nnoremap <C-h> <C-w>h
@@ -262,6 +263,8 @@ set updatetime=300
 let g:gitgutter_sign_added = '▌'
 let g:gitgutter_sign_modified = '▌'
 let g:gitgutter_sign_removed = '▌'
+let g:gitgutter_sign_removed_first_line = '▌'
+let g:gitgutter_sign_modified_removed = '▌'
 
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
@@ -365,6 +368,22 @@ let g:ale_fixers = {
 \   'typescript': ['prettier'],
 \   'typescriptreact': ['prettier']
 \}
+
+" ------------------------------------------------------------------------------
+"  commenting/tabbing
+" ------------------------------------------------------------------------------
+
+" will not work if nonrecursive
+imap <M-/> <Esc>gc<Right><Right>i
+nmap <M-/> <Esc>gc<Right>
+vmap <M-/> gcgv
+
+nnoremap <Tab> >>
+vnoremap <Tab> >gv
+
+inoremap <S-Tab> <C-d>
+nnoremap <S-Tab> <<
+vnoremap <S-Tab> <gv
 
 " ------------------------------------------------------------------------------
 "  appearance

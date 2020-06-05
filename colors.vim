@@ -22,22 +22,27 @@ nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 "  gutter
 " ------------------------------------------------------------------------------
 
+hi LineNr ctermfg=DarkGray
+
 hi SignColumn ctermbg=None
 
 hi GitGutterAdd ctermbg=None ctermfg=Green
-hi GitGutterChange ctermbg=None ctermfg=Yellow
+hi GitGutterChange ctermbg=None ctermfg=Blue
 hi GitGutterChangeDelete ctermbg=None ctermfg=Red
 hi GitGutterDelete ctermbg=None ctermfg=Red
 
-hi Error ctermfg=Red ctermbg=Red
+hi Error cterm=bold
 
 " ------------------------------------------------------------------------------
 "  floating windows
 " ------------------------------------------------------------------------------
 
 hi Pmenu ctermbg=0 ctermfg=White
+hi PmenuSel ctermfg=LightBlue
 
 " ------------------------------------------------------------------------------
-"  status bar
+"  buffers
 " ------------------------------------------------------------------------------
+
+hi VertSplit ctermfg=0 ctermbg=0
 
