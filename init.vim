@@ -64,7 +64,7 @@ fu! s:session_save()
     " 2. buffer is terminal
     if (bufexists(b) && index(tpbl, b) == -1) ||
       \ getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
-      silent exe 'bd!' . b
+      silent exe 'bd! ' . b
     en
   endfor
 
@@ -368,6 +368,16 @@ let g:ale_fixers = {
 \   'typescript': ['prettier'],
 \   'typescriptreact': ['prettier']
 \}
+
+fu! TogglePrettierOnSave()
+  if (g:ale_fix_on_save == 0)
+    let g:ale_fix_on_save = 1
+  else
+    let g:ale_fix_on_save = 0
+  en
+  exe 'echo "Prettier=' . g:ale_fix_on_save . '"'
+endfunction
+com TogglePrettier call TogglePrettierOnSave()
 
 " ------------------------------------------------------------------------------
 "  commenting/tabbing
