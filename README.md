@@ -59,9 +59,6 @@ has consistency across platforms, making it easy to setup on any operating syste
 - select tooltips (or hover with CursorHold)
 - file search
 - project-wide search
-- multiple terminals
-- terminal placement/positioning
-- confirmation on terminal buffer close or nvim quit (`:h confirm`)
 - copying file paths
 - visual overhaul
 - floating fzf menu
@@ -69,6 +66,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 - folding (manually or gutter)
 - breadcrumbs
 - `:h drag-n-drop`
-- terminal click insertion
-- multiple terminal buffers
 - fix session not saving buffers properly

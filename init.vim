@@ -159,7 +159,7 @@ nnoremap <M-k> 5k
 nnoremap <Space><Space> :noh<CR>
 
 " reload config and window
-nnoremap <C-R> :let winv = winsaveview()<Bar>
+nnoremap <M-r> :let winv = winsaveview()<Bar>
   \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
@@ -281,46 +281,79 @@ augroup end
 "  terminal management
 " ------------------------------------------------------------------------------
 
-nnoremap <M-`> :TerminalToggle<CR>
-inoremap <M-`> <C-\><C-n>:TerminalToggle<CR>
-vnoremap <M-`> :TerminalToggle<CR>
-tnoremap <M-`> <C-\><C-n>:TerminalToggle<CR>
+" total num of terminal bufs available
+let s:num_total_term_bufs = 4
 
-com! TerminalToggle call s:terminal_toggle()
-let s:termbufnr = -1
-let s:termopen = 0
-fu! s:terminal_toggle()
+for m in ['n', 'i', 'v', 't']
+  exe m.'noremap <M-`> <C-\><C-n>:TerminalToggle<CR>'
+endfor
+
+" terminal buffer list
+let s:termbl = []
+
+for i in range(s:num_total_term_bufs)
+  call add(s:termbl, -1)
+  let n = i + 1 
+  exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
+endfor
+
+" terminal buffer list index
+let s:termbli = -1
+" is terminal window open
+let s:istermo = 0
+
+fu! s:terminal_open_window(...)
   let l:y = 0
   let l:h = 1 - l:y
+  let l:b = -1
 
+  if a:0 > 0 && a:1 >= 0 " open existing buffer
+    let l:b = s:core_functions_create_window(0, l:y, 1, l:h, a:1)
+    
+  else " create new buffer
+    let l:b = s:core_functions_create_window(0, l:y, 1, l:h)
+    call termopen('zsh', {'on_exit': 'Terminal_exit'})
+  en
+
+  exe 'b' . l:b
+  startinsert
+  return l:b
+endfunction
+
+com! TerminalToggle call s:terminal_toggle()
+fu! s:terminal_toggle()
   " if terminal is open
-  if s:termopen
-
+  if s:istermo
     norm <C-v><C-\><C-n>
     hide
   else
 
     " if window does not exist
-    if s:termbufnr < 0
-      let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h)
-      call termopen('zsh', {'on_exit': 'Terminal_exit'})
-
-    " if terminal is closed
-    else
-      let s:termbufnr = s:core_functions_create_window(0, l:y, 1, l:h, s:termbufnr)
-    en
-
-    exe 'b' . s:termbufnr
-    startinsert
+    if s:termbli < 0 | let s:termbli = 0 | en
+    let s:termbl[s:termbli] = 
+      \s:terminal_open_window(s:termbl[s:termbli])
   en
 
-  let s:termopen = ! s:termopen
+  let s:istermo = ! s:istermo
+endfunction
+
+com! -nargs=1 TerminalFocus 
+  \call s:terminal_focus(<f-args>)
+fu! s:terminal_focus(index)
+  let s:termbli = a:index - 1
+  norm <C-v><C-\><C-n>
+  let l:prev = bufnr('%')
+  hide
+
+  let s:termbl[s:termbli] = 
+    \s:terminal_open_window(s:termbl[s:termbli])
 endfunction
 
 fu! Terminal_exit(job_id, code, event) dict
-  if winnr('$') ==# 1 | qa! | else | bw! | endif
-  let s:termopen = 0
-  let s:termbufnr = -1
+  bw!
+  let s:istermo = 0
+  let s:termbl[s:termbli] = -1
+  let s:termbli = 0
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -377,7 +410,7 @@ fu! TogglePrettierOnSave()
   en
   exe 'echo "Prettier=' . g:ale_fix_on_save . '"'
 endfunction
-com TogglePrettier call TogglePrettierOnSave()
+com! TogglePrettier call TogglePrettierOnSave()
 
 " ------------------------------------------------------------------------------
 "  commenting/tabbing
