@@ -38,6 +38,8 @@ Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
+Plug 'APZelos/blamer.nvim'
+Plug 'tpope/vim-surround'
 
 call plug#end()
 
@@ -254,25 +256,45 @@ augroup file_explorer
     \ && b:NERDTree.isTabTree()) | q | en
 augroup end
 
-" TODO https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
+" ------------------------------------------------------------------------------
+"  clipboard
+" ------------------------------------------------------------------------------
+
+" c-c and c-s-v for terminal compatibility
+vnoremap <C-c> "+ygv
 
 " ------------------------------------------------------------------------------
 "  vcs integration
 " ------------------------------------------------------------------------------
+
+let s:vcs = '▌'
 
 " disable gutter keymappings
 let g:gitgutter_map_keys = 0
 " update gutters every x milliseconds
 set updatetime=300
 " git gutter symbols
-let g:gitgutter_sign_added = '▌'
-let g:gitgutter_sign_modified = '▌'
-let g:gitgutter_sign_removed = '▌'
-let g:gitgutter_sign_removed_first_line = '▌'
-let g:gitgutter_sign_modified_removed = '▌'
+let g:gitgutter_sign_added = s:vcs
+let g:gitgutter_sign_modified = s:vcs
+let g:gitgutter_sign_removed = s:vcs
+let g:gitgutter_sign_removed_first_line = s:vcs
+let g:gitgutter_sign_modified_removed = s:vcs
 
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
+
+let g:NERDTreeIndicatorMapCustom = {
+  \ "Modified"  : ' ',
+  \ "Staged"    : ' ',
+  \ "Untracked" : ' ',
+  \ "Renamed"   : ' ',
+  \ "Unmerged"  : ' ',
+  \ "Deleted"   : ' ',
+  \ "Dirty"     : ' ',
+  \ "Clean"     : ' ',
+  \ 'Ignored'   : ' ',
+  \ "Unknown"   : ' '
+  \ }
 
 augroup vcs_integration
   au!
@@ -281,6 +303,8 @@ augroup vcs_integration
   au BufEnter * sign define dummy
   au BufEnter * exe 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
+
+let g:blamer_enabled = 1
 
 " ------------------------------------------------------------------------------
 "  terminal management
@@ -434,11 +458,16 @@ nnoremap <S-Tab> <<
 vnoremap <S-Tab> <gv
 
 " ------------------------------------------------------------------------------
-"  matching parens
+"  matching paren
 " ------------------------------------------------------------------------------
 
-" TODO auto pair
-" TODO surround
+" TODO testing
+inoremap (; (<CR>);<C-c>O
+inoremap (, (<CR>),<C-c>O
+inoremap {; {<CR>};<C-c>O
+inoremap {, {<CR>},<C-c>O
+inoremap [; [<CR>];<C-c>O
+inoremap [, [<CR>],<C-c>O
 
 " ------------------------------------------------------------------------------
 "  file/project search
@@ -461,6 +490,7 @@ vnoremap <S-Tab> <gv
 " endfunction
 
 " TODO visual select permutate all lines
+" vnoremap I 
 
 " ------------------------------------------------------------------------------
 "  appearance
@@ -477,4 +507,33 @@ set scrolloff=5
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
 
+" TODO not loading initially
+" https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
+" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
+
+" fun! NERDTreeHighlightFile(extension, fg, bg)
+"  exe 'au Filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg . ''
+"  exe 'au Filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+" endfunction
+
+" call NERDTreeHighlightFile('jade', 'green', 'none')
+" call NERDTreeHighlightFile('ini', 'yellow', 'none')
+" call NERDTreeHighlightFile('md', 'Blue', 'none')
+" call NERDTreeHighlightFile('^\..*', 'DarkGray', 'none')
+" call NERDTreeHighlightFile('yml', 'yellow', 'none')
+" call NERDTreeHighlightFile('config', 'yellow', 'none')
+" call NERDTreeHighlightFile('conf', 'yellow', 'none')
+" call NERDTreeHighlightFile('json', 'yellow', 'none')
+" call NERDTreeHighlightFile('html', 'yellow', 'none')
+" call NERDTreeHighlightFile('styl', 'cyan', 'none')
+" call NERDTreeHighlightFile('css', 'cyan', 'none')
+" call NERDTreeHighlightFile('coffee', 'Red', 'none')
+" call NERDTreeHighlightFile('js', 'Yellow', 'none')
+" call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
+" call NERDTreeHighlightFile('ts', 'LightBlue', 'none')
+" call NERDTreeHighlightFile('tsx', 'LightBlue', 'none')
+" call NERDTreeHighlightFile('php', 'Magenta', 'none')
+
+
 " TODO emmet?
+" TODO https://github.com/ryanoasis/vim-devicons
