@@ -140,10 +140,11 @@ set shortmess+=F
 " jj 	  => 	Esc
 " C-j	  => 	CR
 " visual:
-" M-k   =>  Esc
+" M-h   =>  Esc
+" M-l   =>  Esc
 inoremap jj     <Esc>
-vnoremap <M-k>  <Esc>
-vnoremap <M-j>  <Esc>
+vnoremap <M-h>  <Esc>
+vnoremap <M-l>  <Esc>
 
 " basic buffer navigation
 nnoremap <C-h> <C-w>h
@@ -155,8 +156,12 @@ nnoremap <C-l> <C-w>l
 nnoremap <M-j> 5j
 nnoremap <M-k> 5k
 
+" basic visual navigation
+vnoremap <M-j> 5j
+vnoremap <M-k> 5k
+
 " nohl
-nnoremap <Space><Space> :noh<CR>
+nnoremap <Space> :noh<CR>
 
 " reload config and window
 nnoremap <M-r> :let winv = winsaveview()<Bar>
@@ -429,6 +434,35 @@ nnoremap <S-Tab> <<
 vnoremap <S-Tab> <gv
 
 " ------------------------------------------------------------------------------
+"  matching parens
+" ------------------------------------------------------------------------------
+
+" TODO auto pair
+" TODO surround
+
+" ------------------------------------------------------------------------------
+"  file/project search
+" ------------------------------------------------------------------------------
+
+" nnoremap <M-f> <Esc>:ToggleFSearch<CR>
+
+" let s:isfsearch = 0
+" 
+" com! ToggleFSearch call s:toggle_file_search()
+" fu! s:toggle_file_search()
+"   if s:isfsearch == 0 " closed
+"     " open it
+"     let l:fswin = s:core_functions_create_window(0, 0, 0.5, 0.1)
+"   else
+"     " close it
+"   en
+" 
+"   let s:isfsearch = ! s:isfsearch
+" endfunction
+
+" TODO visual select permutate all lines
+
+" ------------------------------------------------------------------------------
 "  appearance
 " ------------------------------------------------------------------------------
 
@@ -443,3 +477,4 @@ set scrolloff=5
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
 
+" TODO emmet?
