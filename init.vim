@@ -62,10 +62,12 @@ fu! s:session_save()
     \ 'extend(tpbl, tabpagebuflist(v:val))')
   
   for b in range(1, bufnr('$'))
-    " 1. buffer is hidden
+    " TODO 1. buffer is hidden
+      " \ (bufexists(b) && index(tpbl, b) == -1) ||
     " 2. buffer is terminal
-    if (bufexists(b) && index(tpbl, b) == -1) ||
+    if (
       \ getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
+      \ )
       silent exe 'bd! ' . b
     en
   endfor
@@ -116,7 +118,7 @@ set incsearch
 set hlsearch
 
 " turn magic on for regex
-set magic
+" set magic
 
 " indent tab width
 filetype plugin indent on
@@ -128,7 +130,7 @@ let &shiftwidth=s:indent
 set expandtab
 
 " prevent comments from continuing to new lines
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " remove file name from the command line bar
 set shortmess+=F
@@ -509,34 +511,6 @@ set showmatch
 set scrolloff=5
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
-
-" TODO not loading initially
-" https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
-" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
-
-" fun! NERDTreeHighlightFile(extension, fg, bg)
-"  exe 'au Filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg . ''
-"  exe 'au Filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-" endfunction
-
-" call NERDTreeHighlightFile('jade', 'green', 'none')
-" call NERDTreeHighlightFile('ini', 'yellow', 'none')
-" call NERDTreeHighlightFile('md', 'Blue', 'none')
-" call NERDTreeHighlightFile('^\..*', 'DarkGray', 'none')
-" call NERDTreeHighlightFile('yml', 'yellow', 'none')
-" call NERDTreeHighlightFile('config', 'yellow', 'none')
-" call NERDTreeHighlightFile('conf', 'yellow', 'none')
-" call NERDTreeHighlightFile('json', 'yellow', 'none')
-" call NERDTreeHighlightFile('html', 'yellow', 'none')
-" call NERDTreeHighlightFile('styl', 'cyan', 'none')
-" call NERDTreeHighlightFile('css', 'cyan', 'none')
-" call NERDTreeHighlightFile('coffee', 'Red', 'none')
-" call NERDTreeHighlightFile('js', 'Yellow', 'none')
-" call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
-" call NERDTreeHighlightFile('ts', 'LightBlue', 'none')
-" call NERDTreeHighlightFile('tsx', 'LightBlue', 'none')
-" call NERDTreeHighlightFile('php', 'Magenta', 'none')
-
 
 " TODO emmet?
 " TODO https://github.com/ryanoasis/vim-devicons

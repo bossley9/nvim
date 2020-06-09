@@ -1,5 +1,6 @@
 " TEMP open color test
 nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
+nnoremap 11 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 
 " 0 black
 " 1 darkblue
@@ -18,11 +19,13 @@ nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 " 14 yellow
 " 15 white
 
+let s:c8 = 'darkgrey'
+
 " ------------------------------------------------------------------------------
-"  gutter and blame
+"  gutter, file explorer, and blame
 " ------------------------------------------------------------------------------
 
-hi LineNr ctermfg=DarkGray
+exe 'hi LineNr ctermfg='.s:c8
 
 hi SignColumn ctermbg=None
 
@@ -33,7 +36,33 @@ hi GitGutterDelete ctermbg=None ctermfg=Red
 
 hi Error cterm=bold
 
-hi Blamer ctermfg=DarkGray
+hi Directory ctermfg=White
+
+" TODO not loading initially
+" https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
+" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
+fun! NERDTreeHighlightFile(ext, fg, bg)
+  exe 'au Filetype nerdtree highlight '.a:ext.' ctermbg='.a:bg.' ctermfg='.a:fg.''
+  exe 'au Filetype nerdtree syn match '.a:ext.' #^\s\+.*'.a:ext.'$#'
+endfunction
+
+" TODO special case for dots
+" exe 'au Filetype nerdtree highlight dot ctermbg=none ctermfg='.s:c8
+" exe 'au Filetype nerdtree syn match dot #\..*#'
+
+call NERDTreeHighlightFile('md', 'Blue', 'none')
+call NERDTreeHighlightFile('json', 'Blue', 'none')
+call NERDTreeHighlightFile('lock', 'Blue', 'none')
+call NERDTreeHighlightFile('yml', 'Blue', 'none')
+
+call NERDTreeHighlightFile('html', 'brown', 'none')
+
+call NERDTreeHighlightFile('css', 'LightBlue', 'none')
+call NERDTreeHighlightFile('scss', 'LightMagenta', 'none')
+call NERDTreeHighlightFile('js', 'Yellow', 'none')
+call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
+call NERDTreeHighlightFile('ts', 'DarkCyan', 'none')
+call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
 
 " ------------------------------------------------------------------------------
 "  floating windows
@@ -47,4 +76,10 @@ hi PmenuSel ctermfg=LightBlue
 " ------------------------------------------------------------------------------
 
 hi VertSplit ctermfg=0 ctermbg=0
+
+" ------------------------------------------------------------------------------
+"  cursor and surrounding
+" ------------------------------------------------------------------------------
+
+hi Blamer ctermfg=DarkGray
 
