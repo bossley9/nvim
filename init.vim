@@ -511,3 +511,6 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 
 " TODO emmet?
 " TODO https://github.com/ryanoasis/vim-devicons
+
+" TODO smooth scrolling
+" TODO fzf ignore paths (e.g. node_modules)
