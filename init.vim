@@ -117,9 +117,6 @@ set smartcase
 set incsearch
 set hlsearch
 
-" turn magic on for regex
-" set magic
-
 " indent tab width
 filetype plugin indent on
 let s:indent = 2
@@ -286,16 +283,16 @@ let g:gitgutter_sign_modified_removed = s:vcs
 if has('signcolumn') | set signcolumn=yes | en
 
 let g:NERDTreeIndicatorMapCustom = {
-  \ "Modified"  : ' ',
-  \ "Staged"    : ' ',
-  \ "Untracked" : ' ',
-  \ "Renamed"   : ' ',
-  \ "Unmerged"  : ' ',
-  \ "Deleted"   : ' ',
-  \ "Dirty"     : ' ',
-  \ "Clean"     : ' ',
-  \ 'Ignored'   : ' ',
-  \ "Unknown"   : ' '
+  \ "Modified"  : s:vcs,
+  \ "Staged"    : s:vcs,
+  \ "Untracked" : s:vcs,
+  \ "Renamed"   : s:vcs,
+  \ "Unmerged"  : s:vcs,
+  \ "Deleted"   : s:vcs,
+  \ "Dirty"     : s:vcs,
+  \ "Clean"     : s:vcs,
+  \ 'Ignored'   : s:vcs,
+  \ "Unknown"   : s:vcs
   \ }
 
 augroup vcs_integration
@@ -343,7 +340,7 @@ fu! s:terminal_open_window(...)
 
   if a:0 > 0 && a:1 >= 0 " open existing buffer
     let l:b = s:core_functions_create_window(0, l:y, 1, l:h, a:1)
-    
+
   else " create new buffer
     let l:b = s:core_functions_create_window(0, l:y, 1, l:h)
     call termopen('zsh', {'on_exit': 'Terminal_exit'})

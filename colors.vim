@@ -20,27 +20,51 @@ nnoremap 11 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 " 15 white
 
 let s:c8 = 'darkgrey'
+let s:c9 = 'blue'
+let s:c10 = 'green'
+let s:c12 = 'red'
 
 " ------------------------------------------------------------------------------
 "  gutter, file explorer, and blame
 " ------------------------------------------------------------------------------
 
+let s:gitadd = s:c10
+let s:gitmodify = s:c9
+let s:gitdelete = s:c12
+
 exe 'hi LineNr ctermfg='.s:c8
 
 hi SignColumn ctermbg=None
 
-hi GitGutterAdd ctermbg=None ctermfg=Green
-hi GitGutterChange ctermbg=None ctermfg=Blue
-hi GitGutterChangeDelete ctermbg=None ctermfg=Red
-hi GitGutterDelete ctermbg=None ctermfg=Red
+exe 'hi GitGutterAdd ctermbg=None ctermfg='.s:gitadd
+exe 'hi GitGutterChange ctermbg=None ctermfg='.s:gitmodify
+exe 'hi GitGutterChangeDelete ctermbg=None ctermfg='.s:gitdelete
+exe 'hi GitGutterDelete ctermbg=None ctermfg='.s:gitdelete
 
 hi Error cterm=bold
 
 hi Directory ctermfg=White
 
-" TODO not loading initially
-" https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
-" https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
+augroup nerdtreeconcealbrackets
+  au!
+  au FileType nerdtree syntax match hideBracketsInNerdTree
+    \ "\]" contained conceal containedin=ALL cchar=""
+  au FileType nerdtree syntax match hideBracketsInNerdTree
+    \ "\[" contained conceal containedin=ALL
+  au FileType nerdtree setlocal conceallevel=3
+  au FileType nerdtree setlocal concealcursor=nvic
+augroup end
+
+" TODO overwritten by file highlight
+exe 'hi NERDTreeGitStatusModified ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusStaged ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusRenamed ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusUnmerged ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusUntracked ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusDirDirty ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusDirClean ctermfg='.s:gitmodify
+exe 'hi NERDTreeGitStatusIgnored ctermfg='.s:gitmodify
+
 fun! NERDTreeHighlightFile(ext, fg, bg)
   exe 'au Filetype nerdtree highlight '.a:ext.' ctermbg='.a:bg.' ctermfg='.a:fg.''
   exe 'au Filetype nerdtree syn match '.a:ext.' #^\s\+.*'.a:ext.'$#'
