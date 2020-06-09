@@ -19,7 +19,7 @@ nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 " 15 white
 
 " ------------------------------------------------------------------------------
-"  gutter
+"  gutter and blame
 " ------------------------------------------------------------------------------
 
 hi LineNr ctermfg=DarkGray
@@ -32,6 +32,8 @@ hi GitGutterChangeDelete ctermbg=None ctermfg=Red
 hi GitGutterDelete ctermbg=None ctermfg=Red
 
 hi Error cterm=bold
+
+hi Blamer ctermfg=DarkGray
 
 " ------------------------------------------------------------------------------
 "  floating windows

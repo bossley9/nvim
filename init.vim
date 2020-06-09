@@ -305,6 +305,9 @@ augroup vcs_integration
 augroup end
 
 let g:blamer_enabled = 1
+let g:blamer_delay = 1500
+let g:blamer_template = '<committer> <committer-time> • <summary>'
+let g:blamer_date_format = '%Y.%m.%d %H:%M'
 
 " ------------------------------------------------------------------------------
 "  terminal management
