@@ -215,6 +215,8 @@ set mouse=a
 nnoremap <silent> <M-p> <Esc>:FZF<CR>
 vnoremap <silent> <M-p> <Esc>:FZF<CR>
 
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
+
 " ------------------------------------------------------------------------------
 "  file explorer
 " ------------------------------------------------------------------------------
@@ -463,7 +465,6 @@ vnoremap <S-Tab> <gv
 "  matching paren
 " ------------------------------------------------------------------------------
 
-" TODO testing
 inoremap (; (<CR>);<C-c>O
 inoremap (, (<CR>),<C-c>O
 inoremap {; {<CR>};<C-c>O
@@ -504,6 +505,9 @@ set number
 " show matching brackets
 set showmatch
 
+" open vertical windows to the right
+set splitright
+
 " number of lines above and below cursor at all times
 set scrolloff=5
 
@@ -511,6 +515,3 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 
 " TODO emmet?
 " TODO https://github.com/ryanoasis/vim-devicons
-
-" TODO smooth scrolling
-" TODO fzf ignore paths (e.g. node_modules)
