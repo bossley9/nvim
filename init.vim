@@ -29,6 +29,7 @@ augroup end
 call plug#begin(g:dataDir . 'plugged')
 
 Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -212,10 +213,12 @@ set mouse=a
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
 
-nnoremap <silent> <M-p> <Esc>:FZF<CR>
-vnoremap <silent> <M-p> <Esc>:FZF<CR>
+nnoremap <silent> <M-p> <Esc>:Files<CR>
+vnoremap <silent> <M-p> <Esc>:Files<CR>
 
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
+" disregard .gitignore and .git files
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 
 " ------------------------------------------------------------------------------
 "  file explorer
@@ -515,3 +518,4 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 
 " TODO emmet?
 " TODO https://github.com/ryanoasis/vim-devicons
+" TODO :Preview command for md/html
