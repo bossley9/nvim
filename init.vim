@@ -54,24 +54,10 @@ filetype plugin on
 " ------------------------------------------------------------------------------
 
 fu! s:session_save()
-
   " file explorer
   NERDTreeClose
 
-  let tpbl=[]
-  call map(range(1, tabpagenr('$')), 
-    \ 'extend(tpbl, tabpagebuflist(v:val))')
-  
-  for b in range(1, bufnr('$'))
-    " TODO 1. buffer is hidden
-      " \ (bufexists(b) && index(tpbl, b) == -1) ||
-    " 2. buffer is terminal
-    if (
-      \ getbufvar(b, '&buftype', 'ERROR') ==# 'terminal'
-      \ )
-      silent exe 'bd! ' . b
-    en
-  endfor
+  call s:clear_buffers()
 
   " touch directory and save session
   exe 'silent !mkdir -p ' . s:sessDir
@@ -171,6 +157,10 @@ nnoremap <M-r> :let winv = winsaveview()<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
 
+" closing and saving
+nnoremap ZZ :wqa<CR>
+nnoremap ZQ :qa!<CR>
+
 " ------------------------------------------------------------------------------
 "  core functions
 " ------------------------------------------------------------------------------
@@ -195,6 +185,26 @@ fu! s:core_functions_create_window(x, y, w, h, ...)
   " center param is true if window should be autofocused
   call nvim_open_win(b, v:true, opts)
   return b
+endfunction
+
+com! Clear call s:clear_buffers()
+fu! s:clear_buffers()
+  let l:bl = filter(range(1, bufnr('$')), 'buflisted(v:val)')
+  let l:tab = tabpagenr()
+  try
+    let l:win = 0
+    while l:win < winnr('$')
+      let l:win += 1
+      call remove(l:bl, index(l:bl, winbufnr(l:win)))
+    endwhile
+
+    if len(l:bl)
+      exe 'bw' join(l:bl)
+    endif
+  finally
+    " original tab
+    exe 'tabnext' l:tab
+  endtry
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -519,3 +529,5 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 " TODO emmet?
 " TODO https://github.com/ryanoasis/vim-devicons
 " TODO :Preview command for md/html
+" TODO tag search with fzf.vim
+" TODO remove fzf.vim except preview
