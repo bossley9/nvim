@@ -65,6 +65,8 @@ fu! s:session_save()
 endf
 
 fu! s:session_restore()
+  " tags
+  GenTags
   " if session exists
   if filereadable(s:sessFile)
     exe 'so ' . s:sessFile
@@ -152,10 +154,12 @@ vnoremap <M-k> 5k
 nnoremap <Space> :noh<CR>
 
 " reload config and window
-nnoremap <M-r> :let winv = winsaveview()<Bar>
+nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
   \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
+  \:GenTags<CR>
+
 
 " closing and saving
 nnoremap ZZ :wqa<CR>
@@ -205,6 +209,19 @@ fu! s:clear_buffers()
     " original tab
     exe 'tabnext' l:tab
   endtry
+endfunction
+
+" ------------------------------------------------------------------------------
+"  tags
+" ------------------------------------------------------------------------------
+
+exe 'set tags+='.s:sessDir.'/tags'
+
+com! GenTags call s:gen_tags()
+fu! s:gen_tags()
+  exe 'silent !mkdir -p ' . s:sessDir
+  exe 'silent !ctags -R &'
+  exe 'silent !mv ./tags ' . s:sessDir
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -531,3 +548,6 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 " TODO :Preview command for md/html
 " TODO tag search with fzf.vim
 " TODO remove fzf.vim except preview
+" TODO nerdtree reload for generated files
+" TODO tags
+" TODO nerdtree cursor appearance
