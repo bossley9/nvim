@@ -159,6 +159,7 @@ nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
   \:GenTags<CR>
+  \:NERDTreeRefreshRoot<CR>
 
 
 " closing and saving
