@@ -88,6 +88,10 @@ call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
 call NERDTreeHighlightFile('ts', 'DarkCyan', 'none')
 call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
 
+" file explorer entry highlight
+hi clear Cursorline
+hi Cursorline term=Bold ctermbg=8
+
 " ------------------------------------------------------------------------------
 "  floating windows
 " ------------------------------------------------------------------------------

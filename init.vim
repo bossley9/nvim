@@ -158,8 +158,8 @@ nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
   \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
-  \:GenTags<CR>
   \:NERDTreeRefreshRoot<CR>
+  \:GenTags<CR>
 
 
 " closing and saving
@@ -216,13 +216,14 @@ endfunction
 "  tags
 " ------------------------------------------------------------------------------
 
+nnoremap ^ :Tags<CR>
+
 exe 'set tags+='.s:sessDir.'/tags'
 
 com! GenTags call s:gen_tags()
 fu! s:gen_tags()
   exe 'silent !mkdir -p ' . s:sessDir
-  exe 'silent !ctags -R &'
-  exe 'silent !mv ./tags ' . s:sessDir
+  exe 'silent !ctags --tag-relative=always -R -f ' . s:sessDir . '/tags . &'
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -552,3 +553,4 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 " TODO nerdtree reload for generated files
 " TODO tags
 " TODO nerdtree cursor appearance
+" TODO tagbar
