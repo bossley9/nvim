@@ -166,6 +166,10 @@ nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
 nnoremap ZZ :wqa<CR>
 nnoremap ZQ :qa!<CR>
 
+" to prevent annoying modals and errors
+" from mistyping and clumsiness
+com! W norm :w<CR>
+
 " ------------------------------------------------------------------------------
 "  core functions
 " ------------------------------------------------------------------------------
@@ -546,11 +550,7 @@ set scrolloff=5
 so $XDG_CONFIG_HOME/nvim/colors.vim
 
 " TODO emmet?
-" TODO https://github.com/ryanoasis/vim-devicons
-" TODO :Preview command for md/html
 " TODO tag search with fzf.vim
 " TODO remove fzf.vim except preview
-" TODO nerdtree reload for generated files
-" TODO tags
-" TODO nerdtree cursor appearance
-" TODO tagbar
+" TODO better tags in js,jsx,ts,tsx
+" TODO tagbar plugin?
