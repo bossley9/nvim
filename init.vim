@@ -33,7 +33,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'vim-airline/vim-airline'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
@@ -134,8 +133,8 @@ let s:nav_jump = 5
 " nnoremap y yy
 
 " line ends
-nnoremap 1 0
-nnoremap 2 $
+nnoremap ! 0
+nnoremap @ $
 
 " no shift for fast navigating
 " also to force me to use w, b, and e more
@@ -183,6 +182,7 @@ nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
   \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
   \call winrestview(winv)<Bar>
   \unlet winv<CR>
+  \:Clear<CR>
   \:NERDTreeRefreshRoot<CR>
   \:GenTags<CR>
 
@@ -198,6 +198,8 @@ com! W norm :w<CR>
 " ------------------------------------------------------------------------------
 "  core functions
 " ------------------------------------------------------------------------------
+
+" TODO https://github.com/huytd/vim-config/blob/master/init.vim#L132-L171
 
 " floating window creator
 " arguments are (x, y, w, h, bufnr?)
@@ -245,7 +247,7 @@ endfunction
 "  tags
 " ------------------------------------------------------------------------------
 
-nnoremap ^ :Tags<CR>
+nnoremap <M-[> :Tags<CR>
 
 exe 'set tags+='.s:sessDir.'/tags'
 
@@ -400,15 +402,18 @@ let s:termbli = -1
 let s:istermo = 0
 
 fu! s:terminal_open_window(...)
-  let l:y = 0
-  let l:h = 1 - l:y
+  let l:x = 0.1
+  let l:y = 0.1
+  let l:h = 0.8
+  let l:w = 0.8
+  
   let l:b = -1
 
   if a:0 > 0 && a:1 >= 0 " open existing buffer
-    let l:b = s:core_functions_create_window(0, l:y, 1, l:h, a:1)
+    let l:b = s:core_functions_create_window(l:x, l:y, l:w, l:h, a:1)
 
   else " create new buffer
-    let l:b = s:core_functions_create_window(0, l:y, 1, l:h)
+    let l:b = s:core_functions_create_window(l:x, l:y, l:w, l:h)
     call termopen('zsh', {'on_exit': 'Terminal_exit'})
   en
 
@@ -457,18 +462,59 @@ endfunction
 "  status bar / tabline
 " ------------------------------------------------------------------------------
 
-let g:airline#extensions#default#layout = [
-  \   [ 'a', 'c' ],
-  \   [ 'x', 'y']
-  \ ]
-let g:airline_section_c = airline#section#create(['file'])
-let g:airline_section_x = airline#section#create(['Ln %l, Col %c'])
-let g:airline_section_y = airline#section#create(['filetype'])
-let g:airline_extensions = ['tabline']
-" show project directory in the tabline
-let g:airline#extensions#tabline#buffers_label = s:dir
-" only show path in tab name if it contains another file with the same name
-let g:airline#extensions#tabline#formatter = 'unique_tail'
+fu! StatusLineMode()
+  let l:mode = mode()
+  if (l:mode == 'n')
+    return 'NORMAL'
+  elseif (l:mode == 'i')
+    return 'INSERT'
+  elseif (l:mode == 'v')
+    return 'VISUAL'
+  elseif (l:mode == 'c')
+    return 'COMMAND'
+  elseif (l:mode == 't')
+    return 'TERMINAL'
+  else
+    return l:mode
+  en
+endfunction
+
+fu! StatusLineGitBranch()
+  let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+  return strlen(l:branch) > 0 ? ' '.l:branch.' ' : ''
+endfunction
+
+fu! GetStatusInactive()
+endfunction
+
+fu! GetStatusActive()
+  set statusline=
+  set statusline+=%#Mode#
+  set statusline+=\ %{StatusLineMode()}
+  set statusline+=\ %#constant#
+  set statusline+=%{StatusLineGitBranch()}
+  set statusline+=%#FileName#
+  set statusline+=\ %F
+
+  set statusline+=%=
+
+  set statusline+=%#StatusLne#
+  set statusline+=%{'Ln\ '}
+  set statusline+=%l
+  set statusline+=%{',\ Col\ '}
+  set statusline+=%c
+  set statusline+=%#FileName#
+  set statusline+=\ %y
+endfunction
+
+set laststatus=2
+set statusline=%!GetStatusActive()
+
+augroup status_bar_tabline
+  au!
+  au WinEnter * setlocal statusline=%!GetStatusActive()
+  au WinLeave * setlocal statusline=%!GetStatusInactive()
+augroup end
 
 " ------------------------------------------------------------------------------
 "  code folding
@@ -481,9 +527,9 @@ set nofoldenable
 set foldnestmax=10
 set foldlevelstart=1
 
-let javaScript_fold = 1
-let ruby_fold = 1
-let sh_fold_enabled = 1
+" let javaScript_fold = 1
+" let ruby_fold = 1
+" let sh_fold_enabled = 1
 
 " ------------------------------------------------------------------------------
 "  linting/prettier

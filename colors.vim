@@ -23,6 +23,10 @@ let s:c8 = 'darkgrey'
 let s:c9 = 'blue'
 let s:c10 = 'green'
 let s:c12 = 'red'
+let s:c15 = 'white'
+
+let s:chide = 0
+let s:chi = 8
 
 " ------------------------------------------------------------------------------
 "  gutter, file explorer, and blame
@@ -32,7 +36,7 @@ let s:gitadd = s:c10
 let s:gitmodify = s:c9
 let s:gitdelete = s:c12
 
-exe 'hi LineNr ctermfg='.s:c8
+exe 'hi LineNr ctermfg='.s:chi
 
 hi SignColumn ctermbg=None
 
@@ -90,20 +94,21 @@ call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
 
 " file explorer entry highlight
 hi clear Cursorline
-hi Cursorline term=Bold ctermbg=8
+exe 'hi Cursorline term=Bold ctermbg='.s:chi
 
 " ------------------------------------------------------------------------------
 "  floating windows
 " ------------------------------------------------------------------------------
 
-hi Pmenu ctermbg=0 ctermfg=White
+exe 'hi Pmenu ctermbg='.s:chide.' ctermfg=White'
 hi PmenuSel ctermfg=LightBlue
 
 " ------------------------------------------------------------------------------
 "  buffers
 " ------------------------------------------------------------------------------
 
-hi VertSplit ctermfg=0 ctermbg=0
+exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:chide
+exe 'hi NonText ctermfg='.s:chide
 
 " ------------------------------------------------------------------------------
 "  cursor and surrounding
@@ -111,3 +116,14 @@ hi VertSplit ctermfg=0 ctermbg=0
 
 hi Blamer ctermfg=DarkGray
 
+" ------------------------------------------------------------------------------
+"  status bar
+" ------------------------------------------------------------------------------
+
+hi clear StatusLine
+
+hi StatusLine ctermbg=0 ctermfg=Grey
+hi StatusLineNC ctermbg=0 ctermfg=0
+
+exe 'hi Mode ctermfg='.s:chide.' ctermbg=LightBlue cterm=Bold'
+exe 'hi FileName ctermfg='.s:c9.' cterm=Bold'
