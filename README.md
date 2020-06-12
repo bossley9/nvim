@@ -60,8 +60,6 @@ has consistency across platforms, making it easy to setup on any operating syste
 - file search
 - project-wide search
 - copying file paths
-- visual overhaul
 - scrollable editor minimap
 - folding (manually or gutter)
-- breadcrumbs
-- `:h drag-n-drop`
+

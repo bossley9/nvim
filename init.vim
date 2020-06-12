@@ -132,6 +132,8 @@ let s:nav_jump = 5
 " diw and daw for such things
 " nnoremap y yy
 
+" <C-g> to view path
+
 " line ends
 nnoremap ! 0
 nnoremap @ $
@@ -184,6 +186,11 @@ nnoremap ZQ :qa!<CR>
 " to prevent annoying modals and errors
 " from mistyping and clumsiness
 com! W norm :w<CR>
+
+" permutate insert... because I 
+" seem to use this all the time...
+vnoremap I 0<C-v>I
+vnoremap A $<C-v>A
 
 " ------------------------------------------------------------------------------
 "  core functions
@@ -596,9 +603,6 @@ inoremap [, [<CR>],<C-c>O
 " 
 "   let s:isfsearch = ! s:isfsearch
 " endfunction
-
-" TODO visual select permutate all lines
-" vnoremap I 
 
 " ------------------------------------------------------------------------------
 "  appearance
