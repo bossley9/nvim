@@ -49,6 +49,7 @@ hi Error cterm=bold
 
 hi Directory ctermfg=White
 
+" hide nerdtree git brackets
 augroup nerdtreeconcealbrackets
   au!
   au FileType nerdtree syntax match hideBracketsInNerdTree
@@ -59,7 +60,7 @@ augroup nerdtreeconcealbrackets
   au FileType nerdtree setlocal concealcursor=nvic
 augroup end
 
-" TODO overwritten by file highlight
+" this is overwritten by filetype highlighting, if present
 exe 'hi NERDTreeGitStatusModified ctermfg='.s:gitmodify
 exe 'hi NERDTreeGitStatusStaged ctermfg='.s:gitmodify
 exe 'hi NERDTreeGitStatusRenamed ctermfg='.s:gitmodify
@@ -69,19 +70,23 @@ exe 'hi NERDTreeGitStatusDirDirty ctermfg='.s:gitmodify
 exe 'hi NERDTreeGitStatusDirClean ctermfg='.s:gitmodify
 exe 'hi NERDTreeGitStatusIgnored ctermfg='.s:gitmodify
 
-fun! NERDTreeHighlightFile(ext, fg, bg)
-  exe 'au Filetype nerdtree highlight '.a:ext.' ctermbg='.a:bg.' ctermfg='.a:fg.''
+fu! NERDTreeHighlightFile(ext, fg, bg)
+  exe 'au Filetype nerdtree hi '.a:ext.' ctermbg='.a:bg.' ctermfg='.a:fg.''
   exe 'au Filetype nerdtree syn match '.a:ext.' #^\s\+.*'.a:ext.'$#'
 endfunction
 
-" TODO special case for dots
-" exe 'au Filetype nerdtree highlight dot ctermbg=none ctermfg='.s:c8
-" exe 'au Filetype nerdtree syn match dot #\..*#'
+" hide all dots
+augroup file_explorer_dot_highlight
+  exe 'au Filetype nerdtree highlight dot ctermbg=none ctermfg='.s:c8
+  exe 'au Filetype nerdtree match dot /\..*/'
+augroup end
 
-call NERDTreeHighlightFile('md', 'Blue', 'none')
-call NERDTreeHighlightFile('json', 'Blue', 'none')
-call NERDTreeHighlightFile('lock', 'Blue', 'none')
-call NERDTreeHighlightFile('yml', 'Blue', 'none')
+let s:hi_doc = 'Blue'
+
+call NERDTreeHighlightFile('md', s:hi_doc, 'none')
+call NERDTreeHighlightFile('json', s:hi_doc, 'none')
+call NERDTreeHighlightFile('lock', s:hi_doc, 'none')
+call NERDTreeHighlightFile('yml', s:hi_doc, 'none')
 
 call NERDTreeHighlightFile('html', 'brown', 'none')
 
@@ -91,6 +96,8 @@ call NERDTreeHighlightFile('js', 'Yellow', 'none')
 call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
 call NERDTreeHighlightFile('ts', 'DarkCyan', 'none')
 call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
+
+call NERDTreeHighlightFile('vim', 'lightgreen', 'none')
 
 " file explorer entry highlight
 hi clear Cursorline

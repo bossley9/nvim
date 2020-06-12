@@ -126,6 +126,9 @@ set shortmess+=F
 
 let s:nav_jump = 5
 
+" no help docs!
+nnoremap K k
+
 " no double taps
 " I know it blocks the default binding, used for useful stuff like
 " yiw and yaw, but I rarely want to copy words. I'd rather use
@@ -177,7 +180,6 @@ nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
   \:Clear<CR>
   \:NERDTreeRefreshRoot<CR>
   \:GenTags<CR>
-
 
 " closing and saving
 nnoremap ZZ :wqa<CR>
@@ -481,6 +483,7 @@ fu! GetStatusActive()
   set statusline+=%{GitBranch()}
   set statusline+=%#FileName#
   set statusline+=\ %t
+  set statusline+=\ %r
 
   set statusline+=%=
 
