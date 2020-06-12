@@ -1,6 +1,6 @@
 " TEMP open color test
 nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
-nnoremap 11 :so $VIMRUNTIME/syntax/colortest.vim<CR>
+nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 
 " 0 black
 " 1 darkblue

@@ -125,16 +125,40 @@ set shortmess+=F
 "  core mappings/bindings
 " ------------------------------------------------------------------------------
 
-" insert:
-" C-h 	=> 	BS
-" jj 	  => 	Esc
-" C-j	  => 	CR
-" visual:
-" M-h   =>  Esc
-" M-l   =>  Esc
-inoremap jj     <Esc>
-vnoremap <M-h>  <Esc>
-vnoremap <M-l>  <Esc>
+let s:nav_jump = 5
+
+" no double taps
+" I know it blocks the default binding, used for useful stuff like
+" yiw and yaw, but I rarely want to copy words. I'd rather use
+" diw and daw for such things
+" nnoremap y yy
+
+" line ends
+nnoremap 1 0
+nnoremap 2 $
+
+" no shift for fast navigating
+" also to force me to use w, b, and e more
+nnoremap h H
+nnoremap m M
+nnoremap l L
+
+vnoremap h H
+vnoremap m M
+vnoremap l L
+
+nnoremap <M-h> h
+nnoremap <M-l> l
+
+" <CR>, <Esc>, <BS> basics
+inoremap <M-h> <BS>
+inoremap <M-;> <Esc>
+inoremap <M-j> <CR>
+
+vnoremap <M-;> <Esc>
+
+" legacy
+" inoremap jj <Esc> 
 
 " basic buffer navigation
 nnoremap <C-h> <C-w>h
@@ -143,12 +167,13 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " basic vertical navigation
-nnoremap <M-j> 5j
-nnoremap <M-k> 5k
+exe 'nnoremap <M-j> ' . s:nav_jump . 'j'
+exe 'nnoremap <M-k> ' . s:nav_jump . 'k'
+exe 'vnoremap <M-j> ' . s:nav_jump . 'j'
+exe 'vnoremap <M-k> ' . s:nav_jump . 'k'
 
-" basic visual navigation
-vnoremap <M-j> 5j
-vnoremap <M-k> 5k
+nnoremap <M-u> <C-u>
+nnoremap <M-d> <C-d>
 
 " nohl
 nnoremap <Space> :noh<CR>
@@ -299,6 +324,9 @@ augroup end
 
 " c-c and c-s-v for terminal compatibility
 vnoremap <C-c> "+ygv
+nnoremap <C-c> "+ygv
+
+nnoremap <C-v> o<Esc>"+p
 
 " ------------------------------------------------------------------------------
 "  vcs integration
