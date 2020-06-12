@@ -125,5 +125,43 @@ hi clear StatusLine
 hi StatusLine ctermbg=0 ctermfg=Grey
 hi StatusLineNC ctermbg=0 ctermfg=0
 
-exe 'hi Mode ctermfg='.s:chide.' ctermbg=LightBlue cterm=Bold'
 exe 'hi FileName ctermfg='.s:c9.' cterm=Bold'
+
+let s:cmn = 'Magenta'
+let s:cmi = 'LightBlue'
+let s:cmv = 'Yellow'
+let s:cmc = 'Green'
+let s:cmt = 'DarkBlue'
+
+fu! StatusLineMode()
+  let l:bg = s:cmn
+  let l:mode = mode()
+
+  if (l:mode == 'n')
+    let l:bg = s:cmn
+    let l:mode = 'NORMAL'
+
+  elseif (l:mode == 'i')
+    let l:bg = s:cmi
+    let l:mode = 'INSERT'
+
+  elseif (l:mode == 'v')
+    let l:bg = s:cmv
+    let l:mode = 'VISUAL'
+
+  elseif (l:mode == 'c')
+    let l:bg = s:cmc
+    let l:mode = 'COMMAND'
+
+  elseif (l:mode == 't')
+    let l:bg = s:cmt
+    let l:mode = 'TERMINAL'
+
+  else
+    let l:bg = s:cmn
+  en
+
+  exe 'hi Mode ctermfg='.s:chide.' ctermbg='.l:bg.' cterm=Bold'
+  return l:mode
+endfunction
+

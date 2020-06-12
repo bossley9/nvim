@@ -469,29 +469,13 @@ endfunction
 "  status bar / tabline
 " ------------------------------------------------------------------------------
 
-fu! StatusLineMode()
-  let l:mode = mode()
-  if (l:mode == 'n')
-    return 'NORMAL'
-  elseif (l:mode == 'i')
-    return 'INSERT'
-  elseif (l:mode == 'v')
-    return 'VISUAL'
-  elseif (l:mode == 'c')
-    return 'COMMAND'
-  elseif (l:mode == 't')
-    return 'TERMINAL'
-  else
-    return l:mode
-  en
-endfunction
-
 fu! GetStatusInactive()
 endfunction
 
 fu! GetStatusActive()
   set statusline=
   set statusline+=%#Mode#
+  " StatusLineMode declared in colors.vim
   set statusline+=\ %{StatusLineMode()}
   set statusline+=\ %#constant#
   set statusline+=%{GitBranch()}
