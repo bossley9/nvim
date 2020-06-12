@@ -136,19 +136,6 @@ let s:nav_jump = 5
 nnoremap ! 0
 nnoremap @ $
 
-" no shift for fast navigating
-" also to force me to use w, b, and e more
-nnoremap h H
-nnoremap m M
-nnoremap l L
-
-vnoremap h H
-vnoremap m M
-vnoremap l L
-
-nnoremap <M-h> h
-nnoremap <M-l> l
-
 " <CR>, <Esc>, <BS> basics
 inoremap <M-h> <BS>
 inoremap <M-;> <Esc>
@@ -164,6 +151,9 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+nnoremap <M-h> <C-w>h
+nnoremap <M-l> <C-w>l
 
 " basic vertical navigation
 exe 'nnoremap <M-j> ' . s:nav_jump . 'j'
@@ -376,6 +366,16 @@ let g:blamer_delay = 1500
 let g:blamer_template = '<committer> <committer-time> • <summary>'
 let g:blamer_date_format = '%Y.%m.%d %H:%M'
 
+fu! GitBranch()
+  let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+  let l:branch = strlen(l:branch) > 0 ? ' ' . l:branch . ' ' : ''
+
+  if strlen(l:branch) > 20 | let l:branch = l:branch[0:17] . '...' | en
+  return l:branch
+endfunction
+
+" TODO merge conflict highlight https://github.com/rhysd/conflict-marker.vim/blob/master/autoload/conflict_marker.vim
+
 " ------------------------------------------------------------------------------
 "  terminal management
 " ------------------------------------------------------------------------------
@@ -479,11 +479,6 @@ fu! StatusLineMode()
   en
 endfunction
 
-fu! StatusLineGitBranch()
-  let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-  return strlen(l:branch) > 0 ? ' '.l:branch.' ' : ''
-endfunction
-
 fu! GetStatusInactive()
 endfunction
 
@@ -492,9 +487,9 @@ fu! GetStatusActive()
   set statusline+=%#Mode#
   set statusline+=\ %{StatusLineMode()}
   set statusline+=\ %#constant#
-  set statusline+=%{StatusLineGitBranch()}
+  set statusline+=%{GitBranch()}
   set statusline+=%#FileName#
-  set statusline+=\ %F
+  set statusline+=\ %t
 
   set statusline+=%=
 
