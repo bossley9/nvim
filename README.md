@@ -59,7 +59,5 @@ has consistency across platforms, making it easy to setup on any operating syste
 - select tooltips (or hover with CursorHold)
 - file search
 - project-wide search
-- copying file paths
-- scrollable editor minimap
 - folding (manually or gutter)
 

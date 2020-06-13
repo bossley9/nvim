@@ -120,6 +120,9 @@ au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " remove file name from the command line bar
 set shortmess+=F
 
+" hide mode from displaying in command line bar
+set noshowmode
+
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
 " ------------------------------------------------------------------------------
@@ -195,16 +198,41 @@ vnoremap I 0<C-v>I
 vnoremap A $<C-v>A
 
 " ------------------------------------------------------------------------------
-"  core functions
+"  core functions - windows
 " ------------------------------------------------------------------------------
 
 " TODO https://github.com/huytd/vim-config/blob/master/init.vim#L132-L171
 
 " floating window creator
+
 " arguments are (x, y, w, h, bufnr?)
 " x, y, w, and h are all [0..1] values
 " bufnr? is an optional buffer number of an existing buffer
-fu! s:core_functions_create_window(x, y, w, h, ...)
+
+" windowObj? is an optional windowObj which already exists
+" wrapper - when called with the above arguments, will return a
+" preview window object and display the window
+fu! g:Win_New(x, y, w, h)
+  return s:core_window_create2(a:x, a:y, a:w, a:h)
+endfunction
+
+" TODO remove
+let gabcdefgh = {}
+nnoremap 55 <Esc>:let gabcdefgh = g:Win_New(0.1, 0.1, 0.8, 0.8)<CR>
+nnoremap 66 <Esc>:let gabcdefgh = g:Win_Toggle(gabcdefgh)<CR>
+
+" wrapper - when called with a preview window object, will hide 
+" or show the preview window
+fu! g:Win_Toggle(windowobj)
+  return s:core_window_toggle(a:windowobj)
+endfunction
+
+" wrapper - when called with a preview window object, will
+" close the window
+fu! g:Win_Close(window)
+endfunction
+
+fu! s:core_create_window(x, y, w, h, ...)
   " create unlisted, scratch buffer
   let b = a:0 > 0 ? a:1 : nvim_create_buf(v:false, v:true)
 
@@ -221,6 +249,92 @@ fu! s:core_functions_create_window(x, y, w, h, ...)
   call nvim_open_win(b, v:true, opts)
   return b
 endfunction
+
+fu! s:core_window_create2(x, y, w, h, ...)
+  " fg represents foreground and
+  " bg represents background
+  let l:fgb = -1
+
+  let l:col = float2nr(&columns * a:x)
+  let l:row = float2nr(&lines * a:y)
+  let l:width = float2nr(&columns * a:w)
+  let l:height = float2nr(&lines * a:h)
+
+  try
+    let l:fgb = a:0 > 0
+      \ ? a:1.fgb
+      \ : nvim_create_buf(v:false, v:true)
+  catch
+  endtry
+
+  let l:bgb = nvim_create_buf(v:false, v:true)
+  " write border lines
+  let l:top = "╭" . repeat("─", l:width + 2) . "╮"
+  let l:mid = "│" . repeat(" ", l:width + 2) . "│"
+  let l:bot = "╰" . repeat("─", l:width + 2) . "╯"
+  let l:lines = [l:top] + repeat([l:mid], l:height) + [l:bot]
+  call nvim_buf_set_lines(l:bgb, 0, -1, v:true, l:lines)
+
+  let bopts = {
+    \ 'relative': 'editor',
+    \ 'style': 'minimal',
+    \ 'row': l:row - 1,
+    \ 'col': l:col - 2,
+    \ 'width': l:width + 4,
+    \ 'height': l:height + 2
+    \ }
+
+  let opts = {
+    \ 'relative': 'editor',
+    \ 'style': 'minimal',
+    \ 'col': l:col,
+    \ 'row': l:row,
+    \ 'width': l:width,
+    \ 'height': l:height
+    \ }
+
+  let l:bgw = nvim_open_win(l:bgb, v:true, bopts)
+  let l:fgw = nvim_open_win(l:fgb, v:true, opts)
+
+  hi WindowBorder ctermfg=Red
+  call setwinvar(l:bgw, '&winhl', 'Normal:WindowBorder')
+
+  return {
+    \ 'x': a:x,
+    \ 'y': a:y,
+    \ 'w': a:w,
+    \ 'h': a:h,
+    \ 'fgb': l:fgb,
+    \ 'bgb': l:bgb,
+    \ 'fgw': l:fgw,
+    \ 'bgw': l:bgw,
+    \ 'open': 1
+    \ }
+endfunction
+
+fu! s:core_window_toggle(wo)
+  let l:wo = a:wo
+  try
+
+    if l:wo.open == 1
+      call nvim_set_current_win(l:wo.fgw) | hide
+      call nvim_set_current_win(l:wo.bgw) | hide
+      " can't simply invert a dictionary property, sadly
+      let l:wo.open = 0
+
+    elseif l:wo.open == 0
+      let l:wo = s:core_window_create2(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
+      let l:wo.open = 1
+    en
+  catch
+  endtry
+
+  return l:wo
+endfunction
+
+" ------------------------------------------------------------------------------
+"  core functions - clear
+" ------------------------------------------------------------------------------
 
 com! Clear call s:clear_buffers()
 fu! s:clear_buffers()
@@ -246,7 +360,8 @@ endfunction
 "  tags
 " ------------------------------------------------------------------------------
 
-nnoremap <M-[> :Tags<CR>
+nnoremap <M-[> <Esc>:Tags<CR>
+vnoremap <M-[> <Esc>:Tags<CR>
 
 exe 'set tags+='.s:sessDir.'/tags'
 
@@ -274,6 +389,14 @@ set mouse=a
 
 nnoremap <silent> <M-p> <Esc>:Files<CR>
 vnoremap <silent> <M-p> <Esc>:Files<CR>
+
+" buffers
+nnoremap <silent> <M-B> <Esc>:Buffers<CR>
+vnoremap <silent> <M-B> <Esc>:Buffers<CR>
+
+" git
+nnoremap <silent> <M-G> <Esc>:GFiles?<CR>
+vnoremap <silent> <M-G> <Esc>:GFiles?<CR>
 
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 " disregard .gitignore and .git files
@@ -419,10 +542,10 @@ fu! s:terminal_open_window(...)
   let l:b = -1
 
   if a:0 > 0 && a:1 >= 0 " open existing buffer
-    let l:b = s:core_functions_create_window(l:x, l:y, l:w, l:h, a:1)
+    let l:b = s:core_create_window(l:x, l:y, l:w, l:h, a:1)
 
   else " create new buffer
-    let l:b = s:core_functions_create_window(l:x, l:y, l:w, l:h)
+    let l:b = s:core_create_window(l:x, l:y, l:w, l:h)
     call termopen('zsh', {'on_exit': 'Terminal_exit'})
   en
 
@@ -467,6 +590,18 @@ fu! Terminal_exit(job_id, code, event) dict
   let s:termbli = 0
 endfunction
 
+
+  " if a:0 == 0
+  "   terminal
+  " else
+  "   call termopen(a:1)
+  " endif
+  " startinsert
+  " close border window when terminal window close
+  " au termclose * ++once :bd! | call nvim_win_close(l:border, v:true)
+
+  " return window handle
+  " nvim_get_current_win()
 " ------------------------------------------------------------------------------
 "  status bar / tabline
 " ------------------------------------------------------------------------------
@@ -503,6 +638,7 @@ augroup status_bar_tabline
   au!
   au WinEnter * setlocal statusline=%!GetStatusActive()
   au WinLeave * setlocal statusline=%!GetStatusInactive()
+  au TermLeave * setlocal statusline=%!GetStatusActive()
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -614,3 +750,4 @@ so $XDG_CONFIG_HOME/nvim/colors.vim
 " TODO remove fzf.vim except preview
 " TODO better tags in js,jsx,ts,tsx
 " TODO tagbar plugin?
+" TODO f2 refactor
