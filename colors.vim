@@ -22,7 +22,9 @@ nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 let s:c8 = 'darkgrey'
 let s:c9 = 'blue'
 let s:c10 = 'green'
+let s:c11 = 'cyan'
 let s:c12 = 'red'
+let s:c13 = 'magenta'
 let s:c15 = 'white'
 
 let s:chide = 0
@@ -109,6 +111,9 @@ exe 'hi Cursorline term=Bold ctermbg='.s:chi
 
 exe 'hi Pmenu ctermbg='.s:chide.' ctermfg=White'
 hi PmenuSel ctermfg=LightBlue
+
+" terminal/floating window border
+exe 'hi WindowBorder ctermfg='.s:c11
 
 " ------------------------------------------------------------------------------
 "  buffers

@@ -264,7 +264,6 @@ fu! s:core_window_create(x, y, w, h, ...)
   let l:bgw = nvim_open_win(l:bgb, v:true, bopts)
   let l:fgw = nvim_open_win(l:fgb, v:true, opts)
 
-  hi WindowBorder ctermfg=Red
   call setwinvar(l:bgw, '&winhl', 'Normal:WindowBorder')
 
   return {
@@ -285,9 +284,9 @@ fu! s:core_window_toggle(wo)
   try
 
     if l:wo.open == 1
-      " TODO delete border buf
-
       call nvim_set_current_win(l:wo.fgw) | hide
+      " border buffer is deleted by 
+      " default since it is 'unmodifiable'
       call nvim_set_current_win(l:wo.bgw) | hide
 
       " can't simply invert a dictionary property, sadly
@@ -484,14 +483,14 @@ endfunction
 " ------------------------------------------------------------------------------
 
 " total num of terminal bufs available
-" let s:num_total_term_bufs = 4
+let s:num_total_term_bufs = 4
 
-" let s:termbl = []
-" for i in range(s:num_total_term_bufs)
-"   call add(s:termbl, -1)
-"   let n = i + 1 
-"   exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
-" endfor
+let s:tbl = []
+for i in range(s:num_total_term_bufs)
+  call add(s:tbl, -1)
+  let n = i + 1 
+  exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
+endfor
 
 for m in ['n', 'i', 'v', 't']
   exe m.'noremap <M-`> <C-\><C-n>:TerminalToggle<CR>'
@@ -500,7 +499,7 @@ endfor
 let s:termwo = {}
 
 " terminal buffer list index
-" let s:termbli = -1
+let s:tbli = -1
 
 com! TerminalToggle call s:terminal_win_toggle()
 
@@ -510,6 +509,7 @@ fu! s:terminal_win_toggle()
       let s:termwo = g:Win_Toggle(s:termwo)
 
     else " terminal window is closed
+      let s:termwo.fgb = s:tbl[s:tbli]
       let l:bufWasDeleted = s:termwo.fgb < 0
 
       let s:termwo = g:Win_Toggle(s:termwo)
@@ -526,16 +526,26 @@ fu! s:terminal_win_toggle()
     let l:w = 0.8
     let l:h = 0.8
 
+    let s:tbli = 0
+
     let s:termwo = g:Win_New(l:x, l:y, l:w, l:h)
     call termopen('zsh', {'on_exit': 'Terminal_exit'})
     startinsert
   endtry
+
+  let s:tbl[s:tbli] = s:termwo.fgb
 endfunction
 
 com! -nargs=1 TerminalFocus 
   \call s:terminal_focus(<f-args>)
 
 fu! s:terminal_focus(index)
+  " unfocus old window
+  call s:terminal_win_toggle()
+  " set new window
+  let s:tbli = a:index - 1
+  " focus new window
+  call s:terminal_win_toggle()
 endfunction
 
 fu! Terminal_exit(job_id, code, event) dict
@@ -547,6 +557,9 @@ fu! Terminal_exit(job_id, code, event) dict
   try
     let s:termwo.open = 0
     let s:termwo.fgb = -1
+
+    let s:tbl[s:tbli] = -1
+    let s:tbli = 0
   catch
   endtry
 endfunction
