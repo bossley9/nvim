@@ -201,25 +201,16 @@ vnoremap A $<C-v>A
 "  core functions - windows
 " ------------------------------------------------------------------------------
 
-" TODO https://github.com/huytd/vim-config/blob/master/init.vim#L132-L171
-
 " floating window creator
-
-" arguments are (x, y, w, h, bufnr?)
+" arguments are (x, y, w, h, windowObj?)
 " x, y, w, and h are all [0..1] values
-" bufnr? is an optional buffer number of an existing buffer
-
 " windowObj? is an optional windowObj which already exists
+
 " wrapper - when called with the above arguments, will return a
 " preview window object and display the window
 fu! g:Win_New(x, y, w, h)
-  return s:core_window_create2(a:x, a:y, a:w, a:h)
+  return s:core_window_create(a:x, a:y, a:w, a:h)
 endfunction
-
-" TODO remove
-let gabcdefgh = {}
-nnoremap 55 <Esc>:let gabcdefgh = g:Win_New(0.1, 0.1, 0.8, 0.8)<CR>
-nnoremap 66 <Esc>:let gabcdefgh = g:Win_Toggle(gabcdefgh)<CR>
 
 " wrapper - when called with a preview window object, will hide 
 " or show the preview window
@@ -227,30 +218,7 @@ fu! g:Win_Toggle(windowobj)
   return s:core_window_toggle(a:windowobj)
 endfunction
 
-" wrapper - when called with a preview window object, will
-" close the window
-fu! g:Win_Close(window)
-endfunction
-
-fu! s:core_create_window(x, y, w, h, ...)
-  " create unlisted, scratch buffer
-  let b = a:0 > 0 ? a:1 : nvim_create_buf(v:false, v:true)
-
-  let opts = {
-    \ 'relative': 'editor',
-    \ 'style': 'minimal',
-    \ 'col': float2nr(&columns * a:x),
-    \ 'row': float2nr(&lines * a:y),
-    \ 'width': float2nr(&columns * a:w),
-    \ 'height': float2nr(&lines * a:h)
-    \ }
-
-  " center param is true if window should be autofocused
-  call nvim_open_win(b, v:true, opts)
-  return b
-endfunction
-
-fu! s:core_window_create2(x, y, w, h, ...)
+fu! s:core_window_create(x, y, w, h, ...)
   " fg represents foreground and
   " bg represents background
   let l:fgb = -1
@@ -261,7 +229,7 @@ fu! s:core_window_create2(x, y, w, h, ...)
   let l:height = float2nr(&lines * a:h)
 
   try
-    let l:fgb = a:0 > 0
+    let l:fgb = a:0 > 0 && a:1.fgb >= 0
       \ ? a:1.fgb
       \ : nvim_create_buf(v:false, v:true)
   catch
@@ -317,13 +285,16 @@ fu! s:core_window_toggle(wo)
   try
 
     if l:wo.open == 1
+      " TODO delete border buf
+
       call nvim_set_current_win(l:wo.fgw) | hide
       call nvim_set_current_win(l:wo.bgw) | hide
+
       " can't simply invert a dictionary property, sadly
       let l:wo.open = 0
 
     elseif l:wo.open == 0
-      let l:wo = s:core_window_create2(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
+      let l:wo = s:core_window_create(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
       let l:wo.open = 1
     en
   catch
@@ -513,95 +484,73 @@ endfunction
 " ------------------------------------------------------------------------------
 
 " total num of terminal bufs available
-let s:num_total_term_bufs = 4
+" let s:num_total_term_bufs = 4
+
+" let s:termbl = []
+" for i in range(s:num_total_term_bufs)
+"   call add(s:termbl, -1)
+"   let n = i + 1 
+"   exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
+" endfor
 
 for m in ['n', 'i', 'v', 't']
   exe m.'noremap <M-`> <C-\><C-n>:TerminalToggle<CR>'
 endfor
 
-" terminal buffer list
-let s:termbl = []
-
-for i in range(s:num_total_term_bufs)
-  call add(s:termbl, -1)
-  let n = i + 1 
-  exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
-endfor
+let s:termwo = {}
 
 " terminal buffer list index
-let s:termbli = -1
-" is terminal window open
-let s:istermo = 0
+" let s:termbli = -1
 
-fu! s:terminal_open_window(...)
-  let l:x = 0.1
-  let l:y = 0.1
-  let l:h = 0.8
-  let l:w = 0.8
-  
-  let l:b = -1
+com! TerminalToggle call s:terminal_win_toggle()
 
-  if a:0 > 0 && a:1 >= 0 " open existing buffer
-    let l:b = s:core_create_window(l:x, l:y, l:w, l:h, a:1)
+fu! s:terminal_win_toggle()
+  try
+    if s:termwo.open == 1 " terminal window is open
+      let s:termwo = g:Win_Toggle(s:termwo)
 
-  else " create new buffer
-    let l:b = s:core_create_window(l:x, l:y, l:w, l:h)
+    else " terminal window is closed
+      let l:bufWasDeleted = s:termwo.fgb < 0
+
+      let s:termwo = g:Win_Toggle(s:termwo)
+
+      if l:bufWasDeleted
+        call termopen('zsh', {'on_exit': 'Terminal_exit'})
+      en
+
+      startinsert
+    en
+  catch " terminal window does not yet exist
+    let l:x = 0.1
+    let l:y = 0.1
+    let l:w = 0.8
+    let l:h = 0.8
+
+    let s:termwo = g:Win_New(l:x, l:y, l:w, l:h)
     call termopen('zsh', {'on_exit': 'Terminal_exit'})
-  en
-
-  exe 'b' . l:b
-  startinsert
-  return l:b
-endfunction
-
-com! TerminalToggle call s:terminal_toggle()
-fu! s:terminal_toggle()
-  " if terminal is open
-  if s:istermo
-    norm <C-v><C-\><C-n>
-    hide
-  else
-
-    " if window does not exist
-    if s:termbli < 0 | let s:termbli = 0 | en
-    let s:termbl[s:termbli] = 
-      \s:terminal_open_window(s:termbl[s:termbli])
-  en
-
-  let s:istermo = ! s:istermo
+    startinsert
+  endtry
 endfunction
 
 com! -nargs=1 TerminalFocus 
   \call s:terminal_focus(<f-args>)
-fu! s:terminal_focus(index)
-  let s:termbli = a:index - 1
-  norm <C-v><C-\><C-n>
-  let l:prev = bufnr('%')
-  hide
 
-  let s:termbl[s:termbli] = 
-    \s:terminal_open_window(s:termbl[s:termbli])
+fu! s:terminal_focus(index)
 endfunction
 
 fu! Terminal_exit(job_id, code, event) dict
+  " sanity check
+  call nvim_set_current_buf(s:termwo.fgb)
   bw!
-  let s:istermo = 0
-  let s:termbl[s:termbli] = -1
-  let s:termbli = 0
+  call nvim_set_current_buf(s:termwo.bgb)
+  bw!
+  try
+    let s:termwo.open = 0
+    let s:termwo.fgb = -1
+  catch
+  endtry
 endfunction
 
-
-  " if a:0 == 0
-  "   terminal
-  " else
-  "   call termopen(a:1)
-  " endif
-  " startinsert
-  " close border window when terminal window close
-  " au termclose * ++once :bd! | call nvim_win_close(l:border, v:true)
-
-  " return window handle
-  " nvim_get_current_win()
 " ------------------------------------------------------------------------------
 "  status bar / tabline
 " ------------------------------------------------------------------------------
@@ -726,6 +675,8 @@ inoremap [, [<CR>],<C-c>O
 " 
 "   let s:isfsearch = ! s:isfsearch
 " endfunction
+
+" TODO https://github.com/mileszs/ack.vim
 
 " ------------------------------------------------------------------------------
 "  appearance
