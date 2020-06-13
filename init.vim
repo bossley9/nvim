@@ -40,6 +40,7 @@ Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
 Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
+Plug 'majutsushi/tagbar'
 
 call plug#end()
 
@@ -333,12 +334,27 @@ endfunction
 nnoremap <M-[> <Esc>:Tags<CR>
 vnoremap <M-[> <Esc>:Tags<CR>
 
+nnoremap <M-t> <Esc>:call Tags_toggle_tagbar()<CR>
+vnoremap <M-t> <Esc>:call Tags_toggle_tagbar()<CR>
+
 exe 'set tags+='.s:sessDir.'/tags'
 
 com! GenTags call s:gen_tags()
 fu! s:gen_tags()
   exe 'silent !mkdir -p ' . s:sessDir
   exe 'silent !ctags --tag-relative=always -R -f ' . s:sessDir . '/tags . &'
+endfunction
+
+let s:tagbaro = 0
+fu! Tags_toggle_tagbar()
+  if s:tagbaro
+    TagbarClose
+    let s:tagbaro = 0
+  else
+    TagbarOpenAutoClose
+    let s:tagbaro = 1
+    au! BufLeave <buffer> let s:tagbaro = 0
+  en
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -357,6 +373,7 @@ set mouse=a
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
 
+" files
 nnoremap <silent> <M-p> <Esc>:Files<CR>
 vnoremap <silent> <M-p> <Esc>:Files<CR>
 
@@ -475,8 +492,6 @@ fu! GitBranch()
   if strlen(l:branch) > 20 | let l:branch = l:branch[0:17] . '...' | en
   return l:branch
 endfunction
-
-" TODO merge conflict highlight https://github.com/rhysd/conflict-marker.vim/blob/master/autoload/conflict_marker.vim
 
 " ------------------------------------------------------------------------------
 "  terminal management
@@ -673,23 +688,11 @@ inoremap [, [<CR>],<C-c>O
 "  file/project search
 " ------------------------------------------------------------------------------
 
-" nnoremap <M-f> <Esc>:ToggleFSearch<CR>
+nnoremap <M-f> <Esc>:BLines<CR>
+vnoremap <M-f> <Esc>:BLines<CR>
 
-" let s:isfsearch = 0
-" 
-" com! ToggleFSearch call s:toggle_file_search()
-" fu! s:toggle_file_search()
-"   if s:isfsearch == 0 " closed
-"     " open it
-"     let l:fswin = s:core_functions_create_window(0, 0, 0.5, 0.1)
-"   else
-"     " close it
-"   en
-" 
-"   let s:isfsearch = ! s:isfsearch
-" endfunction
-
-" TODO https://github.com/mileszs/ack.vim
+nnoremap <M-F> <Esc>:Rg<CR>
+vnoremap <M-F> <Esc>:Rg<CR>
 
 " ------------------------------------------------------------------------------
 "  appearance
@@ -710,8 +713,6 @@ set scrolloff=5
 so $XDG_CONFIG_HOME/nvim/colors.vim
 
 " TODO emmet?
-" TODO tag search with fzf.vim
-" TODO remove fzf.vim except preview
 " TODO better tags in js,jsx,ts,tsx
-" TODO tagbar plugin?
 " TODO f2 refactor
+" TODO merge conflict highlight https://github.com/rhysd/conflict-marker.vim/blob/master/autoload/conflict_marker.vim

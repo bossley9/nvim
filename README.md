@@ -57,7 +57,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 ## Todo <a nane="todo"></a>
 
 - select tooltips (or hover with CursorHold)
-- file search
-- project-wide search
-- folding (manually or gutter)
 
