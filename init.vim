@@ -45,6 +45,7 @@ Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 
 call plug#end()
 
@@ -670,7 +671,9 @@ let g:ale_sign_warning = '!!'
 let g:ale_fixers = {
 \   'javascript': ['prettier'],
 \   'typescript': ['prettier'],
-\   'typescriptreact': ['prettier']
+\   'typescriptreact': ['prettier'],
+\   'scss': ['prettier'],
+\   'css': ['prettier'],
 \}
 
 fu! TogglePrettierOnSave()
