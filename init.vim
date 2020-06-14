@@ -621,7 +621,7 @@ fu! GetStatusActive()
   set statusline+=\ %#constant#
   set statusline+=%{GitBranch()}
   set statusline+=%#FileName#
-  set statusline+=\ %t
+  set statusline+=\ %f
   set statusline+=\ %r
 
   set statusline+=%=

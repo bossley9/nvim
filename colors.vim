@@ -129,7 +129,7 @@ exe 'hi NonText ctermfg='.s:chide
 hi Blamer ctermfg=DarkGray
 hi MatchParen ctermfg=Black ctermbg=Magenta cterm=Bold
 
-hi Search ctermbg=DarkGray
+hi Search ctermbg=blue
 
 " ------------------------------------------------------------------------------
 "  status bar
