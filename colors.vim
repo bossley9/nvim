@@ -48,6 +48,9 @@ exe 'hi GitGutterChangeDelete ctermbg=None ctermfg='.s:gitdelete
 exe 'hi GitGutterDelete ctermbg=None ctermfg='.s:gitdelete
 
 hi Error cterm=bold
+hi ALEStyleWarning ctermbg=yellow ctermfg=black
+hi ALEWarning ctermbg=yellow ctermfg=black
+hi ALEInfo ctermbg=yellow ctermfg=black
 
 hi Directory ctermfg=White
 
