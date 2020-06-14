@@ -158,6 +158,8 @@ inoremap <M-h> <BS>
 inoremap <M-;> <Esc>
 inoremap <M-j> <CR>
 
+cnoremap <M-;> <Esc>
+
 vnoremap <M-;> <Esc>
 
 " legacy
@@ -712,8 +714,9 @@ inoremap [, [<CR>],<C-c>O
 "  file/project search
 " ------------------------------------------------------------------------------
 
-nnoremap <M-f> <Esc>:BLines<CR>
-vnoremap <M-f> <Esc>:BLines<CR>
+" nnoremap <M-f> <Esc>:BLines<CR>
+" vnoremap <M-f> <Esc>:BLines<CR>
+nnoremap <M-f> <Esc>/
 
 nnoremap <M-F> <Esc>:Rg<CR>
 vnoremap <M-F> <Esc>:Rg<CR>
@@ -797,7 +800,3 @@ set splitright
 set scrolloff=5
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
-
-" TODO merge conflict highlight https://github.com/rhysd/conflict-marker.vim/blob/master/autoload/conflict_marker.vim
-" TODO file search with / sync
-" TODO cursor and matchparen highlight
