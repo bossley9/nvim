@@ -1,0 +1,6 @@
+{
+  "suggest.autoTrigger": "trigger",
+  "coc.preferences.extensionUpdateCheck": "never",
+  "coc.preferences.messageLevel": "warning",
+  "coc.preferences.snippets.enable": false
+}

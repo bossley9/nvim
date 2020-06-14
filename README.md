@@ -22,6 +22,13 @@ A modern [Neovim](https://neovim.io/) configuration
 If future updates are made to this configuration, pulling the latest commits 
 and opening `neovim` will automatically install any new plugins.
 
+> While almost everything is automated by install, I can't guarantee everything with [`coc`](https://github.com/neoclide/coc.nvim)
+> will work immediately. `coc` is pain to get running and requires the majority of resources,
+> but it's really the only good alternative for auto completion, auto imports, defintions,
+> tag searching, etc for Typescript.
+>
+> And yes, I tried vanilla nvim with ctags, but the tags seem to be very lacking.
+
 ## About <a name="about"></a>
 
 ### Problem
@@ -56,5 +63,4 @@ has consistency across platforms, making it easy to setup on any operating syste
 
 ## Todo <a nane="todo"></a>
 
-- select tooltips (or hover with CursorHold)
-
+- no todos!

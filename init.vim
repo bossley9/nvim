@@ -42,6 +42,10 @@ Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
 Plug 'majutsushi/tagbar'
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+
 call plug#end()
 
 " plugin compatibility and stop using vi utilities
@@ -129,6 +133,7 @@ set noshowmode
 " ------------------------------------------------------------------------------
 
 let s:nav_jump = 5
+let s:nav_jump_large = 25
 
 " no help docs!
 nnoremap K k
@@ -139,7 +144,10 @@ nnoremap K k
 " diw and daw for such things
 " nnoremap y yy
 
-" <C-g> to view path
+" M-Space to insert a space in normal mode
+nnoremap <M-Space> i<Space><Esc>
+
+" vanilla tip: <C-g> to view path
 
 " line ends
 nnoremap ! 0
@@ -170,8 +178,10 @@ exe 'nnoremap <M-k> ' . s:nav_jump . 'k'
 exe 'vnoremap <M-j> ' . s:nav_jump . 'j'
 exe 'vnoremap <M-k> ' . s:nav_jump . 'k'
 
-nnoremap <M-u> <C-u>
-nnoremap <M-d> <C-d>
+exe 'nnoremap <M-d> ' . s:nav_jump_large . 'j'
+exe 'nnoremap <M-u> ' . s:nav_jump_large . 'k'
+exe 'vnoremap <M-d> ' . s:nav_jump_large . 'j'
+exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
 
 " nohl
 nnoremap <Space> :noh<CR>
@@ -356,6 +366,20 @@ fu! Tags_toggle_tagbar()
     au! BufLeave <buffer> let s:tagbaro = 0
   en
 endfunction
+
+let g:tagbar_type_typescript = {
+  \ 'ctagstype': 'typescript',
+  \ 'kinds': [
+    \ 'c:classes',
+    \ 'n:modules',
+    \ 'f:functions',
+    \ 'v:variables',
+    \ 'v:varlambdas',
+    \ 'm:members',
+    \ 'i:interfaces',
+    \ 'e:enums',
+  \ ]
+  \ }
 
 " ------------------------------------------------------------------------------
 "  mouse events
@@ -695,6 +719,68 @@ nnoremap <M-F> <Esc>:Rg<CR>
 vnoremap <M-F> <Esc>:Rg<CR>
 
 " ------------------------------------------------------------------------------
+"  coc
+" ------------------------------------------------------------------------------
+
+let g:coc_disable_startup_warning = 1
+
+augroup coc
+  au!
+  " support comment highlighting in json
+  au FileType json syntax match Comment +\/\/.\+$+
+augroup end
+
+" let g:coc_global_extensions = [
+  " \ 'coc-tsserver',
+  " \ 'coc-json',
+  " \ 'coc-snippets',
+  " \ 'coc-pairs',
+  " \ 'coc-eslint',
+  " \ 'coc-prettier',
+  " \ ]
+
+" M-j and M-k navigates completion
+inoremap <silent><expr> <M-j>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
+inoremap <expr><M-k> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" M-g triggers completion
+inoremap <silent><expr> <M-g> coc#refresh()
+
+" M-l confirms completion
+if exists('*complete_info')
+  inoremap <expr> <M-l> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <M-l> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
+endif
+
+" coc's fake tag stack (tm)
+nmap <silent> <M-]> <plug>(coc-definition)
+nnoremap <M-o> <C-o>
+
+" gk or gh for documentation/typing
+nnoremap <silent> gk :call <sid>show_documentation()<cr>
+nnoremap <silent> gh :call <sid>show_documentation()<cr>
+fu! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    exe 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  en
+endfunction
+
+" doesn't seem to work for an entire project...
+" F2 for symbol renaming
+" nmap <F2> <plug>(coc-rename)
+
+" ------------------------------------------------------------------------------
 "  appearance
 " ------------------------------------------------------------------------------
 
@@ -712,7 +798,6 @@ set scrolloff=5
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
 
-" TODO emmet?
-" TODO better tags in js,jsx,ts,tsx
-" TODO f2 refactor
 " TODO merge conflict highlight https://github.com/rhysd/conflict-marker.vim/blob/master/autoload/conflict_marker.vim
+" TODO file search with / sync
+" TODO cursor and matchparen highlight
