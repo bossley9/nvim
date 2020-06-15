@@ -729,6 +729,8 @@ vnoremap <M-F> <Esc>:Rg<CR>
 " ------------------------------------------------------------------------------
 
 let g:coc_disable_startup_warning = 1
+" remove python2 support
+let g:loaded_python_provider = 0
 
 augroup coc
   au!

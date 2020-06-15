@@ -29,6 +29,9 @@ and opening `neovim` will automatically install any new plugins.
 >
 > And yes, I tried vanilla nvim with ctags, but the tags seem to be very lacking.
 
+> If you are running this in iterm in OSX, you will need to enable mouse reporting
+> in iterm's preferences in order to have mouse support.
+
 ## About <a name="about"></a>
 
 ### Problem
