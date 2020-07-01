@@ -674,6 +674,7 @@ let g:ale_fixers = {
 \   'typescriptreact': ['prettier'],
 \   'scss': ['prettier'],
 \   'css': ['prettier'],
+\   'googlescript': ['prettier'],
 \}
 
 fu! TogglePrettierOnSave()
@@ -803,5 +804,11 @@ set splitright
 
 " number of lines above and below cursor at all times
 set scrolloff=5
+
+" various syntax highlighting
+augroup appearance_syntax_highlight
+  au!
+  au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
+augroup end
 
 so $XDG_CONFIG_HOME/nvim/colors.vim
