@@ -390,12 +390,6 @@ let g:tagbar_type_typescript = {
 
 set mouse=a
 
-"augroup mouse_events
-"  au!
-"  au CursorHold * echo expand("<cword>")
-"  au CursorHoldI * echo expand("<cword>")
-"augroup end
-
 " ------------------------------------------------------------------------------
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
@@ -632,6 +626,7 @@ fu! GetStatusActive()
   set statusline+=%l
   set statusline+=%{',\ Col\ '}
   set statusline+=%c
+  set statusline+=\ %p%{'%'}
   set statusline+=%#FileName#
   set statusline+=\ %y
 endfunction
@@ -650,12 +645,11 @@ augroup end
 "  code folding
 " ------------------------------------------------------------------------------
 
-set foldmethod=syntax
-" TEMP
-set nofoldenable
+" set foldmethod=syntax
+" set nofoldenable
 " set foldenable
-set foldnestmax=10
-set foldlevelstart=1
+" set foldnestmax=10
+" set foldlevelstart=1
 
 " let javaScript_fold = 1
 " let ruby_fold = 1
@@ -708,12 +702,12 @@ vnoremap <S-Tab> <gv
 "  matching paren
 " ------------------------------------------------------------------------------
 
-inoremap (; (<CR>);<C-c>O
-inoremap (, (<CR>),<C-c>O
-inoremap {; {<CR>};<C-c>O
-inoremap {, {<CR>},<C-c>O
-inoremap [; [<CR>];<C-c>O
-inoremap [, [<CR>],<C-c>O
+" inoremap (; (<CR>);<C-c>O
+" inoremap (, (<CR>),<C-c>O
+" inoremap {; {<CR>};<C-c>O
+" inoremap {, {<CR>},<C-c>O
+" inoremap [; [<CR>];<C-c>O
+" inoremap [, [<CR>],<C-c>O
 
 " ------------------------------------------------------------------------------
 "  file/project search
