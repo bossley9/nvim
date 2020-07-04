@@ -611,6 +611,7 @@ endfunction
 " ------------------------------------------------------------------------------
 
 fu! GetStatusInactive()
+  return ''
 endfunction
 
 fu! GetStatusActive()
