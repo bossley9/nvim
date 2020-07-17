@@ -717,8 +717,19 @@ vnoremap <S-Tab> <gv
 " vnoremap <M-f> <Esc>:BLines<CR>
 nnoremap <M-f> <Esc>/
 
-nnoremap <M-F> <Esc>:Rg<CR>
-vnoremap <M-F> <Esc>:Rg<CR>
+" primarily use Rg every time over fzf because otherwise it matches individual 
+" lines of the same name file
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+nnoremap <M-F> <Esc>:RG<CR>
+vnoremap <M-F> <Esc>:RG<CR>
 
 " ------------------------------------------------------------------------------
 "  coc
