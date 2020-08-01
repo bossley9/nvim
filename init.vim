@@ -698,6 +698,10 @@ inoremap <S-Tab> <C-d>
 nnoremap <S-Tab> <<
 vnoremap <S-Tab> <gv
 
+" normal J moves lines up
+" normal K moves lines down
+nnoremap K i<CR><C-c>
+
 " ------------------------------------------------------------------------------
 "  matching paren
 " ------------------------------------------------------------------------------
