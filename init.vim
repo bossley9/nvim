@@ -133,8 +133,8 @@ set noshowmode
 "  core mappings/bindings
 " ------------------------------------------------------------------------------
 
-let s:nav_jump = 5
-let s:nav_jump_large = 25
+let s:nav_jump = $VI_NAV_JUMP
+let s:nav_jump_large = $VI_NAV_JUMP_LARGE
 
 " no help docs!
 nnoremap K k
