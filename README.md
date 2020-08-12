@@ -22,15 +22,18 @@ A modern [Neovim](https://neovim.io/) configuration
 If future updates are made to this configuration, pulling the latest commits 
 and opening `neovim` will automatically install any new plugins.
 
-> While almost everything is automated by install, I can't guarantee everything with [`coc`](https://github.com/neoclide/coc.nvim)
-> will work immediately. `coc` is pain to get running and requires the majority of resources,
-> but it's really the only good alternative for auto completion, auto imports, defintions,
-> tag searching, etc for Typescript.
->
-> And yes, I tried vanilla nvim with ctags, but the tags seem to be very lacking.
+**While almost everything is automated by install, Coc extensions need to be installed 
+manually**. Coc is the best alternative for auto completion, auto imports, defintions,
+tag searching, etc for Typescript.
 
-> If you are running this in iterm in OSX, you will need to enable mouse reporting
-> in iterm's preferences in order to have mouse support.
+You can install Coc extensions with the command `:CocInstall extName`. Below are a list of
+extensions I always install:
+- `coc-css`
+- `coc-json`
+- `coc-tsserver`
+
+If you are running this in iterm in OSX, you will need to enable mouse reporting
+in iterm's preferences in order to have mouse support.
 
 ## About <a name="about"></a>
 

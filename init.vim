@@ -20,8 +20,9 @@ en
 augroup plugin_management
   au!
   au VimEnter *
-    \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-    \|   PlugInstall --sync | q
+    \if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+      \| PlugInstall --sync 
+      \| q
     \| en
 augroup end
 
@@ -41,11 +42,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
 Plug 'majutsushi/tagbar'
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 
 call plug#end()
 
