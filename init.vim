@@ -7,6 +7,9 @@
 " directory where all cacheable data is stored
 let g:dataDir = expand('$XDG_DATA_HOME/nvim/')
 
+" directory where nvim configuration is located
+let g:installDir = expand('$XDG_CONFIG_HOME/nvim')
+
 " ------------------------------------------------------------------------------
 "  plugin declaration
 " ------------------------------------------------------------------------------
@@ -74,9 +77,6 @@ fu! s:session_restore()
   " if session exists
   if filereadable(s:sessFile)
     exe 'so ' . s:sessFile
-  else
-    " file explorer
-    NERDTree
   en
 endf
 
@@ -207,13 +207,14 @@ exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
 nnoremap <Space> :noh<CR>
 
 " reload config and window
-nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
-  \so $XDG_CONFIG_HOME/nvim/init.vim<Bar>
-  \call winrestview(winv)<Bar>
-  \unlet winv<CR>
-  \:Clear<CR>
-  \:NERDTreeRefreshRoot<CR>
-  \:GenTags<CR>
+" not currently in use due to losing terminal buffer references
+" nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
+"   \exe 'so ' . g:installDir . '/init.vim'<Bar>
+"   \call winrestview(winv)<Bar>
+"   \unlet winv<CR>
+"   \:Clear<CR>
+"   \:NERDTreeRefreshRoot<CR>
+"   \:GenTags<CR>
 
 " closing and saving
 nnoremap ZZ :wqa<CR>
@@ -227,6 +228,16 @@ com! W norm :w<CR>
 " seem to use this all the time...
 vnoremap I 0<C-v>I
 vnoremap A $<C-v>A
+
+" ------------------------------------------------------------------------------
+"  core functions - multi-mode binding
+" ------------------------------------------------------------------------------
+
+fu! s:bind_all_modes(binding)
+  for m in ['n', 'i', 'v', 't']
+    exe m . 'noremap ' . a:binding
+  endfor
+endfunction
 
 " ------------------------------------------------------------------------------
 "  core functions - windows
@@ -432,10 +443,7 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 " ------------------------------------------------------------------------------
 
 " toggle explorer pane
-nnoremap <M-b> <Esc>:NERDTreeToggle<CR>
-inoremap <M-b> <Esc>:NERDTreeToggle<CR>
-vnoremap <M-b> <Esc>:NERDTreeToggle<CR>
-tnoremap <M-b> <Esc>:NERDTreeToggle<CR>
+call s:bind_all_modes('<M-b> <Esc>:NERDTreeToggle ' . s:dir . '<CR>')
 
 " don't show hidden files in file explorer by default
 let NERDTreeShowHidden = 0
@@ -545,9 +553,7 @@ for i in range(s:num_total_term_bufs)
   exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
 endfor
 
-for m in ['n', 'i', 'v', 't']
-  exe m.'noremap <M-`> <C-\><C-n>:TerminalToggle<CR>'
-endfor
+call s:bind_all_modes('<M-`> <C-\><C-n>:TerminalToggle<CR>')
 
 let s:termwo = {}
 
@@ -845,4 +851,4 @@ augroup appearance_syntax_highlight
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
 augroup end
 
-so ./colors.vim
+exe 'so ' . g:installDir . '/colors.vim'

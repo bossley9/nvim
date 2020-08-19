@@ -98,7 +98,6 @@ understand and easier to modify if desired.
 
 ## Roadmap <a name="roadmap"></a>
 
-- Fix incorrect NERDTree dir handling
 - Add markdown linter support rules
 - Hide `clang` warnings for libraries or header definitions
 
