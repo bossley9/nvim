@@ -1,9 +1,11 @@
 " neovim configuration
 
+" ------------------------------------------------------------------------------
+"  globals
+" ------------------------------------------------------------------------------
+
 " directory where all cacheable data is stored
 let g:dataDir = expand('$XDG_DATA_HOME/nvim/')
-" current project directory
-let s:dir = trim(execute('pwd'))
 
 " ------------------------------------------------------------------------------
 "  plugin declaration
@@ -78,16 +80,27 @@ fu! s:session_restore()
   en
 endf
 
-let s:openedDir = eval('@%') == '' && argc() == 0
-let s:sessDir = g:dataDir . 'sessions' . fnameescape(s:dir)
+" s:openedDir is true if nvim was opened with a directory
+" s:dir represents the current project directory
 
-" if directory is specified as arg, e.g. vim Downloads/TestFolder/
+let s:openedDir = eval('@%') == '' && argc() == 0
+let s:dir = trim(execute('pwd'))
+
+" if dir path is supplied as an arg, e.g. nvim ./Downloads/TestFolder/
 if isdirectory(eval('@%'))
   let s:openedDir = 1
-  let s:sessDir = s:sessDir . '/' . eval('@%')
+  let s:dir = eval('@%')
 endif
 
-let s:sessFile = s:sessDir . '/se'
+" resolve resolves any symbolic links
+" fnamemodify makes sure that the path is an absolute path
+" (trailing slash is included)
+" fnameescape escapes file paths with spaces, e.g. My\ Documents/
+
+let s:dir = fnameescape(fnamemodify(resolve(s:dir), ':p'))
+
+let s:sessDir = g:dataDir . 'sessions' . s:dir
+let s:sessFile = s:sessDir . 'se'
 
 augroup session_management
   au!
@@ -419,7 +432,7 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 " ------------------------------------------------------------------------------
 
 " toggle explorer pane
-nnoremap <M-b> :NERDTreeToggle<CR>
+nnoremap <M-b> <Esc>:NERDTreeToggle<CR>
 inoremap <M-b> <Esc>:NERDTreeToggle<CR>
 vnoremap <M-b> <Esc>:NERDTreeToggle<CR>
 tnoremap <M-b> <Esc>:NERDTreeToggle<CR>
@@ -667,6 +680,10 @@ let g:ale_fix_on_save = 1
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '!!'
+
+" clang-format needs to be installed separately, usually contained under the name 
+" clang on most distributions and operating systems
+
 let g:ale_fixers = {
 \   'javascript': ['prettier'],
 \   'typescript': ['prettier'],
@@ -674,6 +691,9 @@ let g:ale_fixers = {
 \   'scss': ['prettier'],
 \   'css': ['prettier'],
 \   'googlescript': ['prettier'],
+\   'c': ['clang-format'],
+\   'cpp': ['clang-format'],
+\   'cs': ['clang-format'],
 \}
 
 fu! TogglePrettierOnSave()
@@ -825,4 +845,4 @@ augroup appearance_syntax_highlight
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
 augroup end
 
-so $XDG_CONFIG_HOME/nvim/colors.vim
+so ./colors.vim

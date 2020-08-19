@@ -18,6 +18,7 @@ Its features include:
 ## Table of Contents
 1. [Installation](#installation)
 2. [Background](#background)
+3. [Roadmap](#roadmap)
 
 ## Installation <a name="installation"></a>
 These instructions work for both Linux distributions and macOS. Windows may require some 
@@ -42,7 +43,9 @@ and `neovim` will automatically install any new plugins.
 manually**. Coc is the best alternative for auto completion, auto imports, defintions,
 tag searching, etc for Typescript.
 
-> I couldn't find a good way to automate this process.
+> I couldn't find a good way to automate this process, but it's better that this must be 
+> done manually. All extensions are language-specific plugins, and it's better to provide a 
+> bloat-free "opt-in" alternative rather than a bloated "opt-out" editor.
 
 You can install Coc extensions with the command `:CocInstall extName`. Below are a list of
 extensions I always install:
@@ -92,4 +95,10 @@ Everything included in this configuration is either an open source plugin of vim
 elementary vimscript hacking. I still consider myself a beginner at vimscript, and I've 
 included as many comments as necessary in `init.vim` to make each group of logic easier to 
 understand and easier to modify if desired.
+
+## Roadmap <a name="roadmap"></a>
+
+- Fix incorrect NERDTree dir handling
+- Add markdown linter support rules
+- Hide `clang` warnings for libraries or header definitions
 
