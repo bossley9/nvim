@@ -151,7 +151,10 @@ set noshowmode
 " ------------------------------------------------------------------------------
 
 let s:nav_jump = $VI_NAV_JUMP
+if ! s:nav_jump | let s:nav_jump = 5 | endif
+
 let s:nav_jump_large = $VI_NAV_JUMP_LARGE
+if ! s:nav_jump_large | let s:nav_jump_large = 25 | endif
 
 " no help docs!
 nnoremap K k
