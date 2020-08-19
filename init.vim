@@ -79,7 +79,7 @@ fu! s:session_restore()
 endf
 
 let s:openedDir = eval('@%') == '' && argc() == 0
-let s:sessDir = g:dataDir . 'sessions' . s:dir
+let s:sessDir = g:dataDir . 'sessions' . fnameescape(s:dir)
 let s:sessFile = s:sessDir . '/se'
 
 augroup session_management
