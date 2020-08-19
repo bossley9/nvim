@@ -1,12 +1,28 @@
 # NVIM
-A modern [Neovim](https://neovim.io/) configuration
+A modern [Neovim](https://neovim.io/) configuration created to be a more favorable code editor
+alternative to Visual Studio Code
+
+![a demonstration of my configuration](demo.gif)
+
+Its features include:
+- multi-buffer support (native to vim)
+- vim keybindings with additional add-ons (vim-surround, vim-commentary)
+- version control support (git gutter, branch name)
+- file explorer side-pane (nerdtree)
+- fuzzy file finding and file searching (fzf)
+- automated session saving
+- toggleable terminal window (4+ terminal buffers)
+- tag navigation and definitions (coc and tsserver plugin(s))
+- general syntax, warning, and error highlighting
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [About](#about)
-3. [Todo](#todo)
+2. [Background](#background)
 
 ## Installation <a name="installation"></a>
+These instructions work for both Linux distributions and macOS. Windows may require some 
+tweaking with WSL or puTTY.
+
 1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4+
     is installed. Certain functions available will not function properly on lower
     versions.
@@ -19,12 +35,14 @@ A modern [Neovim](https://neovim.io/) configuration
 4. Close and reopen `neovim` to ensure all plugins and configuration 
     settings are enabled.
 
-If future updates are made to this configuration, pulling the latest commits 
-and opening `neovim` will automatically install any new plugins.
+If future updates are made to this configuration, you can pull the latest commits 
+and `neovim` will automatically install any new plugins.
 
 **While almost everything is automated by install, Coc extensions need to be installed 
 manually**. Coc is the best alternative for auto completion, auto imports, defintions,
 tag searching, etc for Typescript.
+
+> I couldn't find a good way to automate this process.
 
 You can install Coc extensions with the command `:CocInstall extName`. Below are a list of
 extensions I always install:
@@ -32,41 +50,46 @@ extensions I always install:
 - `coc-json`
 - `coc-tsserver`
 
-If you are running this in iterm in OSX, you will need to enable mouse reporting
-in iterm's preferences in order to have mouse support.
+If you are running this configuration in macOS, you will need to enable mouse reporting in your 
+terminal's preferences to enable mouse support.
 
-## About <a name="about"></a>
+## Background <a name="background"></a>
+I've used [Visual Studio Code](https://code.visualstudio.com/) for the past few years and it
+definitely lives up to its name with beautiful interfaces, built-in language parsing and 
+wonderful extension library.
 
-### Problem
+But it's lacking a few features that would improve my productivity even further.
 
-I have used [Visual Studio Code](https://code.visualstudio.com/) for the past 
-few years and I've enjoyed many of its features and extensions; however, it 
-takes a large toll on memory 
-([and telemetry is creepy](https://stackoverflow.com/questions/40451596/visual-studio-code-still-accessing-internet-after-update-and-telemetry-was-disab)).
+First, I have become much more efficient as a developer with vim keybindings. By default,
+Visual Studio Code places much more emphasis on aesthetic than development efficiency. I can't
+use vim keybindings without a plugin, and even using plugins, it limits the capability of
+customizing keybindings.
 
-I've also grown accustomed to [Vim](https://www.vim.org/) keybindings. They are 
-short, efficient, and prevent the user from leaving the keyboard, saving 
-precious seconds of time. I've tried to use Visual Studio Code's `vim` and 
-`neovim` extensions and am dissatisfied with both. They both display the mode 
-on the status bar which is hidden in ~~`fullscreen` and~~ `zen mode` (both of which 
-I use frequently). ~~They also seem to have occassional glitches, and not all 
-Vim commands can be executed.~~ _I was experiencing glitches and issues due to
-Vim plugin incompatiblity with Visual Studio Code (my own ignorance). However, my
-argument still stands._
+Even the themes themselves are not as customizable as you'd think. I wanted a semi-opaque 
+code editor and I wasn't able to implement that in Code, and the only way to make a truly
+customized theme is to create one yourself.
 
-I wanted an editing solution with high performance and small memory footprint 
-that includes all the features of Visual Studio Code that I regularly utilize.
+But the biggest painpoint of Visual Studio Code is that it hoards resources.
 
-### Solution
+For most machines, this is hardly an issue. But it's the concept that scares me. No code editor
+should need to use as much memory as Google Chrome if all it manages are text files. This is a
+classic example of "baked-in features that not everyone wants". A code editor should be
+minimal, with the option for extensibility as needed.
 
-Vim and its Neovim counterpart are low-level text editors that focus soley on 
-what they were designed to do - edit files. Neovim has no discernible impact on 
-performance or memory, and the keybindings and shortcuts improve editing 
-efficiency. while some would argue that Neovim and Vim are essentially identical,
-I chose Neovim over Vim due to its out-of-the-box support for gui-related features and 
-other features I used in VS Code (such as the in-editor terminal). Neovim also 
-has consistency across platforms, making it easy to setup on any operating system.
+Not to mention the fact that [telemetry is extremely creepy](https://stackoverflow.com/questions/40451596/visual-studio-code-still-accessing-internet-after-update-and-telemetry-was-disab).
 
-## Todo <a nane="todo"></a>
+I wanted an editing solution with high performance and small memory footprint that included 
+all features I regularly would have used in a code editor. This configuration solves all of
+these problems.
 
-- no todos!
+#### Vim vs Neovim
+I chose Neovim over Vim as a basis due to its out-of-the-box support for gui-related functions 
+used in the implementation of other features (such as the terminal buffer window). Neovim also 
+provides consistency across platforms, making it easy to setup on any operating system.
+
+#### How it works
+Everything included in this configuration is either an open source plugin of vim or 
+elementary vimscript hacking. I still consider myself a beginner at vimscript, and I've 
+included as many comments as necessary in `init.vim` to make each group of logic easier to 
+understand and easier to modify if desired.
+
