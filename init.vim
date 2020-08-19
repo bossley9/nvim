@@ -80,6 +80,13 @@ endf
 
 let s:openedDir = eval('@%') == '' && argc() == 0
 let s:sessDir = g:dataDir . 'sessions' . fnameescape(s:dir)
+
+" if directory is specified as arg, e.g. vim Downloads/TestFolder/
+if isdirectory(eval('@%'))
+  let s:openedDir = 1
+  let s:sessDir = s:sessDir . '/' . eval('@%')
+endif
+
 let s:sessFile = s:sessDir . '/se'
 
 augroup session_management
