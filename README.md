@@ -18,6 +18,7 @@ Its features include:
 ## Table of Contents
 1. [Installation](#installation)
 2. [Background](#background)
+3. [Bindings and Commands](#bindings-and-commands)
 3. [Roadmap](#roadmap)
 
 ## Installation <a name="installation"></a>
@@ -96,8 +97,45 @@ elementary vimscript hacking. I still consider myself a beginner at vimscript, a
 included as many comments as necessary in `init.vim` to make each group of logic easier to 
 understand and easier to modify if desired.
 
+## Bindings and Commands <a name="bindings-and-commands"></a>
+Below is a summary of bindings and commands not native to vim that I currently use in my 
+configuration. **I haven't included native bindings unless I modified them**, since vim 
+bindings should be learned separately to these bindings. I also may not have included every 
+binding or command since some bindings are legacy bindings for "just in case" scenarios, or 
+extremely rare use-cases.
+
+| mode | binding | functionality |
+| --- | --- | --- |
+| normal | `alt-k` / `alt-j` | Navigate up or down respectively by increments of 5. It's extremely useful and provides a finer scope of file navigation between single-line navigation (`k`, `j`) and page jumping (`ctrl-u`, `ctrl-d`). |
+| normal | `alt-u` / `alt-d` | Navigate up or down respectively by increments of 25. This is intended to be used as a better alternative to `ctrl-u` abd `ctrl-d` since the `ctrl` key is misplaced on macOS machines. On both mac keyboards and standard keyboards, the `alt` key is generally placed in the same area. With this binding, it's also possible to customize the jump increments. |
+| normal | `!` / `@` | Quick navigation to the start or end of a line. This is an alternative to the native `0` / `$` keybinding since both `!` and `@` are accessible by the same hand and are logically placed in sequential order. |
+| normal | `ctrl-h` / `ctrl-j` / `ctrl-k` / `ctrl-l` | Alternatives to the standard method of switching between buffers with `ctrl-w [direction]`. This version is much more succinct. |
+| normal | `space` | Removes highlights. Equivalent of typing `:noh`. |
+| normal | `ZZ` / `ZQ` | Overwrites the native binding by saving session if applicable before quitting. |
+| normal, visual | `alt-p` | Opens a project file fuzzy finder in a bordered window. Uses Ripgrep. | normal, visual, insert | `alt-b` | Toggles the file explorer side-pane. |
+| normal, visual | `ctrl-c` | Copies the given selection or line to the clipboard. |
+| normal | `ctrl-v` | Pastes the clipboard to the buffer in the same manner as the native `p` binding in vim. |
+| normal, visual, insert, terminal | `alt-` | Toggles the terminal window. Within this window, switch to different terminal buffers using `alt-#` where # is the instance number. |
+| normal, insert, visual | `alt-/` | Comment or uncomment the given line or line selection. |
+| normal, visual | `tab` / `shift-tab` | Indent or unindent the line. |
+| normal | `K` | Created as a counterpart to vim's native `J`. Whereas native `J` attaches the next line to the current line, `K` will separate the current line at the cursor and move the second half to the next line. Equivalent to entering insert mode and pressing `enter`. |
+| normal | `alt-f` | File searching with native vim file regex searching. Equivalent to `/`. |
+| normal, visual | `alt-F` | Project searching within all files. This is an equivalent of Visual Studio Code's project-wide searching but instead using Ripgrep. |
+| normal | `alt-]` | Go to definition using Coc. This is where Coc extensions come in handy to be able to parse languages such as Typescript. |
+| normal | `alt-o` | Go backwards in the tag stack. This essentially backward navigates through files and previous definition searching and works will in coordination with `alt-]`. The native vim equivalent of `ctrl-o`. |
+| normal | `gk` | Both display the definition for a given tag or keyword. This binding uses an "opt-in" strategy by only displaying a definition when desireable. This increases performance and prevents definition windows from covering code. |
+| insert | `alt-h` / `alt-;` / `alt-j` | These bindings are simply alternatives to `ctrl-h` (backspace), `ctrl-;` (`escape`), and `ctrl-j` (`enter`) using the `alt` key. |
+| insert | `alt-k` / `alt-j` | Toggle and navigate autocomplete suggestions. I don't enable them by default because sometimes it automatically inserts random suggestions or covers other code with suggestions. This is an "opt-in" strategy which only displays autocomplete when desireable. |
+| visual | `I` / `A` | Permutation insert, the equivalent of calling `0<C-v>I` or `$<C-v>A` on a selection. This is useful if you need to add a prefix or postfix to a large amount of lines. |
+| command | `:Clear` | Cleans and removes all hidden buffers. This can potentially be useful in large projects with multitudes of hidden file buffers open. Additionally, closing the project using `ZZ` or `ZQ` will also clear all hidden buffers. |
+| command | `:MarkdownPreview` | Renders a preview of the given markdown file in the system default browser. This is part of the markdown preview plugin. |
+| command | `:TogglePrettier` | Toggles Prettier. Prettier is enabled by default, and it may make sense to temporarily disable Prettier. |
+| command | `:W` | Calls `:w`. This is to prevent mistypings of `:w` from interfering with development. |
+
+This configuration also includes all the fantastic word and object keybindings from the `vim-surround` plugin.
+
 ## Roadmap <a name="roadmap"></a>
 
-- Add markdown linter support rules
+- Add/Implement markdown linter support rules (see ALE's implementation)
 - Hide `clang` warnings for libraries or header definitions
 

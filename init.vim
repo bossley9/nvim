@@ -375,6 +375,8 @@ endfunction
 "  tags
 " ------------------------------------------------------------------------------
 
+" TODO deprecate
+
 nnoremap <M-[> <Esc>:Tags<CR>
 vnoremap <M-[> <Esc>:Tags<CR>
 
@@ -694,15 +696,15 @@ let g:ale_sign_warning = '!!'
 " clang on most distributions and operating systems
 
 let g:ale_fixers = {
-\   'javascript': ['prettier'],
-\   'typescript': ['prettier'],
-\   'typescriptreact': ['prettier'],
-\   'scss': ['prettier'],
-\   'css': ['prettier'],
-\   'googlescript': ['prettier'],
 \   'c': ['clang-format'],
 \   'cpp': ['clang-format'],
 \   'cs': ['clang-format'],
+\   'css': ['prettier'],
+\   'googlescript': ['prettier'],
+\   'javascript': ['prettier'],
+\   'scss': ['prettier'],
+\   'typescript': ['prettier'],
+\   'typescriptreact': ['prettier'],
 \}
 
 fu! TogglePrettierOnSave()
