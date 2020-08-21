@@ -14,22 +14,16 @@ let g:installDir = expand('$XDG_CONFIG_HOME/nvim')
 "  plugin declaration
 " ------------------------------------------------------------------------------
 
-" autoinstall vim-plug
+" automated plugin installation process:
+" if vim-plug directory is empty
 let s:vimPlugDir = g:dataDir . 'site/autoload/plug.vim'
 if empty(glob(s:vimPlugDir))
+  " install vim-plug
   exe '!curl -fLo ' . s:vimPlugDir . ' --create-dirs '
     \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-en
-
-" autoinstall plugins
-augroup plugin_management
-  au!
-  au VimEnter *
-    \if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-      \| PlugInstall --sync 
-      \| q
-    \| en
-augroup end
+  " install plugins
+  au VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 " plugin list
 call plug#begin(g:dataDir . 'plugged')
@@ -510,7 +504,7 @@ let g:gitgutter_sign_modified_removed = s:vcs
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
 
-let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
   \ "Modified"  : s:vcs,
   \ "Staged"    : s:vcs,
   \ "Untracked" : s:vcs,

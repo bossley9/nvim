@@ -25,16 +25,21 @@ Its features include:
 These instructions work for both Linux distributions and macOS. Windows may require some 
 tweaking with WSL or puTTY.
 
-1. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4+
+1. Install [nodejs](https://nodejs.org/en/download) >= 10.12. This is required by `coc`
+    (and I can't find a way to automate the process):
+    ```
+    curl -sL install-node.now.sh/lts | bash
+    ```
+2. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4+
     is installed. Certain functions available will not function properly on lower
     versions.
-2. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
+3. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
     ```
     git clone https://github.com/bossley9/nvim.git $XDG_CONFIG_HOME/nvim
     ```
-3. Open `neovim`. It should detect the configuration file and immediately 
+4. Open `neovim`. It should detect the configuration file and immediately 
     install all plugins.
-4. Close and reopen `neovim` to ensure all plugins and configuration 
+5. Close and reopen `neovim` to ensure all plugins and configuration 
     settings are enabled.
 
 If future updates are made to this configuration, you can pull the latest commits 
@@ -139,4 +144,5 @@ This configuration also includes all the fantastic word and object keybindings f
 - Hide `clang` warnings for libraries or header definitions
 - Remove legacy tag functionality
 - Fix/Remove code folding
+- Fix initial buffer using NERDTree buffer syntax highlighting on using a directory arg
 
