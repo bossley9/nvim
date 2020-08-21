@@ -701,6 +701,7 @@ let g:ale_fixers = {
 \   'cs': ['clang-format'],
 \   'css': ['prettier'],
 \   'googlescript': ['prettier'],
+\   'markdown': ['prettier'],
 \   'javascript': ['prettier'],
 \   'scss': ['prettier'],
 \   'typescript': ['prettier'],
