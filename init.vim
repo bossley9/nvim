@@ -40,7 +40,6 @@ Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
 Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
-Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
@@ -66,8 +65,6 @@ fu! s:session_save()
 endf
 
 fu! s:session_restore()
-  " tags
-  GenTags
   " if session exists
   if filereadable(s:sessFile)
     exe 'so ' . s:sessFile
@@ -211,7 +208,6 @@ nnoremap <Space> :noh<CR>
 "   \unlet winv<CR>
 "   \:Clear<CR>
 "   \:NERDTreeRefreshRoot<CR>
-"   \:GenTags<CR>
 
 " closing and saving
 nnoremap ZZ :wqa<CR>
@@ -364,52 +360,6 @@ fu! s:clear_buffers()
     exe 'tabnext' l:tab
   endtry
 endfunction
-
-" ------------------------------------------------------------------------------
-"  tags
-" ------------------------------------------------------------------------------
-
-" TODO deprecate
-
-nnoremap <M-[> <Esc>:Tags<CR>
-vnoremap <M-[> <Esc>:Tags<CR>
-
-nnoremap <M-t> <Esc>:call Tags_toggle_tagbar()<CR>
-vnoremap <M-t> <Esc>:call Tags_toggle_tagbar()<CR>
-
-exe 'set tags+='.s:sessDir.'/tags'
-
-com! GenTags call s:gen_tags()
-fu! s:gen_tags()
-  exe 'silent !mkdir -p ' . s:sessDir
-  exe 'silent !ctags --tag-relative=always -R -f ' . s:sessDir . '/tags . &'
-endfunction
-
-let s:tagbaro = 0
-fu! Tags_toggle_tagbar()
-  if s:tagbaro
-    TagbarClose
-    let s:tagbaro = 0
-  else
-    TagbarOpenAutoClose
-    let s:tagbaro = 1
-    au! BufLeave <buffer> let s:tagbaro = 0
-  en
-endfunction
-
-let g:tagbar_type_typescript = {
-  \ 'ctagstype': 'typescript',
-  \ 'kinds': [
-    \ 'c:classes',
-    \ 'n:modules',
-    \ 'f:functions',
-    \ 'v:variables',
-    \ 'v:varlambdas',
-    \ 'm:members',
-    \ 'i:interfaces',
-    \ 'e:enums',
-  \ ]
-  \ }
 
 " ------------------------------------------------------------------------------
 "  mouse events
@@ -733,17 +683,6 @@ vnoremap <S-Tab> <gv
 nnoremap K i<CR><C-c>
 
 " ------------------------------------------------------------------------------
-"  matching paren
-" ------------------------------------------------------------------------------
-
-" inoremap (; (<CR>);<C-c>O
-" inoremap (, (<CR>),<C-c>O
-" inoremap {; {<CR>};<C-c>O
-" inoremap {, {<CR>},<C-c>O
-" inoremap [; [<CR>];<C-c>O
-" inoremap [, [<CR>],<C-c>O
-
-" ------------------------------------------------------------------------------
 "  file/project search
 " ------------------------------------------------------------------------------
 
@@ -778,15 +717,6 @@ augroup coc
   " support comment highlighting in json
   au FileType json syntax match Comment +\/\/.\+$+
 augroup end
-
-" let g:coc_global_extensions = [
-  " \ 'coc-tsserver',
-  " \ 'coc-json',
-  " \ 'coc-snippets',
-  " \ 'coc-pairs',
-  " \ 'coc-eslint',
-  " \ 'coc-prettier',
-  " \ ]
 
 " M-j and M-k navigates completion
 inoremap <silent><expr> <M-j>
@@ -824,10 +754,6 @@ fu! s:show_documentation()
     call CocAction('doHover')
   en
 endfunction
-
-" doesn't seem to work for an entire project...
-" F2 for symbol renaming
-" nmap <F2> <plug>(coc-rename)
 
 " ------------------------------------------------------------------------------
 "  appearance

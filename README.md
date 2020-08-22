@@ -142,7 +142,6 @@ This configuration also includes all the fantastic word and object keybindings f
 ## Roadmap <a name="roadmap"></a>
 
 - Hide `clang` warnings for libraries or header definitions
-- Remove legacy tag functionality
 - Fix/Remove code folding
 - Fix initial buffer using NERDTree buffer syntax highlighting on using a directory arg
 
