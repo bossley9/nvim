@@ -4,6 +4,8 @@ alternative to Visual Studio Code
 
 ![a demonstration of my configuration](demo.gif)
 
+_And yes. This demonstration was recorded without using a mouse. Vim keybindings are wonderful._
+
 Its features include:
 - multi-buffer support (native to vim)
 - vim keybindings with additional add-ons (vim-surround, vim-commentary)
@@ -26,7 +28,7 @@ These instructions work for both Linux distributions and macOS. Windows may requ
 tweaking with WSL or puTTY.
 
 1. Install [nodejs](https://nodejs.org/en/download) >= 10.12. This is required by `coc`
-    for language server support:
+    for any sort of language server support:
     ```
     curl -sL install-node.now.sh/lts | bash
     ```
@@ -35,19 +37,21 @@ tweaking with WSL or puTTY.
     (in my honest opinion, the very best) line-searching utilities
     for project file searching.
 2. Install [neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) >= 0.4.
-    Certain functions available will not function properly on lower versions.
+    Certain functions (such as floating buffer windows) will not function properly on 
+    lower versions.
 3. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
     ```
     git clone https://github.com/bossley9/nvim.git $XDG_CONFIG_HOME/nvim
     ```
 4. Open `neovim`. It should detect the configuration file and immediately 
     install all plugins.
+    ```
+    nvim
+    ```
 5. Close and reopen `neovim` to ensure all plugins and configuration 
     settings are enabled.
 
 **While plugin installation is automated, Coc extensions need to be installed manually**.
-Coc is the best alternative for auto completion, auto imports, defintions,
-tag searching, etc for Typescript.
 
 > I couldn't find a good way to automate this process, but it's better that this must be 
 > done manually. All extensions are language-specific plugins, and it's better to provide a 
@@ -85,7 +89,7 @@ should need to use as much memory as Google Chrome if all it manages are text fi
 classic example of "baked-in features that not everyone wants". A code editor should be
 minimal, with the option for extensibility as needed.
 
-Not to mention the fact that [telemetry is extremely creepy](https://stackoverflow.com/questions/40451596/visual-studio-code-still-accessing-internet-after-update-and-telemetry-was-disab).
+Not to mention the fact that [its telemetry is extremely creepy](https://stackoverflow.com/questions/40451596/visual-studio-code-still-accessing-internet-after-update-and-telemetry-was-disab).
 
 I wanted an editing solution with high performance and small memory footprint that included 
 all features I regularly would have used in a code editor. This configuration solves all of

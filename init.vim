@@ -391,8 +391,20 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 "  file explorer
 " ------------------------------------------------------------------------------
 
+com! NERDTreeToggleAdjusted call s:NERDTreeToggle()
+
+let s:hasTreeBeenOpened = 0
+fu! s:NERDTreeToggle()
+  if ! s:hasTreeBeenOpened
+    let s:hasTreeBeenOpened = 1
+    exe 'NERDTreeToggle ' . s:dir
+  else
+    NERDTreeToggle
+  endif
+endfunction
+
 " toggle explorer pane
-call s:bind_all_modes('<M-b> <Esc>:NERDTreeToggle ' . s:dir . '<CR>')
+call s:bind_all_modes('<M-b> <Esc>:NERDTreeToggleAdjusted<CR>')
 
 " don't show hidden files in file explorer by default
 let NERDTreeShowHidden = 0
