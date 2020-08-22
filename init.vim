@@ -28,7 +28,7 @@ endif
 " plugin list
 call plug#begin(g:dataDir . 'plugged')
 
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'

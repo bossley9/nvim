@@ -26,13 +26,16 @@ These instructions work for both Linux distributions and macOS. Windows may requ
 tweaking with WSL or puTTY.
 
 1. Install [nodejs](https://nodejs.org/en/download) >= 10.12. This is required by `coc`
-    (and I can't find a way to automate the process):
+    for language server support:
     ```
     curl -sL install-node.now.sh/lts | bash
     ```
-2. Verify [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) 0.4+
-    is installed. Certain functions available will not function properly on lower
-    versions.
+2. Install [ripgrep](https://github.com/BurntSushi/ripgrep#installation) 
+    for file navigation support. Ripgrep is one of the best 
+    (in my honest opinion, the very best) line-searching utilities
+    for project file searching.
+2. Install [neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) >= 0.4.
+    Certain functions available will not function properly on lower versions.
 3. Clone this repository in `$XDG_CONFIG_HOME` (this is usually `~/.config/`).
     ```
     git clone https://github.com/bossley9/nvim.git $XDG_CONFIG_HOME/nvim
@@ -42,11 +45,8 @@ tweaking with WSL or puTTY.
 5. Close and reopen `neovim` to ensure all plugins and configuration 
     settings are enabled.
 
-If future updates are made to this configuration, you can pull the latest commits 
-and `neovim` will automatically install any new plugins.
-
-**While almost everything is automated by install, Coc extensions need to be installed 
-manually**. Coc is the best alternative for auto completion, auto imports, defintions,
+**While plugin installation is automated, Coc extensions need to be installed manually**.
+Coc is the best alternative for auto completion, auto imports, defintions,
 tag searching, etc for Typescript.
 
 > I couldn't find a good way to automate this process, but it's better that this must be 
