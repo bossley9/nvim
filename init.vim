@@ -848,6 +848,7 @@ set scrolloff=5
 " various syntax highlighting
 augroup appearance_syntax_highlight
   au!
+  au BufReadPost *.dat set filetype=dat | set syntax=json 
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
 augroup end
 
