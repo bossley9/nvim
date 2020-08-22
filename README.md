@@ -133,7 +133,7 @@ extremely rare use-cases.
 | insert | `alt-k` / `alt-j` | Toggle and navigate autocomplete suggestions. I don't enable them by default because sometimes it automatically inserts random suggestions or covers other code with suggestions. This is an "opt-in" strategy which only displays autocomplete when desireable. |
 | visual | `I` / `A` | Permutation insert, the equivalent of calling `0<C-v>I` or `$<C-v>A` on a selection. This is useful if you need to add a prefix or postfix to a large amount of lines. |
 | command | `:Clear` | Cleans and removes all hidden buffers. This can potentially be useful in large projects with multitudes of hidden file buffers open. Additionally, closing the project using `ZZ` or `ZQ` will also clear all hidden buffers. |
-| command | `:MarkdownPreview` | Renders a preview of the given markdown file in the system default browser. This is part of the markdown preview plugin. |
+| command | `:D` | Renders a preview of the current buffer (if it is a markdown file) in the system default browser. This is equivalent to `:MarkdownPreview`. I chose `D` as a command alias simply because it's much easier to reach and type than `MarkdownPreview`. |
 | command | `:TogglePrettier` | Toggles Prettier. Prettier is enabled by default, and it may make sense to temporarily disable Prettier. |
 | command | `:W` | Calls `:w`. This is to prevent mistypings of `:w` from interfering with development. |
 
