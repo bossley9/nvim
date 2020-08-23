@@ -147,5 +147,4 @@ This configuration also includes all the fantastic word and object keybindings f
 
 - Hide `clang` warnings for libraries or header definitions
 - Fix/Remove code folding
-- Fix initial buffer using NERDTree buffer syntax highlighting on using a directory arg
 

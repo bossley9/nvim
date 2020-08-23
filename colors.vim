@@ -80,18 +80,22 @@ fu! NERDTreeHighlightFile(ext, fg, bg)
   exe 'au Filetype nerdtree syn match '.a:ext.' #^\s\+.*'.a:ext.'$#'
 endfunction
 
-" hide all dots
+" hide all dotfiles
 augroup file_explorer_dot_highlight
-  exe 'au Filetype nerdtree highlight dot ctermbg=none ctermfg='.s:c8
-  exe 'au Filetype nerdtree match dot /\..*/'
+  exe 'au Filetype nerdtree hi dot ctermbg=none ctermfg='.s:c8
+  " for some strange reason, NERDTree entries are arranged as 
+  " (whitespace) + (invisible character) + (file name)
+  au Filetype nerdtree match dot #\s\+.\.\S*#
 augroup end
 
 let s:hi_doc = 'Blue'
+let s:hi_media = 'Magenta'
 
 call NERDTreeHighlightFile('md', s:hi_doc, 'none')
 call NERDTreeHighlightFile('json', s:hi_doc, 'none')
 call NERDTreeHighlightFile('lock', s:hi_doc, 'none')
 call NERDTreeHighlightFile('yml', s:hi_doc, 'none')
+call NERDTreeHighlightFile('txt', s:hi_doc, 'none')
 
 call NERDTreeHighlightFile('html', 'brown', 'none')
 
@@ -103,6 +107,19 @@ call NERDTreeHighlightFile('ts', 'DarkCyan', 'none')
 call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
 
 call NERDTreeHighlightFile('vim', 'lightgreen', 'none')
+
+call NERDTreeHighlightFile('gif', s:hi_media, 'none')
+call NERDTreeHighlightFile('png', s:hi_media, 'none')
+call NERDTreeHighlightFile('jpg', s:hi_media, 'none')
+call NERDTreeHighlightFile('svg', s:hi_media, 'none')
+call NERDTreeHighlightFile('mp4', s:hi_media, 'none')
+call NERDTreeHighlightFile('pdf', s:hi_media, 'none')
+call NERDTreeHighlightFile('doc', s:hi_media, 'none')
+call NERDTreeHighlightFile('docx', s:hi_media, 'none')
+call NERDTreeHighlightFile('otf', s:hi_media, 'none')
+call NERDTreeHighlightFile('ttf', s:hi_media, 'none')
+call NERDTreeHighlightFile('woff', s:hi_media, 'none')
+call NERDTreeHighlightFile('woff2', s:hi_media, 'none')
 
 " file explorer entry highlight
 hi clear Cursorline
