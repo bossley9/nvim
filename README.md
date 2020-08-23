@@ -62,6 +62,7 @@ extensions I always install:
 - `coc-css`
 - `coc-json`
 - `coc-tsserver`
+- `coc-clangd`
 
 If you are running this configuration in macOS, you will need to enable mouse reporting in your 
 terminal's preferences to enable mouse support.
