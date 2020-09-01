@@ -19,6 +19,7 @@ nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 " 14 yellow
 " 15 white
 
+let s:c7 = 'lightgrey'
 let s:c8 = 'darkgrey'
 let s:c9 = 'blue'
 let s:c10 = 'green'
@@ -124,6 +125,12 @@ call NERDTreeHighlightFile('woff2', s:hi_media, 'none')
 " file explorer entry highlight
 hi clear Cursorline
 exe 'hi Cursorline term=Bold ctermbg='.s:chi
+
+" ------------------------------------------------------------------------------
+"  line numbers
+" ------------------------------------------------------------------------------
+
+exe 'hi LineNr term=Bold ctermfg='.s:c8
 
 " ------------------------------------------------------------------------------
 "  floating windows
