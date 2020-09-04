@@ -19,6 +19,7 @@ nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 " 14 yellow
 " 15 white
 
+let s:c0 = 'black'
 let s:c7 = 'lightgrey'
 let s:c8 = 'darkgrey'
 let s:c9 = 'blue'
@@ -203,7 +204,7 @@ fu! StatusLineMode()
     let l:bg = s:cmn
   en
 
-  exe 'hi Mode ctermfg='.s:chide.' ctermbg='.l:bg.' cterm=Bold'
+  exe 'hi Mode ctermfg='.s:c0.' ctermbg='.l:bg.' cterm=Bold'
   return l:mode
 endfunction
 
