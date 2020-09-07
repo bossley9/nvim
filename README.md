@@ -44,25 +44,12 @@ tweaking with WSL or puTTY.
     git clone https://github.com/bossley9/nvim.git $XDG_CONFIG_HOME/nvim
     ```
 4. Open `neovim`. It should detect the configuration file and immediately 
-    install all plugins.
+    install all plugins and extensions.
     ```
     nvim
     ```
 5. Close and reopen `neovim` to ensure all plugins and configuration 
     settings are enabled.
-
-**While plugin installation is automated, Coc extensions need to be installed manually**.
-
-> I couldn't find a good way to automate this process, but it's better that this must be 
-> done manually. All extensions are language-specific plugins, and it's better to provide a 
-> bloat-free "opt-in" alternative rather than a bloated "opt-out" editor.
-
-You can install Coc extensions with the command `:CocInstall extName`. Below are a list of
-extensions I always install:
-- `coc-css`
-- `coc-json`
-- `coc-tsserver`
-- `coc-clangd`
 
 If you are running this configuration in macOS, you will need to enable mouse reporting in your 
 terminal's preferences to enable mouse support.

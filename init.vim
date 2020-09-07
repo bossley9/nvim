@@ -724,6 +724,14 @@ let g:coc_disable_startup_warning = 1
 " remove python2 support
 let g:loaded_python_provider = 0
 
+" extensions to install by default
+let g:coc_global_extensions = [
+  \ 'coc-clangd',
+  \ 'coc-css',
+  \ 'coc-json',
+  \ 'coc-tsserver'
+  \ ]
+
 augroup coc
   au!
   " support comment highlighting in json
