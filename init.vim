@@ -810,6 +810,7 @@ augroup appearance_syntax_highlight
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
   au BufReadPost *.h set filetype=c | set syntax=c 
   au BufReadPost config set filetype=dosini | set syntax=dosini 
+  au BufReadPost gtkrc set filetype=sh | set syntax=sh 
 augroup end
 
 exe 'so ' . g:installDir . '/colors.vim'
