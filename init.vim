@@ -788,6 +788,46 @@ let g:mkdp_auto_close = 0
 let g:mkdp_page_title = '${name}'
 
 " ------------------------------------------------------------------------------
+"  latex
+" ------------------------------------------------------------------------------
+
+let s:isLiveLatexEnabled = 0
+let s:isLiveLatexPreviewOpen = 0
+
+let g:defaultPdfViewer = $PDF_VIEWER
+
+com! L call s:enable_latex_live_preview()
+com! LatexLivePreview call s:enable_latex_live_preview()
+
+fu! s:enable_latex_live_preview()
+  let s:isLiveLatexEnabled = 1
+  let s:isLiveLatexPreviewOpen = 0
+  call s:update_latex_live_preview()
+endfunction
+
+" Note: this may be expanded in the future for biber
+fu! s:compile_latex()
+  " compile twice for refs and labels
+  exe 'silent !pdflatex ' . expand("%:p")
+  exe 'silent !pdflatex ' . expand("%:p")
+endfunction
+
+fu! s:update_latex_live_preview()
+  call s:compile_latex()
+  let output = expand("%:p:r") . '.pdf'
+
+  if ! s:isLiveLatexPreviewOpen
+    let s:isLiveLatexPreviewOpen = 1
+    exe 'silent !' g:defaultPdfViewer . ' ' . output . ' &'
+  en
+endfunction
+
+augroup latex
+  au BufWritePost *.tex if s:isLiveLatexEnabled
+    \ | call s:update_latex_live_preview() | en
+augroup end
+
+" ------------------------------------------------------------------------------
 "  appearance
 " ------------------------------------------------------------------------------
 

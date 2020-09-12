@@ -128,6 +128,8 @@ extremely rare use-cases.
 | command | `:D` | Renders a preview of the current buffer (if it is a markdown file) in the system default browser. This is equivalent to `:MarkdownPreview`. I chose `D` as a command alias simply because it's much easier to reach and type than `MarkdownPreview`. |
 | command | `:TogglePrettier` | Toggles Prettier. Prettier is enabled by default, and it may make sense to temporarily disable Prettier. |
 | command | `:W` | Calls `:w`. This is to prevent mistypings of `:w` from interfering with development. |
+| command | `:LatexLivePreview` | Opens a preview window for Latex in `$PDF_VIEWER` and automatically compiles any new writes in Latex to the given pdf. The pdf viewer can be changed by setting `g:defaultPdfViewer`. |
+| command | `:L` | Calls `:LatexLivePreview`. This is an arbitrary command alias that is easy to type. |
 
 This configuration also includes all the fantastic word and object keybindings from the `vim-surround` plugin.
 
