@@ -808,8 +808,8 @@ endfunction
 " Note: this may be expanded in the future for biber
 fu! s:compile_latex()
   " compile twice for refs and labels
-  exe 'silent !pdflatex ' . expand("%:p")
-  exe 'silent !pdflatex ' . expand("%:p")
+  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
 endfunction
 
 fu! s:update_latex_live_preview()
