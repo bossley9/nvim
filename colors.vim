@@ -98,6 +98,7 @@ call NERDTreeHighlightFile('json', s:hi_doc, 'none')
 call NERDTreeHighlightFile('lock', s:hi_doc, 'none')
 call NERDTreeHighlightFile('yml', s:hi_doc, 'none')
 call NERDTreeHighlightFile('txt', s:hi_doc, 'none')
+call NERDTreeHighlightFile('tex', s:hi_doc, 'none')
 
 call NERDTreeHighlightFile('html', 'brown', 'none')
 
