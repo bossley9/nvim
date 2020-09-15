@@ -825,6 +825,8 @@ endfunction
 augroup latex
   au BufWritePost *.tex if s:isLiveLatexEnabled
     \ | call s:update_latex_live_preview() | en
+  " disable linters for latex because they all suck :')
+  au BufEnter *.tex ALEDisableBuffer
 augroup end
 
 " ------------------------------------------------------------------------------
