@@ -806,7 +806,9 @@ fu! s:enable_latex_live_preview()
 endfunction
 
 fu! s:compile_latex()
-  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+  let l:compile = 'pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+
+  exe 'silent !' . l:compile
 
   " compile twice for refs and labels
   " comment kept for clarity but functionality removed due to performance.
@@ -814,7 +816,7 @@ fu! s:compile_latex()
   " be run manually as needed.
 
   " exe 'silent !biber ' . expand("%:r")
-  " exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+  exe 'silent !' . l:compile
 endfunction
 
 fu! s:update_latex_live_preview()
