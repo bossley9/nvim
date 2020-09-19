@@ -805,11 +805,16 @@ fu! s:enable_latex_live_preview()
   call s:update_latex_live_preview()
 endfunction
 
-" Note: this may be expanded in the future for biber
 fu! s:compile_latex()
+  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+
   " compile twice for refs and labels
-  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
-  exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
+  " comment kept for clarity but functionality removed due to performance.
+  " It is rare we will need have references or bibliography, and both can
+  " be run manually as needed.
+
+  " exe 'silent !biber ' . expand("%:r")
+  " exe 'silent !pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
 endfunction
 
 fu! s:update_latex_live_preview()
@@ -827,6 +832,7 @@ augroup latex
     \ | call s:update_latex_live_preview() | en
   " disable linters for latex because they all suck :')
   au BufEnter *.tex ALEDisableBuffer
+  au BufEnter *.bib ALEDisableBuffer
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -853,6 +859,7 @@ augroup appearance_syntax_highlight
   au BufReadPost *.h set filetype=c | set syntax=c 
   au BufReadPost config set filetype=dosini | set syntax=dosini 
   au BufReadPost gtkrc set filetype=sh | set syntax=sh 
+  au BufReadPost *.bib set filetype=tex | set syntax=bib
 augroup end
 
 exe 'so ' . g:installDir . '/colors.vim'
