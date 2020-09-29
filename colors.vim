@@ -151,6 +151,10 @@ exe 'hi WindowBorder ctermfg='.s:c11
 exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:chide
 exe 'hi NonText ctermfg='.s:chide
 
+" highlight all trailing whitespace
+hi Trailing ctermfg=DarkGray
+match Trailing /\s\+$/
+
 " ------------------------------------------------------------------------------
 "  cursor and surrounding
 " ------------------------------------------------------------------------------
