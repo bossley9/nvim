@@ -589,7 +589,7 @@ endfunction
 " ------------------------------------------------------------------------------
 
 fu! GetStatusInactive()
-  return ''
+  return '-- INACTIVE --'
 endfunction
 
 fu! GetStatusActive()

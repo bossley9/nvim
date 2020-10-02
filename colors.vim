@@ -29,6 +29,11 @@ let s:c12 = 'red'
 let s:c13 = 'magenta'
 let s:c15 = 'white'
 
+let s:primary = 'LightBlue'
+let s:secondary = 'Magenta'
+let s:tertiary = 'Yellow'
+let s:alert = 'Red'
+
 let s:chide = 0
 let s:chi = 8
 
@@ -139,7 +144,7 @@ exe 'hi LineNr term=Bold ctermfg='.s:c8
 " ------------------------------------------------------------------------------
 
 exe 'hi Pmenu ctermbg='.s:chide.' ctermfg=White'
-hi PmenuSel ctermfg=LightBlue
+exe 'hi PmenuSel ctermfg='.s:primary
 
 " terminal/floating window border
 exe 'hi WindowBorder ctermfg='.s:c11
@@ -148,10 +153,14 @@ exe 'hi WindowBorder ctermfg='.s:c11
 "  buffers
 " ------------------------------------------------------------------------------
 
-exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:chide
+exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:c8
 exe 'hi NonText ctermfg='.s:chide
 
-" highlight all trailing whitespace
+" text selection
+" exe 'hi Visual ctermfg='.s:alert.' ctermbg='.s:chi
+exe 'hi Visual ctermbg='.s:chi
+
+" trailing whitespace
 hi Trailing ctermfg=DarkGray
 match Trailing /\s\+$/
 
@@ -171,7 +180,7 @@ hi Search ctermbg=blue
 hi clear StatusLine
 
 hi StatusLine ctermbg=0 ctermfg=Grey
-hi StatusLineNC ctermbg=0 ctermfg=0
+exe 'hi StatusLineNC ctermbg='.s:chi.' ctermfg=0'
 
 exe 'hi FileName ctermfg='.s:c9.' cterm=Bold'
 
