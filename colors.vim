@@ -154,15 +154,16 @@ exe 'hi WindowBorder ctermfg='.s:c11
 " ------------------------------------------------------------------------------
 
 exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:c8
-exe 'hi NonText ctermfg='.s:chide
+exe 'hi NonText ctermfg='.s:primary
 
 " text selection
 " exe 'hi Visual ctermfg='.s:alert.' ctermbg='.s:chi
 exe 'hi Visual ctermbg='.s:chi
 
+" doesn't seem to work and gets overridden by NonText hi group
 " trailing whitespace
-hi Trailing ctermfg=DarkGray
-match Trailing /\s\+$/
+" hi Trailing ctermfg=DarkGray
+" match Trailing /\s\+$/
 
 " ------------------------------------------------------------------------------
 "  cursor and surrounding
@@ -180,7 +181,7 @@ hi Search ctermbg=blue
 hi clear StatusLine
 
 hi StatusLine ctermbg=0 ctermfg=Grey
-exe 'hi StatusLineNC ctermbg='.s:chi.' ctermfg=0'
+exe 'hi StatusLineNC ctermbg='.s:tertiary.' ctermfg=0'
 
 exe 'hi FileName ctermfg='.s:c9.' cterm=Bold'
 
