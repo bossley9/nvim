@@ -853,7 +853,7 @@ set splitright
 " number of lines above and below cursor at all times
 set scrolloff=5
 
-set list listchars=trail:·
+set list listchars=tab:\ \ ,trail:·
 
 " various syntax highlighting
 augroup appearance_syntax_highlight

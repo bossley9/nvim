@@ -154,7 +154,7 @@ exe 'hi WindowBorder ctermfg='.s:c11
 " ------------------------------------------------------------------------------
 
 exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:c8
-exe 'hi NonText ctermfg='.s:primary
+exe 'hi NonText ctermfg='.s:c7
 
 " text selection
 " exe 'hi Visual ctermfg='.s:alert.' ctermbg='.s:chi
