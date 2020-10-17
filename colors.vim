@@ -2,63 +2,66 @@
 nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 
-" 0 black
-" 1 darkblue
-" 2 darkgreen
-" 3 darkcyan
-" 4 darkred
-" 5 darkmagenta
-" 6 darkyellow
-" 7 lightgrey
-" 8 darkgrey
-" 9 blue
-" 10 green
-" 11 cyan
-" 12 red
-" 13 magenta
-" 14 yellow
-" 15 white
+let s:c0 = '0'   " 0 black
+let s:c1 = '1'   " 1 red
+let s:c2 = '2'   " 2 green
+let s:c3 = '3'   " 3 yellow
+let s:c4 = '4'   " 4 blue
+let s:c5 = '5'   " 5 magenta
+let s:c6 = '6'   " 6 cyan
+let s:c7 = '7'   " 7 white
 
-let s:c0 = 'black'
-let s:c7 = 'lightgrey'
-let s:c8 = 'darkgrey'
-let s:c9 = 'blue'
-let s:c10 = 'green'
-let s:c11 = 'cyan'
-let s:c12 = 'red'
-let s:c13 = 'magenta'
-let s:c15 = 'white'
+let s:c8 = '8'   " 8 black - light
+let s:c9 = '9'   " 9 red - light
+let s:c10 = '10' " 10 green - light
+let s:c11 = '11' " 11 yellow - light
+let s:c12 = '12' " 12 blue - light
+let s:c13 = '13' " 13 magenta - light
+let s:c14 = '14' " 14 cyan - light
+let s:c15 = '15' " 15 white - light
 
-let s:primary = 'LightBlue'
-let s:secondary = 'Magenta'
-let s:tertiary = 'Yellow'
-let s:alert = 'Red'
+" TODO
+let s:primary = '0'
+let s:secondary = '0'
+let s:tertiary = '0'
+let s:alert = '0'
 
+" TODO
 let s:chide = 0
-let s:chi = 8
+
+
+let s:fg = s:c7
+let s:bg = s:c0
+let s:warningfg = s:fg
+let s:warningbg = s:c11
+
+" subtle bg
+let s:chi = s:c8
 
 " ------------------------------------------------------------------------------
 "  gutter, file explorer, and blame
 " ------------------------------------------------------------------------------
 
-let s:gitadd = s:c10
-let s:gitmodify = s:c9
-let s:gitdelete = s:c12
+let s:gitadd = s:c10     " light green
+let s:gitmodify = s:c11  " light yellow
+let s:gitdelete = s:c9   " light red
 
-exe 'hi LineNr ctermfg='.s:chi
-
+" prevent git gutter issues
 hi SignColumn ctermbg=None
 
+" git gutter
 exe 'hi GitGutterAdd ctermbg=None ctermfg='.s:gitadd
 exe 'hi GitGutterChange ctermbg=None ctermfg='.s:gitmodify
 exe 'hi GitGutterChangeDelete ctermbg=None ctermfg='.s:gitdelete
 exe 'hi GitGutterDelete ctermbg=None ctermfg='.s:gitdelete
 
+" ALE errors
 hi Error cterm=bold
-hi ALEStyleWarning ctermbg=yellow ctermfg=black
-hi ALEWarning ctermbg=yellow ctermfg=black
-hi ALEInfo ctermbg=yellow ctermfg=black
+exe 'hi ALEStyleWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
+exe 'hi ALEWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
+exe 'hi ALEInfo ctermbg='.s:warningbg.' ctermfg='.s:warningfg
 
+" ???
 hi Directory ctermfg=White
 
 " hide nerdtree git brackets
@@ -95,65 +98,68 @@ augroup file_explorer_dot_highlight
   au Filetype nerdtree match dot #\s\+.\.\S*#
 augroup end
 
-let s:hi_doc = 'Blue'
-let s:hi_media = 'Magenta'
+let s:cdoc = s:c4
+let s:cmedia = s:c5
 
-call NERDTreeHighlightFile('md', s:hi_doc, 'none')
-call NERDTreeHighlightFile('json', s:hi_doc, 'none')
-call NERDTreeHighlightFile('lock', s:hi_doc, 'none')
-call NERDTreeHighlightFile('yml', s:hi_doc, 'none')
-call NERDTreeHighlightFile('txt', s:hi_doc, 'none')
-call NERDTreeHighlightFile('tex', s:hi_doc, 'none')
+call NERDTreeHighlightFile('md', s:cdoc, 'none')
+call NERDTreeHighlightFile('json', s:cdoc, 'none')
+call NERDTreeHighlightFile('lock', s:cdoc, 'none')
+call NERDTreeHighlightFile('yml', s:cdoc, 'none')
+call NERDTreeHighlightFile('txt', s:cdoc, 'none')
+call NERDTreeHighlightFile('tex', s:cdoc, 'none')
 
-call NERDTreeHighlightFile('html', 'brown', 'none')
+call NERDTreeHighlightFile('html', s:c4, 'none')
 
-call NERDTreeHighlightFile('css', 'LightBlue', 'none')
-call NERDTreeHighlightFile('scss', 'LightMagenta', 'none')
-call NERDTreeHighlightFile('js', 'Yellow', 'none')
-call NERDTreeHighlightFile('jsx', 'Yellow', 'none')
-call NERDTreeHighlightFile('ts', 'DarkCyan', 'none')
-call NERDTreeHighlightFile('tsx', 'DarkCyan', 'none')
+call NERDTreeHighlightFile('css', s:c12, 'none')
+call NERDTreeHighlightFile('scss', s:c13, 'none')
+call NERDTreeHighlightFile('js', s:c3, 'none')
+call NERDTreeHighlightFile('jsx', s:c3, 'none')
+call NERDTreeHighlightFile('ts', s:c6, 'none')
+call NERDTreeHighlightFile('tsx', s:c6, 'none')
 
-call NERDTreeHighlightFile('vim', 'lightgreen', 'none')
+call NERDTreeHighlightFile('vim', s:c2, 'none')
 
-call NERDTreeHighlightFile('gif', s:hi_media, 'none')
-call NERDTreeHighlightFile('png', s:hi_media, 'none')
-call NERDTreeHighlightFile('jpg', s:hi_media, 'none')
-call NERDTreeHighlightFile('svg', s:hi_media, 'none')
-call NERDTreeHighlightFile('mp4', s:hi_media, 'none')
-call NERDTreeHighlightFile('pdf', s:hi_media, 'none')
-call NERDTreeHighlightFile('doc', s:hi_media, 'none')
-call NERDTreeHighlightFile('docx', s:hi_media, 'none')
-call NERDTreeHighlightFile('otf', s:hi_media, 'none')
-call NERDTreeHighlightFile('ttf', s:hi_media, 'none')
-call NERDTreeHighlightFile('woff', s:hi_media, 'none')
-call NERDTreeHighlightFile('woff2', s:hi_media, 'none')
+call NERDTreeHighlightFile('gif', s:cmedia, 'none')
+call NERDTreeHighlightFile('png', s:cmedia, 'none')
+call NERDTreeHighlightFile('jpg', s:cmedia, 'none')
+call NERDTreeHighlightFile('svg', s:cmedia, 'none')
+call NERDTreeHighlightFile('mp4', s:cmedia, 'none')
+call NERDTreeHighlightFile('pdf', s:cmedia, 'none')
+call NERDTreeHighlightFile('doc', s:cmedia, 'none')
+call NERDTreeHighlightFile('docx', s:cmedia, 'none')
+call NERDTreeHighlightFile('otf', s:cmedia, 'none')
+call NERDTreeHighlightFile('ttf', s:cmedia, 'none')
+call NERDTreeHighlightFile('woff', s:cmedia, 'none')
+call NERDTreeHighlightFile('woff2', s:cmedia, 'none')
 
 " file explorer entry highlight
 hi clear Cursorline
-exe 'hi Cursorline term=Bold ctermbg='.s:chi
+exe 'hi Cursorline term=Bold ctermbg='.s:chi.' ctermfg='.s:fg
 
 " ------------------------------------------------------------------------------
 "  line numbers
 " ------------------------------------------------------------------------------
 
-exe 'hi LineNr term=Bold ctermfg='.s:c8
+exe 'hi LineNr term=Bold ctermfg='.s:chi
 
 " ------------------------------------------------------------------------------
 "  floating windows
 " ------------------------------------------------------------------------------
 
-exe 'hi Pmenu ctermbg='.s:chide.' ctermfg=White'
-exe 'hi PmenuSel ctermfg='.s:primary
+" command selection (e.g. file tab selection)
+exe 'hi Pmenu ctermbg='.s:bg.' ctermfg='.s:fg
+exe 'hi PmenuSel ctermbg='.s:fg
 
 " terminal/floating window border
-exe 'hi WindowBorder ctermfg='.s:c11
+exe 'hi WindowBorder ctermfg='.s:fg
 
 " ------------------------------------------------------------------------------
 "  buffers
 " ------------------------------------------------------------------------------
 
-exe 'hi VertSplit ctermfg='.s:chide.' ctermbg='.s:c8
+" vertical line divider
+exe 'hi VertSplit ctermfg='.s:bg.' ctermbg='.s:fg
+
 exe 'hi NonText ctermfg='.s:c7
 
 " text selection
