@@ -853,16 +853,25 @@ set splitright
 " number of lines above and below cursor at all times
 set scrolloff=5
 
+" trailing space characters
 set list listchars=tab:\ \ ,trail:·
 
-" various syntax highlighting
+" theme setting for readable syntax highlighting
+let theme = $CURRENT_THEME_MODE
+if exists('theme') && theme == 'light'
+  set background=light
+else
+  set background=dark
+endif
+
+" various file-specific syntax highlighting
 augroup appearance_syntax_highlight
   au!
-  au BufReadPost *.dat set filetype=dat | set syntax=json 
-  au BufReadPost *.gs set filetype=googlescript | set syntax=javascript 
-  au BufReadPost *.h set filetype=c | set syntax=c 
-  au BufReadPost config set filetype=dosini | set syntax=dosini 
-  au BufReadPost gtkrc set filetype=sh | set syntax=sh 
+  au BufReadPost *.dat set filetype=dat | set syntax=json
+  au BufReadPost *.gs set filetype=googlescript | set syntax=javascript
+  au BufReadPost *.h set filetype=c | set syntax=c
+  au BufReadPost config set filetype=dosini | set syntax=dosini
+  au BufReadPost gtkrc set filetype=sh | set syntax=sh
   au BufReadPost *.bib set filetype=tex | set syntax=bib
 augroup end
 
