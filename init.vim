@@ -597,7 +597,7 @@ fu! GetStatusActive()
   set statusline+=%#Mode#
   " StatusLineMode declared in colors.vim
   set statusline+=\ %{StatusLineMode()}
-  set statusline+=\ %#constant#
+  set statusline+=\ %#GitBranch#
   set statusline+=%{GitBranch()}
   set statusline+=%#FileName#
   set statusline+=\ %f

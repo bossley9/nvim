@@ -20,18 +20,13 @@ let s:c13 = '13' " 13 magenta - light
 let s:c14 = '14' " 14 cyan - light
 let s:c15 = '15' " 15 white - light
 
-" TODO
-let s:primary = '0'
-let s:secondary = '0'
-let s:tertiary = '0'
-let s:alert = '0'
-
-" TODO
-let s:chide = 0
-
-
 let s:fg = s:c7
+let s:fgalt = s:c15
 let s:bg = s:c0
+let s:bgalt = s:c8
+let s:primary = s:c1
+let s:secondary = s:c5
+let s:tertiary = s:c4
 let s:warningfg = s:fg
 let s:warningbg = s:c11
 
@@ -160,8 +155,6 @@ exe 'hi WindowBorder ctermfg='.s:fg
 " vertical line divider
 exe 'hi VertSplit ctermfg='.s:bg.' ctermbg='.s:fg
 
-exe 'hi NonText ctermfg='.s:c7
-
 " text selection
 " exe 'hi Visual ctermfg='.s:alert.' ctermbg='.s:chi
 exe 'hi Visual ctermbg='.s:chi
@@ -170,15 +163,20 @@ exe 'hi Visual ctermbg='.s:chi
 " trailing whitespace
 " hi Trailing ctermfg=DarkGray
 " match Trailing /\s\+$/
+exe 'hi NonText ctermfg='.s:fg
 
 " ------------------------------------------------------------------------------
 "  cursor and surrounding
 " ------------------------------------------------------------------------------
 
-hi Blamer ctermfg=DarkGray
-hi MatchParen ctermfg=Black ctermbg=Magenta cterm=Bold
+" git blame
+exe 'hi Blamer ctermfg='.s:chi
 
-hi Search ctermbg=blue
+" matching parenthesis
+exe 'hi MatchParen ctermfg='.s:bg.' ctermbg='.s:primary.' cterm=Bold'
+
+" slash search
+exe 'hi Search ctermfg='.s:bg.' ctermbg='.s:primary
 
 " ------------------------------------------------------------------------------
 "  status bar
@@ -186,46 +184,55 @@ hi Search ctermbg=blue
 
 hi clear StatusLine
 
-hi StatusLine ctermbg=0 ctermfg=Grey
-exe 'hi StatusLineNC ctermbg='.s:tertiary.' ctermfg=0'
+" status line main
+exe 'hi StatusLine ctermbg='.s:bg.' ctermfg='.s:fg
 
-exe 'hi FileName ctermfg='.s:c9.' cterm=Bold'
+" status line inactive
+exe 'hi StatusLineNC ctermbg='.s:tertiary.' ctermfg='.s:bg
 
-let s:cmn = 'Magenta'
-let s:cmi = 'LightBlue'
-let s:cmv = 'Yellow'
-let s:cmc = 'Green'
-let s:cmt = 'DarkBlue'
+" status line file name
+exe 'hi FileName ctermfg='.s:fg.' cterm=Bold'
+
+" status line git branch
+exe 'hi GitBranch ctermfg='.s:fg.' ctermbg='.s:bg
+
+let s:cmn = s:c1 " red
+let s:cmi = s:c12 " light blue
+let s:cmv = s:c3 " yellow
+let s:cmc = s:c10 " light green
+let s:cmt = s:c12 " light blue
 
 fu! StatusLineMode()
   let l:bg = s:cmn
+  let l:fg = s:fg
   let l:mode = mode()
 
   if (l:mode == 'n')
-    let l:bg = s:cmn
     let l:mode = 'NORMAL'
 
   elseif (l:mode == 'i')
     let l:bg = s:cmi
+    let l:fg = s:fg
     let l:mode = 'INSERT'
 
   elseif (l:mode == 'v')
     let l:bg = s:cmv
+    let l:fg = s:fg
     let l:mode = 'VISUAL'
 
   elseif (l:mode == 'c')
     let l:bg = s:cmc
+    let l:fg = s:fg
     let l:mode = 'COMMAND'
 
   elseif (l:mode == 't')
     let l:bg = s:cmt
+    let l:fg = s:fg
     let l:mode = 'TERMINAL'
 
-  else
-    let l:bg = s:cmn
   en
 
-  exe 'hi Mode ctermfg='.s:c0.' ctermbg='.l:bg.' cterm=Bold'
+  " exe 'hi Mode ctermfg='.s:fg.' ctermbg='.l:bg.' cterm=Bold'
+  exe 'hi Mode ctermfg='.l:fg.' ctermbg='.l:bg.' cterm=Bold'
   return l:mode
 endfunction
-
