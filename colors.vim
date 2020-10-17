@@ -156,8 +156,11 @@ exe 'hi WindowBorder ctermfg='.s:fg
 exe 'hi VertSplit ctermfg='.s:bg.' ctermbg='.s:fg
 
 " text selection
-" exe 'hi Visual ctermfg='.s:alert.' ctermbg='.s:chi
-exe 'hi Visual ctermbg='.s:chi
+if exists('g:theme') && g:theme == 'light'
+  exe 'hi Visual ctermfg='.s:bg.' ctermbg='.s:fg
+else
+  exe 'hi Visual ctermbg='.s:chi
+endif
 
 " doesn't seem to work and gets overridden by NonText hi group
 " trailing whitespace
