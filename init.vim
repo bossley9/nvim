@@ -535,7 +535,7 @@ fu! s:terminal_win_toggle()
       let s:termwo = g:Win_Toggle(s:termwo)
 
       if l:bufWasDeleted
-        call termopen('zsh', {'on_exit': 'Terminal_exit'})
+        call termopen('$SHELL', {'on_exit': 'Terminal_exit'})
       en
 
       startinsert
@@ -549,7 +549,7 @@ fu! s:terminal_win_toggle()
     let s:tbli = 0
 
     let s:termwo = g:Win_New(l:x, l:y, l:w, l:h)
-    call termopen('zsh', {'on_exit': 'Terminal_exit'})
+    call termopen('$SHELL', {'on_exit': 'Terminal_exit'})
     startinsert
   endtry
 
