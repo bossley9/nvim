@@ -724,13 +724,14 @@ let g:coc_disable_startup_warning = 1
 " remove python2 support
 let g:loaded_python_provider = 0
 
+" TODO fix incorrect installation of extensions
 " extensions to install by default
-let g:coc_global_extensions = [
-  \ 'coc-clangd',
-  \ 'coc-css',
-  \ 'coc-json',
-  \ 'coc-tsserver'
-  \ ]
+" let g:coc_global_extensions = [
+"   \ 'coc-clangd',
+"   \ 'coc-css',
+"   \ 'coc-json',
+"   \ 'coc-tsserver'
+"   \ ]
 
 augroup coc
   au!
