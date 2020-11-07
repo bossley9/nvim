@@ -10,6 +10,10 @@ let g:dataDir = expand('$XDG_DATA_HOME/nvim/')
 " directory where nvim configuration is located
 let g:installDir = expand('$XDG_CONFIG_HOME/nvim')
 
+" shell used for terminal buffer windows
+let s:shell_name = '$SHELL_NAME'
+if ! s:shell_name | let s:shell_name = 'sh' | endif
+
 " ------------------------------------------------------------------------------
 "  plugin declaration
 " ------------------------------------------------------------------------------
@@ -535,7 +539,7 @@ fu! s:terminal_win_toggle()
       let s:termwo = g:Win_Toggle(s:termwo)
 
       if l:bufWasDeleted
-        call termopen('$SHELL', {'on_exit': 'Terminal_exit'})
+        call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
       en
 
       startinsert
@@ -549,7 +553,7 @@ fu! s:terminal_win_toggle()
     let s:tbli = 0
 
     let s:termwo = g:Win_New(l:x, l:y, l:w, l:h)
-    call termopen('$SHELL', {'on_exit': 'Terminal_exit'})
+    call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
     startinsert
   endtry
 
