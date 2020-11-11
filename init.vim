@@ -862,7 +862,13 @@ set scrolloff=5
 set list listchars=tab:\ \ ,trail:·
 
 " theme setting for readable syntax highlighting
-let g:theme = $CURRENT_THEME_MODE
+let themeArr = split(system("xgetres theme.mode"), "\n")
+let g:theme = themeArr[0]
+
+if ! exists('g:theme')
+  let g:theme = $CURRENT_THEME_MODE
+endif
+
 if exists('g:theme') && g:theme == 'light'
   set background=light
 else
