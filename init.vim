@@ -433,7 +433,7 @@ let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
 " show hidden files
 let NERDTreeShowHidden = 1
 " suppress bookmarks file
-let NERDTreeBookmarksFile = ""
+let NERDTreeBookmarksFile = g:dataDir."/bookmarks"
 
 augroup file_explorer
   au!
