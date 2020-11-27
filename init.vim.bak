@@ -1,0 +1,422 @@
+" neovim configuration by Sam Bossley
+
+" ------------------------------------------------------------------------------
+"  globals
+" ------------------------------------------------------------------------------
+
+" directory where all cacheable data is stored
+let g:data_dir = expand('$XDG_DATA_HOME/nvim/')
+
+" directory where nvim configuration is located
+let g:install_dir = expand('$XDG_CONFIG_HOME/nvim')
+
+" ------------------------------------------------------------------------------
+"  plugin declaration
+" ------------------------------------------------------------------------------
+
+" automated plugin installation process if vim-plug directory is empty
+let s:vim_plug_dir = g:data_dir . 'site/autoload/plug.vim'
+if empty(glob(s:vim_plug_dir))
+  " install vim-plug
+  exe '!curl -fLo ' . s:vim_plug_dir . ' --create-dirs '
+    \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  " install plugins
+  au VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" plugin list
+call plug#begin(g:data_dir . 'plugins')
+
+Plug 'junegunn/fzf'
+
+call plug#end()
+
+" plugin compatibility and stop using vi utilities
+set nocompatible
+" enable plugins
+filetype plugin on
+
+" ------------------------------------------------------------------------------
+"  defaults
+" ------------------------------------------------------------------------------
+
+" disable swap file creation
+set noswapfile
+
+" disable viminfo creation
+set viminfo=""
+
+" only search by case when using capital letters
+set ignorecase
+set smartcase
+
+" search while typing
+set incsearch
+" display highlight
+set hlsearch
+
+" default indent tab width
+filetype plugin indent on
+let s:indent = 2
+let &tabstop=s:indent
+let &softtabstop=s:indent
+let &shiftwidth=s:indent
+" use spaces instead of tabs
+set expandtab
+
+" prevent comments from continuing to new lines when switching to INSERT
+au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" remove file name from the command line bar
+set shortmess+=F
+
+" hide mode from displaying in command line bar
+set noshowmode
+
+" enable mouse capabilities
+set mouse=a
+
+" ------------------------------------------------------------------------------
+"  bind all modes
+" ------------------------------------------------------------------------------
+
+fu! s:bind_all_modes(binding)
+  for m in ['n', 'i', 'v', 't']
+    exe m . 'noremap ' . a:binding
+  endfor
+endfunction
+
+" ------------------------------------------------------------------------------
+"  popups
+" ------------------------------------------------------------------------------
+
+let g:popup_opts = {
+  \ 'x': 0.1,
+  \ 'y': 0.1,
+  \ 'w': 0.8,
+  \ 'h': 0.8,
+  \ }
+
+fu! g:Popup_new()
+  return s:popup_new(
+    \g:popup_opts.x,
+    \g:popup_opts.y,
+    \g:popup_opts.w,
+    \g:popup_opts.h
+    \)
+endfunction
+
+fu! g:Popup_toggle(winobj)
+  return s:popup_toggle(a:winobj)
+endfunction
+
+fu! s:popup_new(x, y, w, h, ...)
+  " fg represents foreground and
+  " bg represents background
+  let l:fgb = -1
+
+  let l:col = float2nr(&columns * a:x)
+  let l:row = float2nr(&lines * a:y)
+  let l:width = float2nr(&columns * a:w)
+  let l:height = float2nr(&lines * a:h)
+
+  try
+    let l:fgb = a:0 > 0 && a:1.fgb >= 0
+      \ ? a:1.fgb
+      \ : nvim_create_buf(v:false, v:true)
+  catch
+  endtry
+
+  let l:bgb = nvim_create_buf(v:false, v:true)
+  " write border lines
+  let l:top = "╭" . repeat("─", l:width + 2) . "╮"
+  let l:mid = "│" . repeat(" ", l:width + 2) . "│"
+  let l:bot = "╰" . repeat("─", l:width + 2) . "╯"
+  let l:lines = [l:top] + repeat([l:mid], l:height) + [l:bot]
+  call nvim_buf_set_lines(l:bgb, 0, -1, v:true, l:lines)
+
+  let bopts = {
+    \ 'relative': 'editor',
+    \ 'style': 'minimal',
+    \ 'row': l:row - 1,
+    \ 'col': l:col - 2,
+    \ 'width': l:width + 4,
+    \ 'height': l:height + 2
+    \ }
+
+  let opts = {
+    \ 'relative': 'editor',
+    \ 'style': 'minimal',
+    \ 'col': l:col,
+    \ 'row': l:row,
+    \ 'width': l:width,
+    \ 'height': l:height
+    \ }
+
+  let l:bgw = nvim_open_win(l:bgb, v:true, bopts)
+  let l:fgw = nvim_open_win(l:fgb, v:true, opts)
+
+  call setwinvar(l:bgw, '&winhl', 'Normal:WindowBorder')
+
+  return {
+    \ 'x': a:x,
+    \ 'y': a:y,
+    \ 'w': a:w,
+    \ 'h': a:h,
+    \ 'fgb': l:fgb,
+    \ 'bgb': l:bgb,
+    \ 'fgw': l:fgw,
+    \ 'bgw': l:bgw,
+    \ 'open': 1
+    \ }
+endfunction
+
+fu! s:popup_toggle(winobj)
+  let l:wo = a:winobj
+  try
+
+    if l:wo.open == 1
+      call nvim_set_current_win(l:wo.fgw) | hide
+      " border buffer is deleted by
+      " default since it is 'unmodifiable'
+      call nvim_set_current_win(l:wo.bgw) | hide
+
+      " can't simply invert a dictionary property, sadly
+      let l:wo.open = 0
+
+    elseif l:wo.open == 0
+      let l:wo = s:popup_new(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
+      let l:wo.open = 1
+    en
+  catch
+  endtry
+
+  return l:wo
+endfunction
+
+" ------------------------------------------------------------------------------
+"  terminals
+" ------------------------------------------------------------------------------
+
+" max num of terminal buffers available
+let s:max_term_bufs = 4
+
+" shell used for terminal buffer windows
+let s:shell_name = '$SHELL_NAME'
+if ! s:shell_name | let s:shell_name = 'sh' | endif
+
+let s:tbl = []
+for i in range(s:max_term_bufs)
+  call add(s:tbl, -1)
+  let n = i + 1 
+  exe 'tnoremap <M-'.n.'> <C-\><C-n>:TerminalFocus '.n.'<CR>' 
+endfor
+
+call s:bind_all_modes('<M-`> <C-\><C-n>:TerminalToggle<CR>')
+
+let s:termwo = {}
+
+" terminal buffer list index
+let s:tbli = -1
+
+com! TerminalToggle call s:terminal_win_toggle()
+
+fu! s:terminal_win_toggle()
+  try
+    if s:termwo.open == 1 " terminal window is open
+      let s:termwo = g:Popup_toggle(s:termwo)
+
+    else " terminal window is closed
+      let s:termwo.fgb = s:tbl[s:tbli]
+      let l:bufWasDeleted = s:termwo.fgb < 0
+
+      let s:termwo = g:Popup_toggle(s:termwo)
+
+      if l:bufWasDeleted
+        call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
+      en
+
+      startinsert
+    en
+  catch " terminal window does not yet exist
+    let s:tbli = 0
+
+    let s:termwo = g:Popup_new()
+    call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
+    startinsert
+  endtry
+
+  let s:tbl[s:tbli] = s:termwo.fgb
+endfunction
+
+com! -nargs=1 TerminalFocus 
+  \call s:terminal_focus(<f-args>)
+
+fu! s:terminal_focus(index)
+  " unfocus old window
+  call s:terminal_win_toggle()
+  " set new window
+  let s:tbli = a:index - 1
+  " focus new window
+  call s:terminal_win_toggle()
+endfunction
+
+fu! Terminal_exit(job_id, code, event) dict
+  " sanity check
+  "call nvim_set_current_buf(s:termwo.fgb)
+  bw!
+  "call nvim_set_current_buf(s:termwo.bgb)
+  bw!
+  try
+    let s:termwo.open = 0
+    let s:termwo.fgb = -1
+
+    let s:tbl[s:tbli] = -1
+    let s:tbli = 0
+  catch
+  endtry
+endfunction
+
+" ------------------------------------------------------------------------------
+"  reload configuration
+" ------------------------------------------------------------------------------
+
+augroup reload_configuration
+  au!
+  au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim so $MYVIMRC
+augroup end
+
+" ------------------------------------------------------------------------------
+"  main bindings
+" ------------------------------------------------------------------------------
+
+let s:nav_jump = $VI_NAV_JUMP
+if ! s:nav_jump | let s:nav_jump = 5 | endif
+
+let s:nav_jump_large = $VI_NAV_JUMP_LARGE
+if ! s:nav_jump_large | let s:nav_jump_large = 25 | endif
+
+" vertical jump navigation
+exe 'nnoremap <M-j> ' . s:nav_jump . 'j'
+exe 'nnoremap <M-k> ' . s:nav_jump . 'k'
+exe 'vnoremap <M-j> ' . s:nav_jump . 'j'
+exe 'vnoremap <M-k> ' . s:nav_jump . 'k'
+exe 'nnoremap <M-d> ' . s:nav_jump_large . 'j'
+exe 'nnoremap <M-u> ' . s:nav_jump_large . 'k'
+exe 'vnoremap <M-d> ' . s:nav_jump_large . 'j'
+exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
+
+" buffer navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <M-h> <C-w>h
+nnoremap <M-l> <C-w>l
+nnoremap = <C-w>=
+
+" clear highlighting
+nnoremap <silent> <Space> :noh<CR>
+
+" space inserting in normal mode
+nnoremap <silent> <M-Space> i<Space><C-\><C-n>
+
+" close and save
+nnoremap ZZ :wqa<CR>
+nnoremap ZQ :qa!<CR>
+
+" ------------------------------------------------------------------------------
+"  file/directory navigation
+" ------------------------------------------------------------------------------
+
+fu! g:Fzf()
+  call fzf#run(fzf#wrap({'source': 'rg --files'}))
+endfunction
+
+fu! s:Rg_open_from_line(line)
+  let l:esc_line = escape(a:line, '\"\`')
+
+  exe 'let l:file = system("echo '.l:esc_line.' | cut -d \":\" -f 1")'
+  exe 'let l:lnbr = system("echo '.l:esc_line.' | cut -d \":\" -f 2")'
+
+  exe 'e '.l:file
+  exe l:lnbr
+endfunction
+
+"com! -nargs=1 RgLine
+  "\call s:Rg_open_from_line(<f-args>)
+"com! -nargs=1 RgLine echo has("nvim")
+
+fu! g:Rg()
+  "let RgRef = function("Rg_open_from_line")
+  "call fzf#run(fzf#wrap({'source': 'rg --column --line-number --no-heading --color=always --smart-case .'}))
+    "\'source': 'rg --column --line-number --smart-case --no-heading .',
+  call fzf#run(
+    \fzf#wrap({
+    \'source': 'rg --column --line-number --smart-case --no-heading .',
+    \'sink': function('s:Rg_open_from_line'),
+    \'options': "--preview 'cat $(echo {} | cut -d \":\" -f 1)'"
+    \}))
+
+    "\'sink': 'RgLine'
+
+  "call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, s:p(), <bang>0)',
+  " call s:Rg_open_from_line("hey")
+endfunction
+
+com! FZF call g:Fzf()
+com! RG call g:Rg()
+
+let $FZF_DEFAULT_OPTS = $FZF_DEFAULT_OPTS . " --preview 'cat {}'"
+
+" popup window size
+let g:fzf_layout = { 'window': { 'width': g:popup_opts.w, 'height': g:popup_opts.h } }
+
+nnoremap <M-p> <C-\><C-n>:FZF<CR>
+nnoremap <M-P> <C-\><C-n>:RG<CR>
+nnoremap <M-F> <C-\><C-n>:RG<CR>
+
+" ------------------------------------------------------------------------------
+"  appearance
+" ------------------------------------------------------------------------------
+
+" line numbers
+set number
+
+" show matching brackets
+set showmatch
+
+" open vertical windows to the right
+set splitright
+
+" number of lines above and below cursor at all times
+set scrolloff=5
+
+" trailing space characters
+set list listchars=tab:\ \ ,trail:·
+
+" theme setting for readable syntax highlighting
+let g:theme = split(system("xgetres theme.mode"), "\n")[0]
+
+if ! exists('g:theme')
+  let g:theme = $CURRENT_THEME_MODE
+endif
+
+if exists('g:theme') && g:theme == 'light'
+  set background=light
+else
+  set background=dark
+endif
+
+" various file-specific syntax highlighting
+augroup appearance_syntax_highlight
+  au!
+  au BufReadPost *.dat set filetype=dat | set syntax=json
+  au BufReadPost *.gs set filetype=googlescript | set syntax=javascript
+  au BufReadPost *.h set filetype=c | set syntax=c
+  au BufReadPost config set filetype=dosini | set syntax=dosini
+  au BufReadPost gtkrc set filetype=sh | set syntax=sh
+  au BufReadPost *.bib set filetype=tex | set syntax=bib
+augroup end
+
+exe 'so ' . g:install_dir . '/colors.vim'
