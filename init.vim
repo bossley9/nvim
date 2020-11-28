@@ -1,14 +1,14 @@
-" neovim configuration
+" neovim configuration by Sam Bossley
 
 " ------------------------------------------------------------------------------
 "  globals
 " ------------------------------------------------------------------------------
 
 " directory where all cacheable data is stored
-let g:dataDir = expand('$XDG_DATA_HOME/nvim/')
+let g:data_dir = expand('$XDG_DATA_HOME/nvim/')
 
 " directory where nvim configuration is located
-let g:installDir = expand('$XDG_CONFIG_HOME/nvim')
+let g:install_dir = expand('$XDG_CONFIG_HOME/nvim')
 
 " shell used for terminal buffer windows
 let s:shell_name = '$SHELL_NAME'
@@ -20,17 +20,17 @@ if ! s:shell_name | let s:shell_name = 'sh' | endif
 
 " automated plugin installation process:
 " if vim-plug directory is empty
-let s:vimPlugDir = g:dataDir . 'site/autoload/plug.vim'
+let s:vimPlugDir = g:data_dir . 'site/autoload/plug.vim'
 if empty(glob(s:vimPlugDir))
   " install vim-plug
   exe '!curl -fLo ' . s:vimPlugDir . ' --create-dirs '
     \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   " install plugins
-  au VimEnter * PlugInstall --sync | source $MYVIMRC
+  au VimEnter * PlugInstall --sync | so $MYVIMRC
 endif
 
 " plugin list
-call plug#begin(g:dataDir . 'plugged')
+call plug#begin(g:data_dir . 'plugged')
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -52,6 +52,15 @@ call plug#end()
 set nocompatible
 " enable plugins
 filetype plugin on
+
+" ------------------------------------------------------------------------------
+"  configuration reloading
+" ------------------------------------------------------------------------------
+
+augroup reload_configuration
+  au!
+  au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim so $MYVIMRC
+augroup end
 
 " ------------------------------------------------------------------------------
 "  session management
@@ -94,7 +103,7 @@ endif
 
 let s:dir = fnameescape(fnamemodify(resolve(s:dir), ':p'))
 
-let s:sessDir = g:dataDir . 'sessions' . s:dir
+let s:sessDir = g:data_dir . 'sessions' . s:dir
 let s:sessFile = s:sessDir . 'se'
 
 augroup session_management
@@ -203,15 +212,6 @@ exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
 
 " nohl
 nnoremap <Space> :noh<CR>
-
-" reload config and window
-" not currently in use due to losing terminal buffer references
-" nnoremap <silent> <M-r> :let winv = winsaveview()<Bar>
-"   \exe 'so ' . g:installDir . '/init.vim'<Bar>
-"   \call winrestview(winv)<Bar>
-"   \unlet winv<CR>
-"   \:Clear<CR>
-"   \:NERDTreeRefreshRoot<CR>
 
 " closing and saving
 nnoremap ZZ :wqa<CR>
@@ -433,7 +433,7 @@ let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
 " show hidden files
 let NERDTreeShowHidden = 1
 " suppress bookmarks file
-let NERDTreeBookmarksFile = g:dataDir."/bookmarks"
+let NERDTreeBookmarksFile = g:data_dir."/bookmarks"
 
 augroup file_explorer
   au!
@@ -888,4 +888,4 @@ augroup appearance_syntax_highlight
   au BufReadPost *.bib set filetype=tex | set syntax=bib
 augroup end
 
-exe 'so ' . g:installDir . '/colors.vim'
+exe 'so ' . g:install_dir . '/colors.vim'
