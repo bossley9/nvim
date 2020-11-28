@@ -32,12 +32,14 @@ endif
 " plugin list
 call plug#begin(g:data_dir . 'plugged')
 
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'iamcco/markdown-preview.nvim',
+  \{ 'do': { -> mkdp#util#install() },
+  \'for': ['markdown', 'vim-plug']}
 Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
@@ -375,9 +377,18 @@ set mouse=a
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
 
+fu! g:Fzf()
+  call fzf#run(fzf#wrap({
+    \'source': 'rg --files',
+    \'options': '--preview "cat {}"'
+    \}))
+endfunction
+
+com! Fzf call g:Fzf()
+
 " files
-nnoremap <silent> <M-p> <Esc>:Files<CR>
-vnoremap <silent> <M-p> <Esc>:Files<CR>
+nnoremap <silent> <M-p> <Esc>:Fzf<CR>
+vnoremap <silent> <M-p> <Esc>:Fzf<CR>
 
 " buffers
 nnoremap <silent> <M-B> <Esc>:Buffers<CR>
