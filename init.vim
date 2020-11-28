@@ -10,10 +10,6 @@ let g:data_dir = expand('$XDG_DATA_HOME/nvim/')
 " directory where nvim configuration is located
 let g:install_dir = expand('$XDG_CONFIG_HOME/nvim')
 
-" shell used for terminal buffer windows
-let s:shell_name = '$SHELL_NAME'
-if ! s:shell_name | let s:shell_name = 'sh' | endif
-
 " ------------------------------------------------------------------------------
 "  plugin declaration
 " ------------------------------------------------------------------------------
@@ -152,6 +148,9 @@ set shortmess+=F
 " hide mode from displaying in command line bar
 set noshowmode
 
+" enable mouse input
+set mouse=a
+
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
 " ------------------------------------------------------------------------------
@@ -164,12 +163,6 @@ if ! s:nav_jump_large | let s:nav_jump_large = 25 | endif
 
 " no help docs!
 nnoremap K k
-
-" no double taps
-" I know it blocks the default binding, used for useful stuff like
-" yiw and yaw, but I rarely want to copy words. I'd rather use
-" diw and daw for such things
-" nnoremap y yy
 
 " M-Space to insert a space in normal mode
 nnoremap <M-Space> i<Space><Esc>
@@ -189,9 +182,6 @@ cnoremap <M-;> <Esc>
 
 vnoremap <M-;> <Esc>
 
-" legacy
-" inoremap jj <Esc> 
-
 " basic buffer navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -200,6 +190,8 @@ nnoremap <C-l> <C-w>l
 
 nnoremap <M-h> <C-w>h
 nnoremap <M-l> <C-w>l
+
+nnoremap = <C-w>=
 
 " basic vertical navigation
 exe 'nnoremap <M-j> ' . s:nav_jump . 'j'
@@ -368,12 +360,6 @@ fu! s:clear_buffers()
 endfunction
 
 " ------------------------------------------------------------------------------
-"  mouse events
-" ------------------------------------------------------------------------------
-
-set mouse=a
-
-" ------------------------------------------------------------------------------
 "  fuzzy file finding
 " ------------------------------------------------------------------------------
 
@@ -389,14 +375,6 @@ com! Fzf call g:Fzf()
 " files
 nnoremap <silent> <M-p> <Esc>:Fzf<CR>
 vnoremap <silent> <M-p> <Esc>:Fzf<CR>
-
-" buffers
-nnoremap <silent> <M-B> <Esc>:Buffers<CR>
-vnoremap <silent> <M-B> <Esc>:Buffers<CR>
-
-" git
-nnoremap <silent> <M-G> <Esc>:GFiles?<CR>
-vnoremap <silent> <M-G> <Esc>:GFiles?<CR>
 
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 " disregard .gitignore and .git files
@@ -509,17 +487,21 @@ let g:blamer_delay = 1500
 let g:blamer_template = '<committer> <committer-time> • <summary>'
 let g:blamer_date_format = '%Y.%m.%d %H:%M'
 
-fu! GitBranch()
-  let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-  let l:branch = strlen(l:branch) > 0 ? ' ' . l:branch . ' ' : ''
+" fu! GitBranch()
+"   let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+"   let l:branch = strlen(l:branch) > 0 ? ' ' . l:branch . ' ' : ''
 
-  if strlen(l:branch) > 20 | let l:branch = l:branch[0:17] . '...' | en
-  return l:branch
-endfunction
+"   if strlen(l:branch) > 20 | let l:branch = l:branch[0:17] . '...' | en
+"   return l:branch
+" endfunction
 
 " ------------------------------------------------------------------------------
 "  terminal management
 " ------------------------------------------------------------------------------
+
+" shell used for terminal buffer windows
+let s:shell_name = '$SHELL_NAME'
+if ! s:shell_name | let s:shell_name = 'sh' | endif
 
 " total num of terminal bufs available
 let s:num_total_term_bufs = 4
@@ -587,9 +569,9 @@ endfunction
 
 fu! Terminal_exit(job_id, code, event) dict
   " sanity check
-  call nvim_set_current_buf(s:termwo.fgb)
+  " call nvim_set_current_buf(s:termwo.fgb)
   bw!
-  call nvim_set_current_buf(s:termwo.bgb)
+  " call nvim_set_current_buf(s:termwo.bgb)
   bw!
   try
     let s:termwo.open = 0
@@ -614,9 +596,10 @@ fu! GetStatusActive()
   set statusline+=%#Mode#
   " StatusLineMode declared in colors.vim
   set statusline+=\ %{StatusLineMode()}
-  set statusline+=\ %#GitBranch#
-  set statusline+=%{GitBranch()}
-  set statusline+=%#FileName#
+  " set statusline+=\ %#GitBranch#
+  " set statusline+=%{GitBranch()}
+  " set statusline+=%#FileName#
+  set statusline+=\ %#FileName#
   set statusline+=\ %f
   set statusline+=\ %r
 
@@ -641,20 +624,6 @@ augroup status_bar_tabline
   au WinLeave * setlocal statusline=%!GetStatusInactive()
   au TermLeave * setlocal statusline=%!GetStatusActive()
 augroup end
-
-" ------------------------------------------------------------------------------
-"  code folding
-" ------------------------------------------------------------------------------
-
-" set foldmethod=syntax
-" set nofoldenable
-" set foldenable
-" set foldnestmax=10
-" set foldlevelstart=1
-
-" let javaScript_fold = 1
-" let ruby_fold = 1
-" let sh_fold_enabled = 1
 
 " ------------------------------------------------------------------------------
 "  linting/prettier
@@ -714,10 +683,6 @@ nnoremap K i<CR><C-c>
 " ------------------------------------------------------------------------------
 "  file/project search
 " ------------------------------------------------------------------------------
-
-" nnoremap <M-f> <Esc>:BLines<CR>
-" vnoremap <M-f> <Esc>:BLines<CR>
-nnoremap <M-f> <Esc>/
 
 " primarily use Rg every time over fzf because otherwise it matches individual 
 " lines of the same name file
@@ -875,8 +840,7 @@ set scrolloff=5
 set list listchars=tab:\ \ ,trail:·
 
 " theme setting for readable syntax highlighting
-let themeArr = split(system("xgetres theme.mode"), "\n")
-let g:theme = themeArr[0]
+let g:theme = split(system("xgetres theme.mode"), "\n")[0]
 
 if ! exists('g:theme')
   let g:theme = $CURRENT_THEME_MODE
