@@ -5,7 +5,7 @@
 " ------------------------------------------------------------------------------
 
 " directory where all cacheable data is stored
-let g:data_dir = expand('$XDG_DATA_HOME/nvim/')
+let g:data_dir = expand('$XDG_DATA_HOME/nvim')
 
 " directory where nvim configuration is located
 let g:config_dir = expand('$XDG_CONFIG_HOME/nvim')
@@ -14,8 +14,8 @@ let g:config_dir = expand('$XDG_CONFIG_HOME/nvim')
 "  plugin declaration
 " ------------------------------------------------------------------------------
 
-let s:vim_plug_dir = g:data_dir . 'site/autoload/plug.vim'
-let s:plugin_dir = g:data_dir . 'plugins'
+let s:vim_plug_dir = g:data_dir . '/site/autoload/plug.vim'
+let s:plugin_dir = g:data_dir . '/plugins'
 
 " automated plugin installation process:
 " if vim-plug directory or plugin directory is empty
@@ -112,7 +112,7 @@ fu! s:session_save()
   call s:clear_buffers()
 
   " touch directory and save session
-  exe 'silent !mkdir -p ' . s:sessDir
+  exe 'silent !mkdir -p ' . s:sess_dir
   exe 'mksession! ' . s:sessFile
 endf
 
@@ -142,8 +142,8 @@ endif
 
 let s:dir = fnameescape(fnamemodify(resolve(s:dir), ':p'))
 
-let s:sessDir = g:data_dir . 'sessions' . s:dir
-let s:sessFile = s:sessDir . 'se'
+let s:sess_dir = g:data_dir . '/sessions' . s:dir
+let s:sessFile = s:sess_dir . 'se'
 
 augroup session_management
   au!
@@ -168,8 +168,6 @@ nnoremap K k
 
 " M-Space to insert a space in normal mode
 nnoremap <M-Space> i<Space><Esc>
-
-" vanilla tip: <C-g> to view path
 
 " line ends
 nnoremap ! 0
@@ -223,11 +221,11 @@ vnoremap I 0<C-v>I
 vnoremap A $<C-v>A
 
 " ------------------------------------------------------------------------------
-"  core functions - multi-mode binding
+"  multi-mode binding
 " ------------------------------------------------------------------------------
 
 fu! s:bind_all_modes(binding)
-  for m in ['n', 'i', 'v', 't']
+  for m in ['n', 'i', 'v', 't', 'c']
     exe m . 'noremap ' . a:binding
   endfor
 endfunction
@@ -438,7 +436,7 @@ let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
 " show hidden files
 let NERDTreeShowHidden = 1
 " suppress bookmarks file
-let NERDTreeBookmarksFile = g:data_dir."/bookmarks"
+let NERDTreeBookmarksFile = g:data_dir . '/bookmarks'
 
 augroup file_explorer
   au!
