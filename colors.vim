@@ -196,9 +196,6 @@ exe 'hi StatusLineNC ctermbg='.s:tertiary.' ctermfg='.s:bg
 " status line file name
 exe 'hi FileName ctermfg='.s:fg.' cterm=Bold'
 
-" status line git branch
-exe 'hi GitBranch ctermfg='.s:fg.' ctermbg='.s:bg
-
 let s:cmn = s:c1 " red
 let s:cmi = s:c12 " light blue
 let s:cmv = s:c3 " yellow

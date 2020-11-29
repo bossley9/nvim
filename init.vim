@@ -62,6 +62,46 @@ augroup reload_configuration
 augroup end
 
 " ------------------------------------------------------------------------------
+"  defaults
+" ------------------------------------------------------------------------------
+
+" disable swap files
+set noswapfile
+
+" disable viminfo creation
+set viminfo=""
+
+" only search by case when using capital letters
+set ignorecase
+set smartcase
+
+" search while typing
+set incsearch
+" display highlight
+set hlsearch
+
+" indent tab width
+filetype plugin indent on
+let s:indent = 2
+let &tabstop=s:indent
+let &softtabstop=s:indent
+let &shiftwidth=s:indent
+" use spaces instead of tabs
+set expandtab
+
+" prevent comments from continuing to new lines
+au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" remove file name from the command line bar
+set shortmess+=F
+
+" hide mode from displaying in command line bar
+set noshowmode
+
+" enable mouse input
+set mouse=a
+
+" ------------------------------------------------------------------------------
 "  session management
 " ------------------------------------------------------------------------------
 
@@ -112,45 +152,6 @@ augroup session_management
   au VimEnter * nested if s:openedDir 
     \ | call s:session_restore() | endif
 augroup end
-
-" ------------------------------------------------------------------------------
-"  core settings
-" ------------------------------------------------------------------------------
-
-" disable swap files
-set noswapfile
-
-" disable viminfo creation
-set viminfo=""
-
-" only search by case when using capital letters
-set ignorecase
-set smartcase
-
-" search highlight while typing
-set incsearch
-set hlsearch
-
-" indent tab width
-filetype plugin indent on
-let s:indent = 2
-let &tabstop=s:indent
-let &softtabstop=s:indent
-let &shiftwidth=s:indent
-" use spaces instead of tabs
-set expandtab
-
-" prevent comments from continuing to new lines
-au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-
-" remove file name from the command line bar
-set shortmess+=F
-
-" hide mode from displaying in command line bar
-set noshowmode
-
-" enable mouse input
-set mouse=a
 
 " ------------------------------------------------------------------------------
 "  core mappings/bindings
@@ -502,14 +503,6 @@ augroup end
 " let g:blamer_template = '<committer> <committer-time> • <summary>'
 " let g:blamer_date_format = '%Y.%m.%d %H:%M'
 
-" fu! GitBranch()
-"   let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-"   let l:branch = strlen(l:branch) > 0 ? ' ' . l:branch . ' ' : ''
-
-"   if strlen(l:branch) > 20 | let l:branch = l:branch[0:17] . '...' | en
-"   return l:branch
-" endfunction
-
 " ------------------------------------------------------------------------------
 "  terminal management
 " ------------------------------------------------------------------------------
@@ -611,9 +604,6 @@ fu! GetStatusActive()
   set statusline+=%#Mode#
   " StatusLineMode declared in colors.vim
   set statusline+=\ %{StatusLineMode()}
-  " set statusline+=\ %#GitBranch#
-  " set statusline+=%{GitBranch()}
-  " set statusline+=%#FileName#
   set statusline+=\ %#FileName#
   set statusline+=\ %f
   set statusline+=\ %r
