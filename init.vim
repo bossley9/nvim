@@ -34,7 +34,6 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'iamcco/markdown-preview.nvim',
   \{ 'do': { -> mkdp#util#install() },
   \'for': ['markdown', 'vim-plug']}
@@ -42,7 +41,7 @@ Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
-Plug 'APZelos/blamer.nvim'
+" Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -362,7 +361,7 @@ fu! s:clear_buffers()
 endfunction
 
 " ------------------------------------------------------------------------------
-"  fuzzy file finding
+"  file/project search
 " ------------------------------------------------------------------------------
 
 fu! g:Fzf()
@@ -374,9 +373,23 @@ endfunction
 
 com! Fzf call g:Fzf()
 
+" primarily use Rg every time over fzf because otherwise it matches individual
+" lines of the same name file
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
 " files
 nnoremap <silent> <M-p> <Esc>:Fzf<CR>
 vnoremap <silent> <M-p> <Esc>:Fzf<CR>
+" lines
+nnoremap <silent> <M-F> <Esc>:RG<CR>
+vnoremap <silent> <M-F> <Esc>:RG<CR>
 
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 " disregard .gitignore and .git files
@@ -484,10 +497,10 @@ augroup vcs_integration
   au BufEnter * exe 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
 
-let g:blamer_enabled = 1
-let g:blamer_delay = 1500
-let g:blamer_template = '<committer> <committer-time> • <summary>'
-let g:blamer_date_format = '%Y.%m.%d %H:%M'
+" let g:blamer_enabled = 1
+" let g:blamer_delay = 1500
+" let g:blamer_template = '<committer> <committer-time> • <summary>'
+" let g:blamer_date_format = '%Y.%m.%d %H:%M'
 
 " fu! GitBranch()
 "   let l:branch = system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
@@ -681,24 +694,6 @@ vnoremap <S-Tab> <gv
 " normal J moves lines up
 " normal K moves lines down
 nnoremap K i<CR><C-c>
-
-" ------------------------------------------------------------------------------
-"  file/project search
-" ------------------------------------------------------------------------------
-
-" primarily use Rg every time over fzf because otherwise it matches individual 
-" lines of the same name file
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-endfunction
-command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-
-nnoremap <M-F> <Esc>:RG<CR>
-vnoremap <M-F> <Esc>:RG<CR>
 
 " ------------------------------------------------------------------------------
 "  coc
