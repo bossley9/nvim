@@ -8,25 +8,27 @@
 let g:data_dir = expand('$XDG_DATA_HOME/nvim/')
 
 " directory where nvim configuration is located
-let g:install_dir = expand('$XDG_CONFIG_HOME/nvim')
+let g:config_dir = expand('$XDG_CONFIG_HOME/nvim')
 
 " ------------------------------------------------------------------------------
 "  plugin declaration
 " ------------------------------------------------------------------------------
 
+let s:vim_plug_dir = g:data_dir . 'site/autoload/plug.vim'
+let s:plugin_dir = g:data_dir . 'plugins'
+
 " automated plugin installation process:
-" if vim-plug directory is empty
-let s:vimPlugDir = g:data_dir . 'site/autoload/plug.vim'
-if empty(glob(s:vimPlugDir))
+" if vim-plug directory or plugin directory is empty
+if empty(glob(s:vim_plug_dir)) || empty(glob(s:plugin_dir))
   " install vim-plug
-  exe '!curl -fLo ' . s:vimPlugDir . ' --create-dirs '
+  exe '!curl -fLo ' . s:vim_plug_dir . ' --create-dirs '
     \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  " install plugins
-  au VimEnter * PlugInstall --sync | so $MYVIMRC
+  " install plugins, source vimrc, then quit
+  au VimEnter * PlugInstall --sync | so $MYVIMRC | qa
 endif
 
 " plugin list
-call plug#begin(g:data_dir . 'plugged')
+call plug#begin(s:plugin_dir)
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -57,7 +59,7 @@ filetype plugin on
 
 augroup reload_configuration
   au!
-  au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim so $MYVIMRC
+  au BufWritePost .vimrc,init.vim so $MYVIMRC
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -863,4 +865,4 @@ augroup appearance_syntax_highlight
   au BufReadPost *.bib set filetype=tex | set syntax=bib
 augroup end
 
-exe 'so ' . g:install_dir . '/colors.vim'
+exe 'so ' . g:config_dir . '/colors.vim'
