@@ -123,16 +123,16 @@ fu! s:session_restore()
   en
 endf
 
-" s:openedDir is true if nvim was opened with a directory
-" s:dir represents the current project directory
+" s:was_opened_with_dir is true if nvim was opened with a directory
+" s:working_dir represents the current project directory
 
-let s:openedDir = eval('@%') == '' && argc() == 0
-let s:dir = trim(execute('pwd'))
+let s:was_opened_with_dir = eval('@%') == '' && argc() == 0
+let s:working_dir = trim(execute('pwd'))
 
 " if dir path is supplied as an arg, e.g. nvim ./Downloads/TestFolder/
 if isdirectory(eval('@%'))
-  let s:openedDir = 1
-  let s:dir = eval('@%')
+  let s:was_opened_with_dir = 1
+  let s:working_dir = trim(eval('@%'))
 endif
 
 " resolve resolves any symbolic links
@@ -140,17 +140,15 @@ endif
 " (trailing slash is included)
 " fnameescape escapes file paths with spaces, e.g. My\ Documents/
 
-let s:dir = fnameescape(fnamemodify(resolve(s:dir), ':p'))
+let s:working_dir = fnameescape(fnamemodify(resolve(s:working_dir), ':p'))
 
-let s:sess_dir = g:data_dir . '/sessions' . s:dir
+let s:sess_dir = g:data_dir . '/sessions' . s:working_dir
 let s:sessFile = s:sess_dir . 'se'
 
 augroup session_management
   au!
-  au VimLeavePre * if s:openedDir 
-    \ | call s:session_save() | endif
-  au VimEnter * nested if s:openedDir 
-    \ | call s:session_restore() | endif
+  au VimLeavePre * if s:was_opened_with_dir | call s:session_save() | endif
+  au VimEnter * nested if s:was_opened_with_dir | call s:session_restore() | endif
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -404,7 +402,7 @@ let s:hasTreeBeenOpened = 0
 fu! s:NERDTreeToggle()
   if ! s:hasTreeBeenOpened
     let s:hasTreeBeenOpened = 1
-    exe 'NERDTreeToggle ' . s:dir
+    exe 'NERDTreeToggle ' . s:working_dir
   else
     NERDTreeToggle
   endif
