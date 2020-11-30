@@ -60,72 +60,25 @@ exe 'hi ALEInfo ctermbg='.s:warningbg.' ctermfg='.s:warningfg
 hi Directory ctermfg=White
 
 " hide nerdtree git brackets
-augroup nerdtreeconcealbrackets
-  au!
-  au FileType nerdtree syntax match hideBracketsInNerdTree
-    \ "\]" contained conceal containedin=ALL cchar=""
-  au FileType nerdtree syntax match hideBracketsInNerdTree
-    \ "\[" contained conceal containedin=ALL
-  au FileType nerdtree setlocal conceallevel=3
-  au FileType nerdtree setlocal concealcursor=nvic
-augroup end
+" augroup nerdtreeconcealbrackets
+"   au!
+"   au FileType nerdtree syntax match hideBracketsInNerdTree
+"     \ "\]" contained conceal containedin=ALL cchar=""
+"   au FileType nerdtree syntax match hideBracketsInNerdTree
+"     \ "\[" contained conceal containedin=ALL
+"   au FileType nerdtree setlocal conceallevel=3
+"   au FileType nerdtree setlocal concealcursor=nvic
+" augroup end
 
 " this is overwritten by filetype highlighting, if present
-exe 'hi NERDTreeGitStatusModified ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusStaged ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusRenamed ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusUnmerged ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusUntracked ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusDirDirty ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusDirClean ctermfg='.s:gitmodify
-exe 'hi NERDTreeGitStatusIgnored ctermfg='.s:gitmodify
-
-fu! NERDTreeHighlightFile(ext, fg, bg)
-  exe 'au Filetype nerdtree hi '.a:ext.' ctermbg='.a:bg.' ctermfg='.a:fg.''
-  exe 'au Filetype nerdtree syn match '.a:ext.' #^\s\+.*'.a:ext.'$#'
-endfunction
-
-" hide all dotfiles
-augroup file_explorer_dot_highlight
-  exe 'au Filetype nerdtree hi dot ctermbg=none ctermfg='.s:c8
-  " for some strange reason, NERDTree entries are arranged as 
-  " (whitespace) + (invisible character) + (file name)
-  au Filetype nerdtree match dot #\s\+.\.\S*#
-augroup end
-
-let s:cdoc = s:c4
-let s:cmedia = s:c5
-
-call NERDTreeHighlightFile('md', s:cdoc, 'none')
-call NERDTreeHighlightFile('json', s:cdoc, 'none')
-call NERDTreeHighlightFile('lock', s:cdoc, 'none')
-call NERDTreeHighlightFile('yml', s:cdoc, 'none')
-call NERDTreeHighlightFile('txt', s:cdoc, 'none')
-call NERDTreeHighlightFile('tex', s:cdoc, 'none')
-
-call NERDTreeHighlightFile('html', s:c4, 'none')
-
-call NERDTreeHighlightFile('css', s:c12, 'none')
-call NERDTreeHighlightFile('scss', s:c13, 'none')
-call NERDTreeHighlightFile('js', s:c3, 'none')
-call NERDTreeHighlightFile('jsx', s:c3, 'none')
-call NERDTreeHighlightFile('ts', s:c6, 'none')
-call NERDTreeHighlightFile('tsx', s:c6, 'none')
-
-call NERDTreeHighlightFile('vim', s:c2, 'none')
-
-call NERDTreeHighlightFile('gif', s:cmedia, 'none')
-call NERDTreeHighlightFile('png', s:cmedia, 'none')
-call NERDTreeHighlightFile('jpg', s:cmedia, 'none')
-call NERDTreeHighlightFile('svg', s:cmedia, 'none')
-call NERDTreeHighlightFile('mp4', s:cmedia, 'none')
-call NERDTreeHighlightFile('pdf', s:cmedia, 'none')
-call NERDTreeHighlightFile('doc', s:cmedia, 'none')
-call NERDTreeHighlightFile('docx', s:cmedia, 'none')
-call NERDTreeHighlightFile('otf', s:cmedia, 'none')
-call NERDTreeHighlightFile('ttf', s:cmedia, 'none')
-call NERDTreeHighlightFile('woff', s:cmedia, 'none')
-call NERDTreeHighlightFile('woff2', s:cmedia, 'none')
+" exe 'hi NERDTreeGitStatusModified ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusStaged ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusRenamed ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusUnmerged ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusUntracked ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusDirDirty ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusDirClean ctermfg='.s:gitmodify
+" exe 'hi NERDTreeGitStatusIgnored ctermfg='.s:gitmodify
 
 " file explorer entry highlight
 hi clear Cursorline

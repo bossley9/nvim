@@ -337,7 +337,6 @@ endfunction
 "  core functions - clear
 " ------------------------------------------------------------------------------
 
-com! Clear call s:clear_buffers()
 fu! s:clear_buffers()
   let l:bl = filter(range(1, bufnr('$')), 'buflisted(v:val)')
   let l:tab = tabpagenr()
@@ -370,6 +369,7 @@ endfunction
 
 com! Fzf call g:Fzf()
 
+" TODO remove in favor of custom alternative
 " primarily use Rg every time over fzf because otherwise it matches individual
 " lines of the same name file
 function! RipgrepFzf(query, fullscreen)
@@ -396,45 +396,50 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 "  file explorer
 " ------------------------------------------------------------------------------
 
-com! NERDTreeToggleAdjusted call s:NERDTreeToggle()
+" activation toggle binding
+call s:bind_all_modes('<M-b> <C-[>:NERDTreeToggle<CR>')
 
-let s:hasTreeBeenOpened = 0
-fu! s:NERDTreeToggle()
-  if ! s:hasTreeBeenOpened
-    let s:hasTreeBeenOpened = 1
-    exe 'NERDTreeToggle ' . s:working_dir
-  else
-    NERDTreeToggle
-  endif
-endfunction
+" open files/folders similar to most terminal file broswers
+let g:NERDTreeMapActivateNode = 'l'
+let g:NERDTreeMapOpenRecursively = 'L'
+let g:NERDTreeMapCloseDir = 'h'
+let g:NERDTreeMapCloseChildren = 'H'
 
-" toggle explorer pane
-call s:bind_all_modes('<M-b> <Esc>:NERDTreeToggleAdjusted<CR>')
+" hidden files
+let g:NERDTreeMapToggleHidden = '<M-h>'
 
-" don't show hidden files in file explorer by default
-let NERDTreeShowHidden = 0
-" close explorer on file open
-let NERDTreeQuitOnOpen = 1
-" keep file explorer closed on open
-" let g:NERDTreeHijackNetrw = 0
+" unmap bindings
+let g:NERDTreeMapChangeRoot = ''
+let g:NERDTreeMapUpdir = ''
+let g:NERDTreeMapUpdirKeepOpen = ''
+
 " sort numbers like 1, 10, 11, 100, rather than 1, 10, 100, 11
-let NERDTreeNaturalSort = 1
+let g:NERDTreeNaturalSort = 1
 " color highlighted entry
-let NERDTreeHighlightCursorLine = 1
-" set window size
-" let NERDTreeWinSize = 25
-" minimal ui
-let NERDTreeMinimalUI = 1
-" collapse folders if applicable
-let NERDTreeCascadeSingleChildDir = 1
-" let file explorer open directory by default
-let NERDTreeChDirMode = 1
+let g:NERDTreeHighlightCursorLine = 0
+" keep file explorer closed on open
+let g:NERDTreeHijackNetrw = 0
 " specify which files/folders to ignore
-let NERDTreeIgnore =  ['^.git$', '^node_modules$', '\.vim$[[dir]]', '\~$']
-" show hidden files
-let NERDTreeShowHidden = 1
+let g:NERDTreeIgnore =  ['^.git$', '^node_modules$']
 " suppress bookmarks file
-let NERDTreeBookmarksFile = g:data_dir . '/bookmarks'
+let g:NERDTreeBookmarksFile = g:data_dir . '/NERDTreeBookmarks'
+" close explorer on file open
+let g:NERDTreeQuitOnOpen = 1
+" show hidden files on startup
+let g:NERDTreeShowHidden = 1
+" content displayed on the status line
+let g:NERDTreeStatusline = ' '
+" set window size
+" let g:NERDTreeWinSize = 25
+" hide bookmarks, help, etc
+let g:NERDTreeMinimalUI = 1
+" collapse folders if applicable
+let g:NERDTreeCascadeSingleChildDir = 1
+" delete buffers when renaming or deleting
+let g:NERDTreeAutoDeleteBuffer = 1
+" directory arrows
+let g:NERDTreeDirArrowCollapsible = ' '
+let g:NERDTreeDirArrowExpandable = ' '
 
 augroup file_explorer
   au!
@@ -473,18 +478,18 @@ let g:gitgutter_sign_modified_removed = s:vcs
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
 
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-  \ "Modified"  : s:vcs,
-  \ "Staged"    : s:vcs,
-  \ "Untracked" : s:vcs,
-  \ "Renamed"   : s:vcs,
-  \ "Unmerged"  : s:vcs,
-  \ "Deleted"   : s:vcs,
-  \ "Dirty"     : s:vcs,
-  \ "Clean"     : s:vcs,
-  \ 'Ignored'   : s:vcs,
-  \ "Unknown"   : s:vcs
-  \ }
+" let g:NERDTreeGitStatusIndicatorMapCustom = {
+"   \ "Modified"  : s:vcs,
+"   \ "Staged"    : s:vcs,
+"   \ "Untracked" : s:vcs,
+"   \ "Renamed"   : s:vcs,
+"   \ "Unmerged"  : s:vcs,
+"   \ "Deleted"   : s:vcs,
+"   \ "Dirty"     : s:vcs,
+"   \ "Clean"     : s:vcs,
+"   \ 'Ignored'   : s:vcs,
+"   \ "Unknown"   : s:vcs
+"   \ }
 
 augroup vcs_integration
   au!
