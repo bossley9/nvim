@@ -1,4 +1,4 @@
-" TEMP open color test
+" open color tests
 nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
 
@@ -56,33 +56,13 @@ exe 'hi ALEStyleWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
 exe 'hi ALEWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
 exe 'hi ALEInfo ctermbg='.s:warningbg.' ctermfg='.s:warningfg
 
-" ???
-hi Directory ctermfg=White
+augroup nerdtree_highlight
+  au!
+  exe 'au Filetype nerdtree hi Directory ctermfg='.s:c9.' cterm=bold'
+  exe 'au Filetype nerdtree hi CursorLine cterm=Bold ctermbg='.s:c9.' ctermfg='.s:chi
+  exe 'au Filetype nerdtree hi NERDTreeCWD ctermfg='.s:c9.' cterm=bold'
+augroup end
 
-" hide nerdtree git brackets
-" augroup nerdtreeconcealbrackets
-"   au!
-"   au FileType nerdtree syntax match hideBracketsInNerdTree
-"     \ "\]" contained conceal containedin=ALL cchar=""
-"   au FileType nerdtree syntax match hideBracketsInNerdTree
-"     \ "\[" contained conceal containedin=ALL
-"   au FileType nerdtree setlocal conceallevel=3
-"   au FileType nerdtree setlocal concealcursor=nvic
-" augroup end
-
-" this is overwritten by filetype highlighting, if present
-" exe 'hi NERDTreeGitStatusModified ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusStaged ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusRenamed ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusUnmerged ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusUntracked ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusDirDirty ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusDirClean ctermfg='.s:gitmodify
-" exe 'hi NERDTreeGitStatusIgnored ctermfg='.s:gitmodify
-
-" file explorer entry highlight
-hi clear Cursorline
-exe 'hi Cursorline term=Bold ctermbg='.s:chi.' ctermfg='.s:fg
 
 " ------------------------------------------------------------------------------
 "  line numbers

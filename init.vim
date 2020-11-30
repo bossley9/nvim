@@ -37,13 +37,13 @@ Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim',
   \{ 'do': { -> mkdp#util#install() },
   \'for': ['markdown', 'vim-plug']}
-Plug 'dense-analysis/ale'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+" Plug 'dense-analysis/ale'
+" Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 " Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -404,7 +404,7 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 " ------------------------------------------------------------------------------
 
 " activation toggle binding
-call s:bind_all_modes('<M-b> <C-[>:NERDTreeToggle<CR>')
+call s:bind_all_modes('<silent> <M-b> <C-[>:NERDTreeToggle<CR>')
 
 " open files/folders similar to most terminal file broswers
 let g:NERDTreeMapActivateNode = 'l'
@@ -423,7 +423,7 @@ let g:NERDTreeMapUpdirKeepOpen = ''
 " sort numbers like 1, 10, 11, 100, rather than 1, 10, 100, 11
 let g:NERDTreeNaturalSort = 1
 " color highlighted entry
-let g:NERDTreeHighlightCursorLine = 0
+let g:NERDTreeHighlightCursorLine = 1
 " keep file explorer closed on open
 let g:NERDTreeHijackNetrw = 0
 " specify which files/folders to ignore
