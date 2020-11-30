@@ -229,27 +229,34 @@ fu! s:bind_all_modes(binding)
 endfunction
 
 " ------------------------------------------------------------------------------
-"  core functions - windows
+"  core functions - floating window creator
 " ------------------------------------------------------------------------------
 
-" floating window creator
-" arguments are (x, y, w, h, windowObj?)
-" x, y, w, and h are all [0..1] values
-" windowObj? is an optional windowObj which already exists
+let s:popup_opts = {
+  \'x': 0.1,
+  \'y': 0.1,
+  \'w': 0.8,
+  \'h': 0.8
+  \}
 
 " wrapper - when called with the above arguments, will return a
 " preview window object and display the window
-fu! g:Win_New(x, y, w, h)
-  return s:core_window_create(a:x, a:y, a:w, a:h)
+fu! g:Popup_new()
+  return s:popup_new(
+    \s:popup_opts.x,
+    \s:popup_opts.y,
+    \s:popup_opts.w,
+    \s:popup_opts.h
+    \)
 endfunction
 
 " wrapper - when called with a preview window object, will hide 
 " or show the preview window
-fu! g:Win_Toggle(windowobj)
-  return s:core_window_toggle(a:windowobj)
+fu! g:Popup_toggle(winobj)
+  return s:popup_toggle(a:winobj)
 endfunction
 
-fu! s:core_window_create(x, y, w, h, ...)
+fu! s:popup_new(x, y, w, h, ...)
   " fg represents foreground and
   " bg represents background
   let l:fgb = -1
@@ -310,7 +317,7 @@ fu! s:core_window_create(x, y, w, h, ...)
     \ }
 endfunction
 
-fu! s:core_window_toggle(wo)
+fu! s:popup_toggle(wo)
   let l:wo = a:wo
   try
 
@@ -324,7 +331,7 @@ fu! s:core_window_toggle(wo)
       let l:wo.open = 0
 
     elseif l:wo.open == 0
-      let l:wo = s:core_window_create(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
+      let l:wo = s:popup_new(l:wo.x, l:wo.y, l:wo.w, l:wo.h, l:wo)
       let l:wo.open = 1
     en
   catch
@@ -334,7 +341,7 @@ fu! s:core_window_toggle(wo)
 endfunction
 
 " ------------------------------------------------------------------------------
-"  core functions - clear
+"  core functions - clearing all hidden buffers
 " ------------------------------------------------------------------------------
 
 fu! s:clear_buffers()
@@ -388,7 +395,7 @@ vnoremap <silent> <M-p> <Esc>:Fzf<CR>
 nnoremap <silent> <M-F> <Esc>:RG<CR>
 vnoremap <silent> <M-F> <Esc>:RG<CR>
 
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
+let g:fzf_layout = { 'window': { 'width': s:popup_opts.w, 'height': s:popup_opts.h } }
 " disregard .gitignore and .git files
 let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 
@@ -534,13 +541,13 @@ com! TerminalToggle call s:terminal_win_toggle()
 fu! s:terminal_win_toggle()
   try
     if s:termwo.open == 1 " terminal window is open
-      let s:termwo = g:Win_Toggle(s:termwo)
+      let s:termwo = g:Popup_toggle(s:termwo)
 
     else " terminal window is closed
       let s:termwo.fgb = s:tbl[s:tbli]
       let l:bufWasDeleted = s:termwo.fgb < 0
 
-      let s:termwo = g:Win_Toggle(s:termwo)
+      let s:termwo = g:Popup_toggle(s:termwo)
 
       if l:bufWasDeleted
         call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
@@ -549,14 +556,9 @@ fu! s:terminal_win_toggle()
       startinsert
     en
   catch " terminal window does not yet exist
-    let l:x = 0.1
-    let l:y = 0.1
-    let l:w = 0.8
-    let l:h = 0.8
-
     let s:tbli = 0
 
-    let s:termwo = g:Win_New(l:x, l:y, l:w, l:h)
+    let s:termwo = g:Popup_new()
     call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
     startinsert
   endtry
