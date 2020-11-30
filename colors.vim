@@ -142,12 +142,10 @@ hi clear StatusLine
 
 " status line main
 exe 'hi StatusLine ctermbg='.s:bg.' ctermfg='.s:fg
-
-" status line inactive
-exe 'hi StatusLineNC ctermbg='.s:tertiary.' ctermfg='.s:bg
+exe 'hi StatusLineNC ctermfg='.s:bg
 
 " status line file name
-exe 'hi FileName ctermfg='.s:fg.' cterm=Bold'
+exe 'hi FileName ctermfg='.s:fgalt
 
 let s:cmn = s:c1 " red
 let s:cmi = s:c12 " light blue
@@ -157,7 +155,7 @@ let s:cmt = s:c12 " light blue
 
 fu! StatusLineMode()
   let l:bg = s:cmn
-  let l:fg = s:fg
+  let l:fg = s:fgalt
   let l:mode = mode()
 
   if (l:mode == 'n')
@@ -165,27 +163,27 @@ fu! StatusLineMode()
 
   elseif (l:mode == 'i')
     let l:bg = s:cmi
-    let l:fg = s:fg
+    let l:fg = s:fgalt
     let l:mode = 'INSERT'
 
   elseif (l:mode == 'v')
     let l:bg = s:cmv
-    let l:fg = s:fg
+    let l:fg = s:fgalt
     let l:mode = 'VISUAL'
 
   elseif (l:mode == 'c')
     let l:bg = s:cmc
-    let l:fg = s:fg
+    let l:fg = s:fgalt
     let l:mode = 'COMMAND'
 
   elseif (l:mode == 't')
     let l:bg = s:cmt
-    let l:fg = s:fg
+    let l:fg = s:fgalt
     let l:mode = 'TERMINAL'
 
   en
 
-  " exe 'hi Mode ctermfg='.s:fg.' ctermbg='.l:bg.' cterm=Bold'
-  exe 'hi Mode ctermfg='.l:fg.' ctermbg='.l:bg.' cterm=Bold'
+  exe 'hi Mode ctermfg='.l:fg.' ctermbg='.l:bg
   return l:mode
 endfunction
+exe 'hi InactiveMode ctermfg='.s:fgalt.' ctermbg='.s:bgalt

@@ -206,7 +206,7 @@ exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
 nnoremap <Space> :noh<CR>
 
 " closing and saving
-nnoremap ZZ :wqa<CR>
+nnoremap ZZ :xa<CR>
 nnoremap ZQ :qa!<CR>
 
 " to prevent annoying modals and errors
@@ -599,13 +599,13 @@ endfunction
 " ------------------------------------------------------------------------------
 
 fu! GetStatusInactive()
-  return '-- INACTIVE --'
+  " return ''
+  return "%#InactiveMode# INACTIVE %#FileName#"
 endfunction
 
 fu! GetStatusActive()
   set statusline=
   set statusline+=%#Mode#
-  " StatusLineMode declared in colors.vim
   set statusline+=\ %{StatusLineMode()}
   set statusline+=\ %#FileName#
   set statusline+=\ %f
@@ -613,7 +613,7 @@ fu! GetStatusActive()
 
   set statusline+=%=
 
-  set statusline+=%#StatusLne#
+  set statusline+=%#StatusLine#
   set statusline+=%{'Ln\ '}
   set statusline+=%l
   set statusline+=%{',\ Col\ '}
@@ -623,7 +623,6 @@ fu! GetStatusActive()
   set statusline+=\ %y
 endfunction
 
-set laststatus=2
 set statusline=%!GetStatusActive()
 
 augroup status_bar_tabline
