@@ -31,7 +31,6 @@ endif
 call plug#begin(s:plugin_dir)
 
 Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'iamcco/markdown-preview.nvim',
@@ -367,7 +366,7 @@ endfunction
 "  file/project search
 " ------------------------------------------------------------------------------
 
-fu! g:Fzf()
+function! g:Fzf()
   call fzf#run(fzf#wrap({
     \'source': 'rg --files',
     \'options': '--preview "cat {}"'
@@ -376,28 +375,50 @@ endfunction
 
 com! Fzf call g:Fzf()
 
-" TODO remove in favor of custom alternative
-" primarily use Rg every time over fzf because otherwise it matches individual
-" lines of the same name file
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+function! s:rg_open_from_line(lines)
+  if len(a:lines) < 2 | return | endif
+  let l:tokens = split(a:lines[1], ':')
+
+  exe 'e '.l:tokens[0]
+  call cursor(l:tokens[1], l:tokens[2])
 endfunction
-command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+function! g:Rg(query)
+  let l:pre_cmd = 'rg --column --line-number --no-heading --color=always --smart-case -- %s'
+  let l:cmd = printf(l:pre_cmd, shellescape(a:query))
+
+  let l:fzf_args = {
+    \'options': [
+      \'--ansi', '--phony',
+      \'--query', a:query,
+      \'--bind', 'change:reload:'.printf(l:pre_cmd, '{q}'),
+      \'--preview', 'echo TODO preview for {}',
+    \],
+  \}
+
+  try
+    let prev_default_command = $FZF_DEFAULT_COMMAND
+    let $FZF_DEFAULT_COMMAND = l:cmd
+
+    let wrapped = fzf#wrap(l:cmd, l:fzf_args, 0)
+    let wrapped['sink*'] = function('s:rg_open_from_line')
+
+    call fzf#run(wrapped)
+  finally
+    let $FZF_DEFAULT_COMMAND = prev_default_command
+  endtry
+endfunction
+
+com! -nargs=* Rg call g:Rg(<q-args>)
 
 " files
 nnoremap <silent> <M-p> <Esc>:Fzf<CR>
 vnoremap <silent> <M-p> <Esc>:Fzf<CR>
 " lines
-nnoremap <silent> <M-F> <Esc>:RG<CR>
-vnoremap <silent> <M-F> <Esc>:RG<CR>
+nnoremap <silent> <M-F> <Esc>:Rg<CR>
+vnoremap <silent> <M-F> <Esc>:Rg<CR>
 
 let g:fzf_layout = { 'window': { 'width': s:popup_opts.w, 'height': s:popup_opts.h } }
-" disregard .gitignore and .git files
-let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 
 " ------------------------------------------------------------------------------
 "  file explorer
