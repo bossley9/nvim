@@ -18,6 +18,7 @@ if len(s:args) > 0 && isdirectory(s:args[0])
   exe 'cd '.s:args[0]
   let g:opened_with_dir = 1
 endif
+if len(s:args) == 0 | let g:opened_with_dir = 1 | endif
 " resolve resolves any symbolic links
 " fnameescape escapes file paths with spaces, e.g. My\ Documents/
 let g:cwd = fnameescape(resolve(trim(execute('pwd'))))
@@ -361,10 +362,15 @@ endfunction
 
 let g:fzf_layout = { 'window': { 'width': s:popup_opts.w, 'height': s:popup_opts.h } }
 
+function! s:fzf_open_from_line(lines)
+  exe 'e '.g:cwd.'/'.a:lines[0]
+endfunction
+
 function! g:Fzf()
   call fzf#run(fzf#wrap({
-    \'source': 'rg --files',
-    \'options': '--preview "cat {}"'
+    \'source': 'cd '.g:cwd.' && rg --files',
+    \'options': '--preview "cat '.g:cwd.'/{}"',
+    \'sink*': function('s:fzf_open_from_line')
     \}))
 endfunction
 
@@ -374,12 +380,12 @@ function! s:rg_open_from_line(lines)
   if len(a:lines) < 2 | return | endif
   let l:tokens = split(a:lines[1], ':')
 
-  exe 'e '.l:tokens[0]
+  exe 'e '.g:cwd.'/'.l:tokens[0]
   call cursor(l:tokens[1], l:tokens[2])
 endfunction
 
 function! g:Rg(query)
-  let l:pre_cmd = 'rg --column --line-number --no-heading --color=always --smart-case -- %s'
+  let l:pre_cmd = 'cd '.g:cwd.' && rg --column --line-number --no-heading --color=always --smart-case -- %s'
   let l:cmd = printf(l:pre_cmd, shellescape(a:query))
 
   let l:fzf_args = {
@@ -390,7 +396,8 @@ function! g:Rg(query)
       \'--bind', 'change:reload:'.printf(l:pre_cmd, '{q}'),
       \'--preview',
       \g:config_dir.'/preview.sh {} {q} '.
-        \float2nr(g:fzf_layout.window.height * &lines),
+        \float2nr(g:fzf_layout.window.height * &lines).
+        \' '.g:cwd,
     \],
   \}
 
