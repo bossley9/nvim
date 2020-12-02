@@ -46,9 +46,6 @@ call plug#begin(s:plugin_dir)
 Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
-Plug 'iamcco/markdown-preview.nvim',
-  \{ 'do': { -> mkdp#util#install() },
-  \'for': ['markdown', 'vim-plug']}
 " Plug 'dense-analysis/ale'
 " Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
@@ -774,16 +771,59 @@ fu! s:show_documentation()
 endfunction
 
 " ------------------------------------------------------------------------------
-"  markdown preview
+"  file preview
 " ------------------------------------------------------------------------------
 
-com! D MarkdownPreview
+fu! s:generate_preview()
+  if exists('b:is_preview_enabled') |
+    if &filetype == 'markdown'
+      if executable('pandoc')
+        exe 'silent !pandoc --metadata title="'.
+          \expand('%:p').'" -s '.
+          \'-o '.b:tmp_file_wo_ext.'.html '.
+          \expand('%:p').' &'
+      en
+    en
+  en
+endfunction
 
-" prevent auto closing
-let g:mkdp_auto_close = 0
+fu! s:close_preview()
+  if exists('b:is_preview_enabled')
+    \ && exists('b:tmp_file_wo_ext')
+    if &filetype == 'markdown'
+      exe 'silent !rm '.b:tmp_file_wo_ext.'.html &'
+    en
+  en
+endfunction
 
-" reset md preview title
-let g:mkdp_page_title = '${name}'
+fu! g:Enable_preview()
+  let b:is_preview_enabled = 1
+
+  exe 'let b:tmp_file_wo_ext = "'.
+    \expand('%:p:h').'/.__nvim__'.
+    \expand('%').
+    \'"'
+
+  call s:generate_preview()
+
+  " open preview
+  if &filetype == 'markdown'
+    exe 'silent !$BROWSER file:///'.
+      \b:tmp_file_wo_ext.'.html &'
+  en
+endfunction
+
+com! L call g:Enable_preview()
+
+augroup file_preview
+  au!
+  au BufEnter * if ! exists('b:is_preview_enabled') |
+    \ let b:is_preview_enabled = 0 | en
+  au BufWritePost * if b:is_preview_enabled |
+    \ call s:generate_preview() | en
+  au VimLeavePre,BufDelete,BufWipeout * if exists('b:is_preview_enabled') |
+    \ call s:close_preview() | en
+augroup end
 
 " ------------------------------------------------------------------------------
 "  latex
@@ -831,8 +871,8 @@ augroup latex
   au BufWritePost *.tex if s:isLiveLatexEnabled
     \ | call s:update_latex_live_preview() | en
   " disable linters for latex because they all suck :')
-  au BufEnter *.tex ALEDisableBuffer
-  au BufEnter *.bib ALEDisableBuffer
+  " au BufEnter *.tex ALEDisableBuffer
+  " au BufEnter *.bib ALEDisableBuffer
 augroup end
 
 " ------------------------------------------------------------------------------
