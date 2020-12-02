@@ -366,6 +366,8 @@ endfunction
 "  file/project search
 " ------------------------------------------------------------------------------
 
+let g:fzf_layout = { 'window': { 'width': s:popup_opts.w, 'height': s:popup_opts.h } }
+
 function! g:Fzf()
   call fzf#run(fzf#wrap({
     \'source': 'rg --files',
@@ -388,25 +390,21 @@ function! g:Rg(query)
   let l:cmd = printf(l:pre_cmd, shellescape(a:query))
 
   let l:fzf_args = {
+    \'source': l:cmd,
     \'options': [
       \'--ansi', '--phony',
       \'--query', a:query,
       \'--bind', 'change:reload:'.printf(l:pre_cmd, '{q}'),
-      \'--preview', 'echo TODO preview for {}',
+      \'--preview',
+      \g:config_dir.'/preview.sh {} {q} '.
+        \float2nr(g:fzf_layout.window.height * &lines),
     \],
   \}
 
-  try
-    let prev_default_command = $FZF_DEFAULT_COMMAND
-    let $FZF_DEFAULT_COMMAND = l:cmd
+  let wrapped = fzf#wrap(l:cmd, l:fzf_args, 0)
+  let wrapped['sink*'] = function('s:rg_open_from_line')
 
-    let wrapped = fzf#wrap(l:cmd, l:fzf_args, 0)
-    let wrapped['sink*'] = function('s:rg_open_from_line')
-
-    call fzf#run(wrapped)
-  finally
-    let $FZF_DEFAULT_COMMAND = prev_default_command
-  endtry
+  call fzf#run(wrapped)
 endfunction
 
 com! -nargs=* Rg call g:Rg(<q-args>)
@@ -417,8 +415,6 @@ vnoremap <silent> <M-p> <Esc>:Fzf<CR>
 " lines
 nnoremap <silent> <M-F> <Esc>:Rg<CR>
 vnoremap <silent> <M-F> <Esc>:Rg<CR>
-
-let g:fzf_layout = { 'window': { 'width': s:popup_opts.w, 'height': s:popup_opts.h } }
 
 " ------------------------------------------------------------------------------
 "  file explorer
