@@ -10,6 +10,18 @@ let g:data_dir = expand('$XDG_DATA_HOME/nvim')
 " directory where nvim configuration is located
 let g:config_dir = expand('$XDG_CONFIG_HOME/nvim')
 
+" current working directory and if opened with directory
+" (fixes bug where the current directory returned from :pwd is inconsistent)
+let g:opened_with_dir = 0
+let s:args = argv()
+if len(s:args) > 0 && isdirectory(s:args[0])
+  exe 'cd '.s:args[0]
+  let g:opened_with_dir = 1
+endif
+" resolve resolves any symbolic links
+" fnameescape escapes file paths with spaces, e.g. My\ Documents/
+let g:cwd = fnameescape(resolve(trim(execute('pwd'))))
+
 " ------------------------------------------------------------------------------
 "  plugin declaration
 " ------------------------------------------------------------------------------
@@ -122,32 +134,13 @@ fu! s:session_restore()
   en
 endf
 
-" s:was_opened_with_dir is true if nvim was opened with a directory
-" s:working_dir represents the current project directory
-
-let s:was_opened_with_dir = eval('@%') == '' && argc() == 0
-let s:working_dir = trim(execute('pwd'))
-
-" if dir path is supplied as an arg, e.g. nvim ./Downloads/TestFolder/
-if isdirectory(eval('@%'))
-  let s:was_opened_with_dir = 1
-  let s:working_dir = trim(eval('@%'))
-endif
-
-" resolve resolves any symbolic links
-" fnamemodify makes sure that the path is an absolute path
-" (trailing slash is included)
-" fnameescape escapes file paths with spaces, e.g. My\ Documents/
-
-let s:working_dir = fnameescape(fnamemodify(resolve(s:working_dir), ':p'))
-
-let s:sess_dir = g:data_dir . '/sessions' . s:working_dir
-let s:sessFile = s:sess_dir . 'se'
+let s:sess_dir = g:data_dir . '/sessions' . g:cwd
+let s:sessFile = s:sess_dir . '/se'
 
 augroup session_management
   au!
-  au VimLeavePre * if s:was_opened_with_dir | call s:session_save() | endif
-  au VimEnter * nested if s:was_opened_with_dir | call s:session_restore() | endif
+  au VimLeavePre * if g:opened_with_dir | call s:session_save() | endif
+  au VimEnter * nested if g:opened_with_dir | call s:session_restore() | endif
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -421,7 +414,7 @@ vnoremap <silent> <M-F> <Esc>:Rg<CR>
 " ------------------------------------------------------------------------------
 
 " activation toggle binding
-call s:bind_all_modes('<silent> <M-b> <C-[>:NERDTreeToggle<CR>')
+call s:bind_all_modes('<silent> <M-b> <C-[>:NERDTreeToggle '.g:cwd.'<CR>')
 
 " open files/folders similar to most terminal file broswers
 let g:NERDTreeMapActivateNode = 'l'
@@ -555,6 +548,15 @@ let s:tbli = -1
 
 com! TerminalToggle call s:terminal_win_toggle()
 
+function! s:terminal_open()
+  call termopen(
+    \s:shell_name,
+    \{
+      \'on_exit': 'Terminal_exit',
+      \'cwd': g:cwd,
+    \})
+endfunction
+
 fu! s:terminal_win_toggle()
   try
     if s:termwo.open == 1 " terminal window is open
@@ -567,7 +569,7 @@ fu! s:terminal_win_toggle()
       let s:termwo = g:Popup_toggle(s:termwo)
 
       if l:bufWasDeleted
-        call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
+        call s:terminal_open()
       en
 
       startinsert
@@ -576,7 +578,7 @@ fu! s:terminal_win_toggle()
     let s:tbli = 0
 
     let s:termwo = g:Popup_new()
-    call termopen(s:shell_name, {'on_exit': 'Terminal_exit'})
+    call s:terminal_open()
     startinsert
   endtry
 
