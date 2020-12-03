@@ -111,34 +111,76 @@ set noshowmode
 set mouse=a
 
 " ------------------------------------------------------------------------------
+"  clear inactive buffers
+" ------------------------------------------------------------------------------
+
+fu! s:clear_inactive_buffers()
+  " get all buffers in list
+  let l:all_bufs = split(execute('ls!'), '\n')
+
+  " According to the help docs, removal of the current
+  " element from a list does not negatively affect list
+  " iteration. See ':h for' for more details.
+  for l:buf in l:all_bufs
+    let l:tokens = split(l:buf)
+    if len(l:tokens) > 1
+      " if buffers do not have flags, this will output
+      " the buffer name - but this does not affect the
+      " output (see below)
+      let l:flags = l:tokens[1]
+
+      let l:bufnr = l:tokens[0]
+      " remove the 'u' from 'unlisted' buffer indices
+      if l:bufnr =~ 'u'
+        let l:bufnr = substitute(l:bufnr, 'u', '', '')
+      en
+
+      " if no flags are present, or flags are not
+      " active/active current
+      if len(l:tokens) < 5 ||
+        \ (l:flags != 'a' &&
+        \ l:flags != '#a' &&
+        \ l:flags != '%a')
+
+        " down with the guillotine!
+        exe 'bw!'.l:bufnr
+      en
+    en
+  endfor
+endfunction
+
+" ------------------------------------------------------------------------------
 "  session management
 " ------------------------------------------------------------------------------
 
+let s:sess_dir = g:data_dir . '/sessions' . g:cwd
+let s:sess_file = s:sess_dir . '/se'
+
+" make session directory
+call mkdir(s:sess_dir, 'p')
+
 fu! s:session_save()
-  " file explorer
+  " close side file explorer
   NERDTreeClose
 
-  call s:clear_buffers()
+  " keep only active (non-terminal) buffers
+  call s:clear_inactive_buffers()
 
-  " touch directory and save session
-  exe 'silent !mkdir -p ' . s:sess_dir
-  exe 'mksession! ' . s:sessFile
-endf
+  " save session
+  exe 'mksession! '.s:sess_file
+endfunction
 
 fu! s:session_restore()
-  " if session exists
-  if filereadable(s:sessFile)
-    exe 'so ' . s:sessFile
+  " if session exists, restore
+  if filereadable(s:sess_file)
+    exe 'so '.s:sess_file
   en
-endf
-
-let s:sess_dir = g:data_dir . '/sessions' . g:cwd
-let s:sessFile = s:sess_dir . '/se'
+endfunction
 
 augroup session_management
   au!
-  au VimLeavePre * if g:opened_with_dir | call s:session_save() | endif
-  au VimEnter * nested if g:opened_with_dir | call s:session_restore() | endif
+  au VimEnter * nested if g:opened_with_dir | call s:session_restore() | en
+  au VimLeave * if g:opened_with_dir | call s:session_save() | en
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -328,29 +370,6 @@ fu! s:popup_toggle(wo)
   endtry
 
   return l:wo
-endfunction
-
-" ------------------------------------------------------------------------------
-"  core functions - clearing all hidden buffers
-" ------------------------------------------------------------------------------
-
-fu! s:clear_buffers()
-  let l:bl = filter(range(1, bufnr('$')), 'buflisted(v:val)')
-  let l:tab = tabpagenr()
-  try
-    let l:win = 0
-    while l:win < winnr('$')
-      let l:win += 1
-      call remove(l:bl, index(l:bl, winbufnr(l:win)))
-    endwhile
-
-    if len(l:bl)
-      exe 'bw' join(l:bl)
-    endif
-  finally
-    " original tab
-    exe 'tabnext' l:tab
-  endtry
 endfunction
 
 " ------------------------------------------------------------------------------
