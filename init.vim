@@ -242,10 +242,10 @@ nnoremap ZQ :qa!<CR>
 " from mistyping and clumsiness
 com! W norm :w<CR>
 
-" permutate insert... because I
-" seem to use this all the time...
-vnoremap I 0<C-v>I
-vnoremap A $<C-v>A
+" permutate insert...
+" because I use this all the time...
+" vnoremap I 0<C-v>I
+" vnoremap A $<C-v>A
 
 " ------------------------------------------------------------------------------
 "  multi-mode binding
@@ -493,7 +493,7 @@ augroup end
 vnoremap <C-c> "+ygv
 nnoremap <C-c> "+ygv
 
-nnoremap <C-v> o<Esc>"+p
+" nnoremap <C-v> o<Esc>"+p
 
 " ------------------------------------------------------------------------------
 "  vcs integration
