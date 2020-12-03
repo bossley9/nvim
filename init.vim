@@ -508,7 +508,7 @@ if has('signcolumn') | set signcolumn=yes | en
 "   \ "Deleted"   : s:vcs,
 "   \ "Dirty"     : s:vcs,
 "   \ "Clean"     : s:vcs,
-"   \ 'Ignored'   : s:vcs,
+"   \ "Ignored"   : s:vcs,
 "   \ "Unknown"   : s:vcs
 "   \ }
 
@@ -554,8 +554,7 @@ com! TerminalToggle call s:terminal_win_toggle()
 
 function! s:terminal_open()
   call termopen(
-    \s:shell_name,
-    \{
+    \s:shell_name, {
       \'on_exit': 'Terminal_exit',
       \'cwd': g:cwd,
     \})
@@ -776,12 +775,22 @@ endfunction
 
 fu! s:generate_preview()
   if exists('b:is_preview_enabled') |
+    " markdown
     if &filetype == 'markdown'
       if executable('pandoc')
         exe 'silent !pandoc --metadata title="'.
           \expand('%:p').'" -s '.
           \'-o '.b:tmp_file_wo_ext.'.html '.
           \expand('%:p').' &'
+      en
+    " latex
+    elseif (&filetype == 'tex' || &filetype == 'latex')
+      if executable('pdflatex')
+        let l:cmd = 'pdflatex -output-directory '.
+          \g:cwd.'/'.expand("%:h").' '.expand("%:p")
+
+        exe 'silent !'.l:cmd
+        exe 'silent !'.l:cmd
       en
     en
   en
@@ -810,6 +819,9 @@ fu! g:Enable_preview()
   if &filetype == 'markdown'
     exe 'silent !$BROWSER file:///'.
       \b:tmp_file_wo_ext.'.html &'
+  elseif (&filetype == 'tex' || &filetype == 'latex')
+    let output = expand("%:p:r") . '.pdf'
+    exe 'silent !$PDF_VIEWER ' . output . ' &'
   en
 endfunction
 
@@ -823,56 +835,6 @@ augroup file_preview
     \ call s:generate_preview() | en
   au VimLeavePre,BufDelete,BufWipeout * if exists('b:is_preview_enabled') |
     \ call s:close_preview() | en
-augroup end
-
-" ------------------------------------------------------------------------------
-"  latex
-" ------------------------------------------------------------------------------
-
-let s:isLiveLatexEnabled = 0
-let s:isLiveLatexPreviewOpen = 0
-
-let g:defaultPdfViewer = $PDF_VIEWER
-
-com! L call s:enable_latex_live_preview()
-com! LatexLivePreview call s:enable_latex_live_preview()
-
-fu! s:enable_latex_live_preview()
-  let s:isLiveLatexEnabled = 1
-  let s:isLiveLatexPreviewOpen = 0
-  call s:update_latex_live_preview()
-endfunction
-
-fu! s:compile_latex()
-  let l:compile = 'pdflatex -output-directory ' . expand("%:h") . ' ' . expand("%:p")
-
-  exe 'silent !' . l:compile
-
-  " compile twice for refs and labels
-  " comment kept for clarity but functionality removed due to performance.
-  " It is rare we will need have references or bibliography, and both can
-  " be run manually as needed.
-
-  " exe 'silent !biber ' . expand("%:r")
-  exe 'silent !' . l:compile
-endfunction
-
-fu! s:update_latex_live_preview()
-  call s:compile_latex()
-  let output = expand("%:p:r") . '.pdf'
-
-  if ! s:isLiveLatexPreviewOpen
-    let s:isLiveLatexPreviewOpen = 1
-    exe 'silent !' g:defaultPdfViewer . ' ' . output . ' &'
-  en
-endfunction
-
-augroup latex
-  au BufWritePost *.tex if s:isLiveLatexEnabled
-    \ | call s:update_latex_live_preview() | en
-  " disable linters for latex because they all suck :')
-  " au BufEnter *.tex ALEDisableBuffer
-  " au BufEnter *.bib ALEDisableBuffer
 augroup end
 
 " ------------------------------------------------------------------------------
