@@ -50,12 +50,6 @@ exe 'hi GitGutterChange ctermbg=None ctermfg='.s:gitmodify
 exe 'hi GitGutterChangeDelete ctermbg=None ctermfg='.s:gitdelete
 exe 'hi GitGutterDelete ctermbg=None ctermfg='.s:gitdelete
 
-" ALE errors
-hi Error cterm=bold
-exe 'hi ALEStyleWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
-exe 'hi ALEWarning ctermbg='.s:warningbg.' ctermfg='.s:warningfg
-exe 'hi ALEInfo ctermbg='.s:warningbg.' ctermfg='.s:warningfg
-
 augroup nerdtree_highlight
   au!
   exe 'au Filetype nerdtree hi Directory ctermfg='.s:c9.' cterm=bold'
@@ -105,13 +99,10 @@ exe 'hi NonText ctermfg='.s:fg
 "  cursor and surrounding
 " ------------------------------------------------------------------------------
 
-" git blame
-exe 'hi Blamer ctermfg='.s:chi
-
 " matching parenthesis
 exe 'hi MatchParen ctermfg='.s:bg.' ctermbg='.s:primary.' cterm=Bold'
 
-" slash search
+" inc search
 exe 'hi Search ctermfg='.s:bg.' ctermbg='.s:primary
 
 " ------------------------------------------------------------------------------

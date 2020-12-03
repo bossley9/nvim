@@ -47,7 +47,7 @@ Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-commentary'
-" Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -242,7 +242,7 @@ nnoremap ZQ :qa!<CR>
 " from mistyping and clumsiness
 com! W norm :w<CR>
 
-" permutate insert... because I 
+" permutate insert... because I
 " seem to use this all the time...
 vnoremap I 0<C-v>I
 vnoremap A $<C-v>A
@@ -514,19 +514,6 @@ let g:gitgutter_sign_modified_removed = s:vcs
 
 " always display sign column
 if has('signcolumn') | set signcolumn=yes | en
-
-" let g:NERDTreeGitStatusIndicatorMapCustom = {
-"   \ "Modified"  : s:vcs,
-"   \ "Staged"    : s:vcs,
-"   \ "Untracked" : s:vcs,
-"   \ "Renamed"   : s:vcs,
-"   \ "Unmerged"  : s:vcs,
-"   \ "Deleted"   : s:vcs,
-"   \ "Dirty"     : s:vcs,
-"   \ "Clean"     : s:vcs,
-"   \ "Ignored"   : s:vcs,
-"   \ "Unknown"   : s:vcs
-"   \ }
 
 augroup vcs_integration
   au!
@@ -852,8 +839,6 @@ augroup appearance_syntax_highlight
   au BufReadPost *.bib set filetype=tex | set syntax=bib
   " support comment highlighting in json
   au FileType json syntax match Comment +\/\/.\+$+
-augroup end
-
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'
