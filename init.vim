@@ -46,13 +46,10 @@ call plug#begin(s:plugin_dir)
 Plug 'junegunn/fzf'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
-" Plug 'dense-analysis/ale'
-" Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'tpope/vim-commentary'
 " Plug 'sheerun/vim-polyglot'
-" Plug 'APZelos/blamer.nvim'
 Plug 'tpope/vim-surround'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -539,11 +536,6 @@ augroup vcs_integration
   au BufEnter * exe 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
 
-" let g:blamer_enabled = 1
-" let g:blamer_delay = 1500
-" let g:blamer_template = '<committer> <committer-time> • <summary>'
-" let g:blamer_date_format = '%Y.%m.%d %H:%M'
-
 " ------------------------------------------------------------------------------
 "  terminal management
 " ------------------------------------------------------------------------------
@@ -674,41 +666,6 @@ augroup status_bar_tabline
 augroup end
 
 " ------------------------------------------------------------------------------
-"  linting/prettier
-" ------------------------------------------------------------------------------
-
-let g:ale_fix_on_save = 1
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '!!'
-
-" clang-format needs to be installed separately, usually contained under the name 
-" clang on most distributions and operating systems
-
-let g:ale_fixers = {
-\   'c': ['clang-format'],
-\   'cpp': ['clang-format'],
-\   'cs': ['clang-format'],
-\   'css': ['prettier'],
-\   'googlescript': ['prettier'],
-\   'markdown': ['prettier'],
-\   'javascript': ['prettier'],
-\   'scss': ['prettier'],
-\   'typescript': ['prettier'],
-\   'typescriptreact': ['prettier'],
-\}
-
-fu! TogglePrettierOnSave()
-  if (g:ale_fix_on_save == 0)
-    let g:ale_fix_on_save = 1
-  else
-    let g:ale_fix_on_save = 0
-  en
-  exe 'echo "Prettier=' . g:ale_fix_on_save . '"'
-endfunction
-com! TogglePrettier call TogglePrettierOnSave()
-
-" ------------------------------------------------------------------------------
 "  commenting/tabbing
 " ------------------------------------------------------------------------------
 
@@ -736,20 +693,13 @@ let g:coc_disable_startup_warning = 1
 " remove python2 support
 let g:loaded_python_provider = 0
 
-" TODO fix incorrect installation of extensions
 " extensions to install by default
-" let g:coc_global_extensions = [
-"   \ 'coc-clangd',
-"   \ 'coc-css',
-"   \ 'coc-json',
-"   \ 'coc-tsserver'
-"   \ ]
-
-augroup coc
-  au!
-  " support comment highlighting in json
-  au FileType json syntax match Comment +\/\/.\+$+
-augroup end
+let g:coc_global_extensions = [
+  \ 'coc-css',
+  \ 'coc-json',
+  \ 'coc-prettier',
+  \ 'coc-tsserver',
+  \ ]
 
 " M-j and M-k navigates completion
 inoremap <silent><expr> <M-j>
@@ -787,6 +737,9 @@ fu! s:show_documentation()
     call CocAction('doHover')
   en
 endfunction
+
+" prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " ------------------------------------------------------------------------------
 "  file preview
@@ -897,6 +850,10 @@ augroup appearance_syntax_highlight
   au BufReadPost config set filetype=dosini | set syntax=dosini
   au BufReadPost gtkrc set filetype=sh | set syntax=sh
   au BufReadPost *.bib set filetype=tex | set syntax=bib
+  " support comment highlighting in json
+  au FileType json syntax match Comment +\/\/.\+$+
+augroup end
+
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'
