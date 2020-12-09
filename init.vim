@@ -832,14 +832,17 @@ endif
 " various file-specific syntax highlighting
 augroup appearance_syntax_highlight
   au!
+  au BufReadPost config set filetype=dosini | set syntax=dosini
+  au BufReadPost gtkrc set filetype=sh | set syntax=sh
+  " support comment highlighting in json
+  au FileType json syntax match Comment +\/\/.\+$+
+  au BufReadPost *.bib set filetype=tex | set syntax=bib
   au BufReadPost *.dat set filetype=dat | set syntax=json
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript
   au BufReadPost *.h set filetype=c | set syntax=c
-  au BufReadPost config set filetype=dosini | set syntax=dosini
-  au BufReadPost gtkrc set filetype=sh | set syntax=sh
-  au BufReadPost *.bib set filetype=tex | set syntax=bib
-  " support comment highlighting in json
-  au FileType json syntax match Comment +\/\/.\+$+
+  au BufReadPost *.m3u set filetype=m3u
+  au Filetype m3u setl commentstring=#\ %s
+  au Filetype m3u syntax match Comment +#.\+$+
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'
