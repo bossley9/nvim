@@ -729,6 +729,12 @@ endfunction
 " prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
+" formatter
+augroup coc
+  au!
+  au BufWritePost *.rs exe 'silent !rustfmt '.@% | e!
+augroup end
+
 " ------------------------------------------------------------------------------
 "  file preview
 " ------------------------------------------------------------------------------
