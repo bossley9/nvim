@@ -196,10 +196,6 @@ nnoremap K k
 " M-Space to insert a space in normal mode
 nnoremap <M-Space> i<Space><Esc>
 
-" line ends
-nnoremap ! 0
-nnoremap @ $
-
 " <CR>, <Esc>, <BS> basics
 inoremap <M-h> <BS>
 inoremap <M-;> <Esc>
