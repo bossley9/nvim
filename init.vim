@@ -752,7 +752,6 @@ fu! s:generate_preview()
           \g:cwd.'/'.expand("%:h").' '.expand("%:p")
 
         exe 'silent !'.l:cmd
-        exe 'silent !'.l:cmd
       en
     en
   en
