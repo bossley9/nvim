@@ -1,6 +1,20 @@
 " open color tests
 nnoremap tt :so $VIMRUNTIME/syntax/hitest.vim<CR>
 nnoremap 33 :so $VIMRUNTIME/syntax/colortest.vim<CR>
+nnoremap 44 :call g:Color256test()<CR>
+
+fu! g:Color256test()
+  new
+  let num = 255
+  while num >= 0
+    exec 'hi col_'.num.' ctermbg='.num.' ctermfg=white'
+    exec 'syn match col_'.num.' "ctermbg='.num.':...." containedIn=ALL'
+    call append(0, 'ctermbg='.num.':....')
+    let num = num - 1
+  endwhile
+  set ro
+  set nomodified
+endfunction
 
 let s:c0 = '0'   " 0 black
 let s:c1 = '1'   " 1 red
@@ -70,7 +84,7 @@ exe 'hi LineNr term=Bold ctermfg='.s:chi
 
 " command selection (e.g. file tab selection)
 exe 'hi Pmenu ctermbg='.s:bg.' ctermfg='.s:fg
-exe 'hi PmenuSel ctermbg='.s:fg
+exe 'hi PmenuSel ctermbg='.s:c1.' ctermfg='.s:bg
 
 " terminal/floating window border
 exe 'hi WindowBorder ctermfg='.s:fg
@@ -86,7 +100,7 @@ exe 'hi VertSplit ctermfg='.s:bg.' ctermbg='.s:fg
 if exists('g:theme') && g:theme == 'light'
   exe 'hi Visual ctermfg='.s:bg.' ctermbg='.s:fg
 else
-  exe 'hi Visual ctermbg='.s:chi
+  exe 'hi Visual ctermbg='.s:c14.' ctermfg='.s:fgalt
 endif
 
 " doesn't seem to work and gets overridden by NonText hi group
@@ -120,7 +134,7 @@ exe 'hi FileName ctermfg='.s:fgalt
 
 let s:cmn = s:c1 " red
 let s:cmi = s:c12 " light blue
-let s:cmv = s:c3 " yellow
+let s:cmv = s:c14 " light cyan
 let s:cmc = s:c10 " light green
 let s:cmt = s:c12 " light blue
 
