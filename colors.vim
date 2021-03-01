@@ -76,7 +76,7 @@ augroup end
 "  line numbers
 " ------------------------------------------------------------------------------
 
-exe 'hi LineNr term=Bold ctermfg='.s:chi
+exe 'hi LineNr term=Bold ctermfg='.s:fg
 
 " ------------------------------------------------------------------------------
 "  floating windows
