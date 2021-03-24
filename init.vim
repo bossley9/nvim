@@ -684,6 +684,7 @@ let g:loaded_python_provider = 0
 let g:coc_global_extensions = [
   \ 'coc-css',
   \ 'coc-json',
+  \ 'coc-omnisharp',
   \ 'coc-prettier',
   \ 'coc-tsserver',
   \ ]
