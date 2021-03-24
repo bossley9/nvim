@@ -681,6 +681,7 @@ let g:coc_global_extensions = [
   \ 'coc-clangd',
   \ 'coc-css',
   \ 'coc-json',
+  \ 'coc-omnisharp',
   \ 'coc-prettier',
   \ 'coc-tsserver',
   \ ]
