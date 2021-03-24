@@ -196,10 +196,6 @@ nnoremap K k
 " M-Space to insert a space in normal mode
 nnoremap <M-Space> i<Space><Esc>
 
-" line ends
-nnoremap ! 0
-nnoremap @ $
-
 " <CR>, <Esc>, <BS> basics
 inoremap <M-h> <BS>
 inoremap <M-;> <Esc>
@@ -242,10 +238,10 @@ nnoremap ZQ :qa!<CR>
 " from mistyping and clumsiness
 com! W norm :w<CR>
 
-" permutate insert... because I
-" seem to use this all the time...
-vnoremap I 0<C-v>I
-vnoremap A $<C-v>A
+" permutate insert...
+" because I use this all the time...
+" vnoremap I 0<C-v>I
+" vnoremap A $<C-v>A
 
 " ------------------------------------------------------------------------------
 "  multi-mode binding
@@ -493,7 +489,7 @@ augroup end
 vnoremap <C-c> "+ygv
 nnoremap <C-c> "+ygv
 
-nnoremap <C-v> o<Esc>"+p
+" nnoremap <C-v> o<Esc>"+p
 
 " ------------------------------------------------------------------------------
 "  vcs integration
@@ -682,6 +678,7 @@ let g:loaded_python_provider = 0
 
 " extensions to install by default
 let g:coc_global_extensions = [
+  \ 'coc-clangd',
   \ 'coc-css',
   \ 'coc-json',
   \ 'coc-omnisharp',
@@ -729,6 +726,12 @@ endfunction
 " prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
+" formatter
+augroup coc
+  au!
+  au BufWritePost *.rs exe 'silent !rustfmt '.@% | e!
+augroup end
+
 " ------------------------------------------------------------------------------
 "  file preview
 " ------------------------------------------------------------------------------
@@ -749,7 +752,6 @@ fu! s:generate_preview()
         let l:cmd = 'pdflatex -output-directory '.
           \g:cwd.'/'.expand("%:h").' '.expand("%:p")
 
-        exe 'silent !'.l:cmd
         exe 'silent !'.l:cmd
       en
     en
@@ -832,14 +834,17 @@ endif
 " various file-specific syntax highlighting
 augroup appearance_syntax_highlight
   au!
+  au BufReadPost config set filetype=dosini | set syntax=dosini
+  au BufReadPost gtkrc set filetype=sh | set syntax=sh
+  " support comment highlighting in json
+  au FileType json syntax match Comment +\/\/.*$+
+  au BufReadPost *.bib set filetype=tex | set syntax=bib
   au BufReadPost *.dat set filetype=dat | set syntax=json
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript
   au BufReadPost *.h set filetype=c | set syntax=c
-  au BufReadPost config set filetype=dosini | set syntax=dosini
-  au BufReadPost gtkrc set filetype=sh | set syntax=sh
-  au BufReadPost *.bib set filetype=tex | set syntax=bib
-  " support comment highlighting in json
-  au FileType json syntax match Comment +\/\/.\+$+
+  au BufReadPost *.m3u set filetype=m3u
+  au Filetype m3u setl commentstring=#\ %s
+  au Filetype m3u syntax match Comment +#.*$+
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'
