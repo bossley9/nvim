@@ -848,3 +848,13 @@ augroup appearance_syntax_highlight
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'
+
+" ------------------------------------------------------------------------------
+"  miscellaneous
+" ------------------------------------------------------------------------------
+
+fu! s:rand_int(Low, High) abort
+  let l:milisec = str2nr(matchstr(reltimestr(reltime()), '\v\.\zs\d+'))
+  return l:milisec % (a:High - a:Low + 1) + a:Low
+endfunction
+" au InsertCharPre * if s:rand_int(0,1)%2 | let v:char = toupper(v:char) | endif
