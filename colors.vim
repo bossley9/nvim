@@ -172,3 +172,11 @@ fu! StatusLineMode()
   return l:mode
 endfunction
 exe 'hi InactiveMode ctermfg='.s:fgalt.' ctermbg='.s:bgalt
+
+" ------------------------------------------------------------------------------
+"  folds
+" ------------------------------------------------------------------------------
+
+for highlight in ['Folded', 'vimFold', 'FoldColum']
+  exe 'hi '.highlight.' cterm=bold ctermfg='.s:bg.' ctermbg='.s:c14
+endfor
