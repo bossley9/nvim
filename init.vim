@@ -730,6 +730,8 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 augroup coc
   au!
   au BufWritePost *.rs exe 'silent !rustfmt '.@% | e!
+  " suppress incorrect Unity diagnostics
+  au BufEnter *.cs let b:coc_diagnostic_disable = 1
 augroup end
 
 " ------------------------------------------------------------------------------
