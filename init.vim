@@ -50,6 +50,7 @@ Plug 'tpope/vim-commentary'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'APZelos/blamer.nvim'
 
 call plug#end()
 
@@ -832,6 +833,12 @@ if exists('g:theme') && g:theme == 'light'
 else
   set background=dark
 endif
+
+" blamer
+let g:blamer_enabled = 1
+let g:blamer_delay = 3000
+let g:blamer_show_in_insert_modes = 0
+let g:blamer_date_format = '%y.%m.%d'
 
 " various file-specific syntax highlighting
 augroup appearance_syntax_highlight
