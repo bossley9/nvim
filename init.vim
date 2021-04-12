@@ -727,10 +727,24 @@ endfunction
 " prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
+" formatting toggle
+let g:formatting_enabled = 1
+
+fu! g:SetFormat(value)
+  let g:formatting_enabled = a:value
+  let g:ale_fix_on_save = a:value
+endfunction
+
+com! -nargs=0 FormatOn call g:SetFormat(1)
+com! -nargs=0 FormatOff call g:SetFormat(0)
+
 " formatter
 augroup coc
   au!
-  au BufWritePost *.rs exe 'silent !rustfmt '.@% | e!
+  au BufWritePost *.c,*.h if g:formatting_enabled |
+    \ exe 'silent !clang-format -i '.@% | e! | en
+  au BufWritePost *.rs if g:formatting_enabled |
+    \ exe 'silent !rustfmt '.@% | e!
   " suppress incorrect Unity diagnostics
   au BufEnter *.cs let b:coc_diagnostic_disable = 1
 augroup end
