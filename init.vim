@@ -840,13 +840,19 @@ let g:blamer_delay = 3000
 let g:blamer_show_in_insert_modes = 0
 let g:blamer_date_format = '%y.%m.%d'
 
+" merge conflict syntax highlighting
+function! ConflictHighlight() abort
+  syn region GitConflictHead start=/^<<<<<<< .*$/ end=/^\ze\(=======$\||||||||\)/
+  syn region GitConflictMiddle start=/^||||||| .*$/ end=/^\ze=======$/
+  syn region GitConflictOrigin start=/^\(=======$\||||||| |\)/ end=/^>>>>>>> .*$/
+endfunction
+
 " various file-specific syntax highlighting
 augroup appearance_syntax_highlight
   au!
   au BufReadPost config set filetype=dosini | set syntax=dosini
   au BufReadPost gtkrc set filetype=sh | set syntax=sh
-  " support comment highlighting in json
-  au FileType json syntax match Comment +\/\/.*$+
+  au FileType json syntax match Comment +\/\/.*$+ " json comments
   au BufReadPost *.bib set filetype=tex | set syntax=bib
   au BufReadPost *.dat set filetype=dat | set syntax=json
   au BufReadPost *.gs set filetype=googlescript | set syntax=javascript
@@ -854,6 +860,7 @@ augroup appearance_syntax_highlight
   au BufReadPost *.m3u set filetype=m3u
   au Filetype m3u setl commentstring=#\ %s
   au Filetype m3u syntax match Comment +#.*$+
+  au Syntax * call ConflictHighlight()
 augroup end
 
 exe 'so ' . g:config_dir . '/colors.vim'

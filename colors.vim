@@ -48,11 +48,11 @@ let s:warningbg = s:c11
 let s:chi = s:c8
 
 " ------------------------------------------------------------------------------
-"  gutter, file explorer, and blame
+"  gutter, file explorer, and git
 " ------------------------------------------------------------------------------
 
 let s:gitadd = s:c10     " light green
-let s:gitmodify = s:c11  " light yellow
+let s:gitmodify = s:c12  " light blue
 let s:gitdelete = s:c9   " light red
 
 " prevent git gutter issues
@@ -71,6 +71,9 @@ augroup nerdtree_highlight
   exe 'au Filetype nerdtree hi NERDTreeCWD ctermfg='.s:c9.' cterm=bold'
 augroup end
 
+exe 'hi GitConflictHead ctermbg='.s:gitadd.' cterm=bold ctermfg=black'
+exe 'hi GitConflictMiddle ctermbg='.s:gitdelete.' ctermfg=black'
+exe 'hi GitConflictOrigin ctermbg='.s:gitmodify.' cterm=bold ctermfg=black'
 
 " ------------------------------------------------------------------------------
 "  line numbers
