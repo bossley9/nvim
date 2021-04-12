@@ -259,10 +259,10 @@ endfunction
 " ------------------------------------------------------------------------------
 
 let s:popup_opts = {
-  \'x': 0.1,
-  \'y': 0.1,
-  \'w': 0.8,
-  \'h': 0.8
+  \'x': 0.05,
+  \'y': 0.05,
+  \'w': 0.9,
+  \'h': 0.9
   \}
 
 " wrapper - when called with the above arguments, will return a
