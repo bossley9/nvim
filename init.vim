@@ -525,8 +525,10 @@ augroup end
 " ------------------------------------------------------------------------------
 
 " shell used for terminal buffer windows
-let s:shell_name = '$SHELL_NAME'
-if ! s:shell_name | let s:shell_name = 'sh' | endif
+let s:shell_name = expand('$SHELL')
+if len(s:shell_name) == 0
+  let s:shell_name = 'sh'
+endif
 
 " total num of terminal bufs available
 let s:num_total_term_bufs = 4
