@@ -1,4 +1,5 @@
 " neovim configuration by Sam Bossley
+" for common vim error messages, see :h message
 
 " ------------------------------------------------------------------------------
 "  globals
@@ -22,6 +23,10 @@ if len(s:args) == 0 | let g:opened_with_dir = 1 | endif
 " resolve resolves any symbolic links
 " fnameescape escapes file paths with spaces, e.g. My\ Documents/
 let g:cwd = fnameescape(resolve(trim(execute('pwd'))))
+
+exe 'set rtp^=' . g:data_dir
+exe 'set rtp+=' . g:data_dir . '/site'
+exe 'set rtp+=' . g:config_dir
 
 " ------------------------------------------------------------------------------
 "  plugin declaration
@@ -76,7 +81,11 @@ augroup end
 set noswapfile
 
 " disable viminfo creation
-set viminfo=""
+if has('nvim')
+  let &viminfo=""
+else
+  set viminfo=""
+en
 
 " only search by case when using capital letters
 set ignorecase
@@ -574,7 +583,8 @@ fu! s:terminal_win_toggle()
 
       startinsert
     en
-  catch " terminal window does not yet exist
+  " terminal window does not yet exist
+  catch
     let s:tbli = 0
 
     let s:termwo = g:Popup_new()
@@ -648,7 +658,9 @@ augroup status_bar_tabline
   au!
   au WinEnter * setlocal statusline=%!GetStatusActive()
   au WinLeave * setlocal statusline=%!GetStatusInactive()
-  au TermLeave * setlocal statusline=%!GetStatusActive()
+  if has('nvim')
+    au TermLeave * setlocal statusline=%!GetStatusActive()
+  en
 augroup end
 
 " ------------------------------------------------------------------------------
@@ -838,7 +850,10 @@ set scrolloff=5
 set list listchars=tab:\ \ ,trail:·
 
 " theme setting for readable syntax highlighting
-let g:theme = split(system("xgetres theme.mode"), "\n")[0]
+let s:themes = split(system("getxr theme.mode"), "\n")
+if len(s:themes) > 0
+  let g:theme = s:themes[0]
+en
 
 if ! exists('g:theme')
   let g:theme = $CURRENT_THEME_MODE
