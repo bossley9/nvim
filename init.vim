@@ -236,6 +236,10 @@ exe 'nnoremap <M-d> ' . s:nav_jump_large . 'j'
 exe 'nnoremap <M-u> ' . s:nav_jump_large . 'k'
 exe 'vnoremap <M-d> ' . s:nav_jump_large . 'j'
 exe 'vnoremap <M-u> ' . s:nav_jump_large . 'k'
+exe 'nnoremap <C-d> ' . s:nav_jump_large . 'j'
+exe 'nnoremap <C-u> ' . s:nav_jump_large . 'k'
+exe 'vnoremap <C-d> ' . s:nav_jump_large . 'j'
+exe 'vnoremap <C-u> ' . s:nav_jump_large . 'k'
 
 " nohl
 nnoremap <Space> :noh<CR>
